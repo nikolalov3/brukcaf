@@ -22,6 +22,9 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+/* gdy działa JS, przewijanie do kotwic prowadzi skrypt własną krzywą,
+   więc systemowe smooth musi ustąpić, żeby oba się nie biły */
+html.js{scroll-behavior:auto}
 body{
   background:var(--tlo);color:var(--atrament);font-family:var(--grotesk);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
@@ -65,11 +68,11 @@ a{color:inherit}
 /* Podmiana jako pionowe przesunięcie: jedno wyjeżdża w górę, drugie
    wjeżdża od dołu, oba wokół wspólnego środka. */
 .js .zmiennik>*{
-  transition:opacity .5s ease,transform .55s cubic-bezier(.22,.85,.25,1);
+  transition:opacity .55s ease,transform .6s cubic-bezier(.22,.85,.25,1);
   will-change:opacity,transform;
 }
-.js .zmiennik .marka{opacity:0;transform:translateY(15px);pointer-events:none}
-.js .po-hero .zmiennik .przycisk{opacity:0;transform:translateY(-15px);pointer-events:none}
+.js .zmiennik .marka{opacity:0;transform:translateY(11px);pointer-events:none}
+.js .po-hero .zmiennik .przycisk{opacity:0;transform:translateY(-11px);pointer-events:none}
 .js .po-hero .zmiennik .marka{opacity:1;transform:translateY(0);pointer-events:auto}
 
 /* bez JS znak marki nie jest potrzebny — przycisk Menu zostaje na stałe */
