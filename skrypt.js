@@ -154,7 +154,7 @@
       window.scrollTo(0, doY);
     } else {
       // dłuższa droga to dłuższy czas, ale w rozsądnych widełkach
-      var czas = Math.min(1100, Math.max(650, Math.abs(doY - window.pageYOffset) * 0.5));
+      var czas = Math.min(2200, Math.max(1300, Math.abs(doY - window.pageYOffset)));
       przewin(doY, czas);
     }
 
