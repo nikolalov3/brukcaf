@@ -161,3 +161,34 @@
     if (history.replaceState) history.replaceState(null, '', link.getAttribute('href'));
   });
 })();
+
+/* 4. Zmiana języka nie gubi miejsca na stronie.
+   Obie wersje mają te same identyfikatory sekcji, więc do adresu drugiej
+   wersji doklejamy tę, którą użytkownik ma akurat pod paskiem nawigacji.
+   Bez tego przełącznik zawsze wyrzucał na samą górę, co przy długiej
+   karcie oznaczało przewijanie od nowa. */
+(function () {
+  var przelacznik = document.querySelector('.jezyk');
+  if (!przelacznik) return;
+
+  var nawigacja = document.querySelector('.nawigacja');
+
+  function widocznaSekcja() {
+    var linia = window.pageYOffset + (nawigacja ? nawigacja.offsetHeight : 0) + 8;
+    var sekcje = document.querySelectorAll('main [id], footer[id]');
+    var trafiona = null;
+
+    for (var i = 0; i < sekcje.length; i++) {
+      if (sekcje[i].getBoundingClientRect().top + window.pageYOffset <= linia) {
+        trafiona = sekcje[i].id;
+      }
+    }
+    return trafiona;
+  }
+
+  przelacznik.addEventListener('click', function () {
+    var id = widocznaSekcja();
+    var adres = przelacznik.getAttribute('href').split('#')[0];
+    przelacznik.setAttribute('href', id ? adres + '#' + id : adres);
+  });
+})();
