@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bruk Cafe. Kawiarnia specialty na Kleparzu w Krakowie</title>
+<meta name="description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, pięć minut pieszo z Dworca Głównego. Kawa, matcha, śniadania 9–13, wifi i gniazdka. ul. Krótka 1, Kraków.">
+<link rel="canonical" href="https://bruk.cafe/">
+<link rel="alternate" hreflang="pl" href="https://bruk.cafe/">
+<link rel="alternate" hreflang="en" href="https://bruk.cafe/en/">
+<link rel="alternate" hreflang="x-default" href="https://bruk.cafe/">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Bruk Cafe. Dane strukturalne JSON-LD, wklejone w <head> obu wersji strony.
+     Współrzędne z OpenStreetMap dla ul. Krótka 1; warto je porównać z pinezką
+     w wizytówce Google. DO UZUPEŁNIENIA PRZED STARTEM: prawdziwe ścieżki do
+     zdjęć, identyfikator wizytówki Google w sameAs, potwierdzenie godzin
+     niedzielnych (Instagram i Facebook podają różne). -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  "@id": "https://bruk.cafe/#lokal",
+  "name": "Bruk Cafe",
+  "alternateName": ["Cafe Bruk", "Bruk"],
+  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Kawa specialty i drip V60, matcha w kilku wariantach, cold brew oraz śniadania podawane codziennie od 9:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Wi-Fi i gniazdka przy stolikach, miejsce, w którym można usiąść do pracy z laptopem na dłużej.",
+  "url": "https://bruk.cafe/",
+  "priceRange": "$$",
+  "currenciesAccepted": "PLN",
+  "paymentAccepted": "Gotówka, karta płatnicza, BLIK",
+  "image": [
+    "https://bruk.cafe/img/wnetrze.jpg",
+    "https://bruk.cafe/img/kawa.jpg",
+    "https://bruk.cafe/img/sniadanie.jpg"
+  ],
+  "logo": "https://bruk.cafe/img/logo.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ul. Krótka 1",
+    "addressLocality": "Kraków",
+    "addressRegion": "małopolskie",
+    "postalCode": "31-149",
+    "addressCountry": "PL"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 50.0677342,
+    "longitude": 19.9397945
+  },
+  "areaServed": [
+    { "@type": "Place", "name": "Kleparz, Kraków" },
+    { "@type": "Place", "name": "Stare Miasto, Kraków" },
+    { "@type": "City", "name": "Kraków" }
+  ],
+  "servesCuisine": ["Specialty coffee", "Matcha", "Śniadania", "Opcje wegetariańskie", "Opcje wegańskie"],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Sunday",
+      "opens": "09:00",
+      "closes": "14:00"
+    }
+  ],
+  "amenityFeature": [
+    { "@type": "LocationFeatureSpecification", "name": "Bezpłatne Wi-Fi", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Gniazdka elektryczne przy stolikach", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Miejsce do pracy z laptopem", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true }
+  ],
+  "publicAccess": true,
+  "sameAs": [
+    "https://www.instagram.com/brukcafe/",
+    "https://www.facebook.com/p/BRUK-CAFE-61583492194061/",
+    "https://maps.google.com/?cid=UZUPELNIC",
+    "https://awifiplace.com/cafes/bruk-cafe-krakow",
+    "https://www.corner.inc/place/pmiDJpTMo6Ku"
+  ],
+  "hasMenu": {
+    "@type": "Menu",
+    "name": "Menu Bruk Cafe",
+    "inLanguage": ["pl-PL", "en"],
+    "hasMenuSection": [
+      {
+        "@type": "MenuSection",
+        "name": "Kawa",
+        "description": "Kawa specialty: espresso, flat white, cappuccino, latte, drip V60.",
+        "hasMenuItem": [
+          { "@type": "MenuItem", "name": "Doppio", "offers": { "@type": "Offer", "price": "12", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Americano", "offers": { "@type": "Offer", "price": "14", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Flat white", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Cappuccino", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Latte", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Orange espresso", "offers": { "@type": "Offer", "price": "22", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Tonic espresso", "offers": { "@type": "Offer", "price": "22", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Drip V60", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Herbata i matcha",
+        "hasMenuItem": [
+          { "@type": "MenuItem", "name": "Matcha", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Matcha latte", "offers": { "@type": "Offer", "price": "20", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Matcha bananowa", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Matcha orange", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Herbata zielona", "description": "Morela, aloes, winogrono, wiśnia.", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Herbata czarna", "description": "Earl grey, leśna.", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Zioła", "description": "Rumianek, mięta pieprzowa, melisa, pokrzywa, nagietek.", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Oferta sezonowa",
+        "hasMenuItem": [
+          { "@type": "MenuItem", "name": "Cold brew (kawa)", "offers": { "@type": "Offer", "price": "22", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Cold brew (herbata)", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Matcha yuzu tonic", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Matcha sakura tonic", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Lemoniada", "description": "Czarna porzeczka i róża.", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Śniadania (AM's 9–13)",
+        "description": "Śniadania podawane codziennie od 9:00 do 13:00, zamówienia przy barze.",
+        "hasMenuItem": [
+          { "@type": "MenuItem", "name": "Pęczak z hummusem", "description": "Kasza pęczak, winegret, cytrynowy hummus, marchew karmelizowana, harissa, orzechy laskowe, świeże zioła.", "suitableForDiet": "https://schema.org/VeganDiet", "offers": { "@type": "Offer", "price": "39", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Tost z szynką", "description": "Chleb pszenny, prosciutto cotto, salami piccante, gouda, ser bursztyn, dressing pomidorowy, jajo sadzone, domowy ketchup.", "offers": { "@type": "Offer", "price": "39", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Tosty z pomidorem", "description": "Chleb pszenny, pasta z suszonych pomidorów, pieczony pomidor, mozzarella, grana padano, domowy ketchup.", "suitableForDiet": "https://schema.org/VegetarianDiet", "offers": { "@type": "Offer", "price": "36", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Carpaccio z pomidorów", "description": "Polskie pomidory, ser bundz, świeże zioła, oliwa, żywy ocet wiśniowy, pieczywo żytnie.", "suitableForDiet": "https://schema.org/VegetarianDiet", "offers": { "@type": "Offer", "price": "36", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Frankfurterki z sałatką ziemniaczaną i jaja sadzone", "description": "Frankfurterki wieprzowe, sałatka ziemniaczana, jaja sadzone x2, pieczywo.", "offers": { "@type": "Offer", "price": "42", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Kanapka z twarożkiem", "description": "Chleb żytni, pasta twarogowa z ogórkiem kiszonym, jajo na miękko, świeże zioła, pikantna oliwa.", "suitableForDiet": "https://schema.org/VegetarianDiet", "offers": { "@type": "Offer", "price": "34", "priceCurrency": "PLN" } }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Inne",
+        "hasMenuItem": [
+          { "@type": "MenuItem", "name": "Świeży sok pomarańczowy", "offers": { "@type": "Offer", "price": "20", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Świeży sok pomidorowy", "description": "Sok pomidorowy, oliwa z oliwek, sól, pieprz, bazylia.", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Kefir", "description": "Kefir, ogórek, koperek, mięta, pieprz, sól.", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Woda", "offers": { "@type": "Offer", "price": "8", "priceCurrency": "PLN" } }
+        ]
+      }
+    ]
+  }
+}
+</script>
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="tasma etykieta" id="gora" aria-hidden="true">
+  <div class="tor">
+    <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 9–13</span><span>·</span>
+    <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 9–13</span><span>·</span>
+  </div>
+  <template data-pula>
+    <span>Espresso</span>
+    <span>Doppio</span>
+    <span>Americano</span>
+    <span>Flat white</span>
+    <span>Cappuccino</span>
+    <span>Latte</span>
+    <span>Drip V60</span>
+    <span>Matcha</span>
+    <span>Matcha latte</span>
+    <span>Cold brew</span>
+    <span data-rola="zawsze">Breakfast 9–13</span>
+    <span data-rola="czasem">Wi-Fi</span>
+  </template>
+</div>
+
+<nav class="nawigacja">
+  <div class="ramka rzad">
+    <div class="zmiennik">
+      <a class="przycisk etykieta" href="#karta">Menu</a>
+      <a class="marka" href="#gora" aria-label="Bruk Cafe, wróć na górę"><img src="img/logo.png" alt="Bruk Cafe"></a>
+    </div>
+    <div class="linki etykieta">
+      <a class="chowaj" href="#lokal">Lokal</a>
+      <a class="chowaj" href="#kontakt">Kontakt</a>
+      <a class="jezyk" href="en/" hreflang="en">EN</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero ramka">
+  <img class="znak" src="img/logo.png" alt="Bruk Cafe" width="657" height="375">
+  <div class="podpis etykieta">
+    <div><b>Kleparz, Kraków</b>ul. Krótka 1, 31-149</div>
+    <div><b>Pon–sob 9:00–18:00</b>Niedziela 9:00–14:00</div>
+    <div><b>Śniadania 9–13</b>Codziennie, także w weekend</div>
+    <div><b>Kawa specialty</b>Matcha · Cold brew</div>
+  </div>
+</header>
+
+<main>
+
+<section class="sekcja ramka">
+  <div class="naglowek etykieta"><span class="nr">01</span><span>W skrócie</span></div>
+  <div class="fakty zjawia">
+    <article>
+      <span class="etykieta">Śniadania</span>
+      <b class="duza">9–13</b>
+      <p>Codziennie, także w sobotę i niedzielę. Zamawiasz przy barze.</p>
+    </article>
+    <article>
+      <span class="etykieta">Praca z laptopem</span>
+      <b class="duza">Wi-Fi</b>
+      <p>Gniazdka przy stolikach. Możesz zostać na kilka godzin.</p>
+    </article>
+    <article>
+      <span class="etykieta">Dojście</span>
+      <b class="duza">5 min</b>
+      <p>Pieszo z Dworca Głównego i Galerii Krakowskiej, tuż za Barbakanem.</p>
+    </article>
+  </div>
+</section>
+
+<section class="sekcja ramka" id="lokal">
+  <div class="naglowek etykieta"><span class="nr">02</span><span>Lokal</span></div>
+  <div class="opowiesc">
+    <div class="zjawia">
+      <h2>Najlepsza kawa na Kleparzu, kilka kroków od Rynku.</h2>
+      <p class="wiodacy">
+        Jesteśmy po północnej stronie Plant, blisko wszystkiego, ale już poza turystycznym
+        ruchem Starego Miasta. Parzymy kawę specialty: doppio, flat white, drip V60.
+        Do tego matcha w kilku wariantach, cold brew i śniadania do trzynastej.
+        Surowe wnętrze, ciepła obsługa i gniazdko przy stoliku, jeśli przyszedłeś popracować.
+      </p>
+    </div>
+    <figure class="plyta kolaz zjawia">
+      <span class="kafel"></span><span class="kafel"></span>
+      <span class="kafel"></span><span class="kafel"></span>
+      <span class="kafel"></span>
+      <figcaption class="etykieta">kolaż zdjęć</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sekcja ramka" id="karta">
+  <div class="naglowek etykieta"><span class="nr">03</span><span>Menu</span></div>
+
+  <div class="karta">
+
+    <div class="grupa zjawia">
+      <h3 class="etykieta">Kawa</h3>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Doppio</span><span class="kropki"></span><span class="cena">12 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Americano</span><span class="kropki"></span><span class="cena">14 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Flat white</span><span class="kropki"></span><span class="cena">16 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Cappuccino</span><span class="kropki"></span><span class="cena">16 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Latte</span><span class="kropki"></span><span class="cena">18 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Orange espresso</span><span class="kropki"></span><span class="cena">22 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Tonic espresso</span><span class="kropki"></span><span class="cena">22 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Drip V60</span><span class="kropki"></span><span class="cena">24 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">+ mleko roślinne / syrop</span><span class="kropki"></span><span class="cena">2 zł</span></div></div>
+    </div>
+
+    <div class="grupa zjawia">
+      <h3 class="etykieta">Herbata i matcha</h3>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha</span><span class="kropki"></span><span class="cena">18 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha latte</span><span class="kropki"></span><span class="cena">20 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha bananowa</span><span class="kropki"></span><span class="cena">24 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha orange</span><span class="kropki"></span><span class="cena">24 zł</span></div></div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Zielona</span><span class="kropki"></span><span class="cena">16 zł</span></div>
+        <p class="sklad">Morela, aloes, winogrono, wiśnia.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Czarna</span><span class="kropki"></span><span class="cena">16 zł</span></div>
+        <p class="sklad">Earl grey, leśna.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Zioła</span><span class="kropki"></span><span class="cena">16 zł</span></div>
+        <p class="sklad">Rumianek, mięta pieprzowa, melisa, pokrzywa, nagietek.</p>
+      </div>
+    </div>
+
+    <div class="grupa zjawia">
+      <h3 class="etykieta">Oferta sezonowa</h3>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Cold brew (kawa)</span><span class="kropki"></span><span class="cena">22 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Cold brew (herbata)</span><span class="kropki"></span><span class="cena">16 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha yuzu tonic</span><span class="kropki"></span><span class="cena">24 zł</span></div></div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Matcha sakura tonic</span><span class="kropki"></span><span class="cena">24 zł</span></div></div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Lemoniada</span><span class="kropki"></span><span class="cena">18 zł</span></div>
+        <p class="sklad">Czarna porzeczka i róża.</p>
+      </div>
+    </div>
+
+    <div class="grupa zjawia">
+      <h3 class="etykieta">Śniadania · AM's 9–13, zamów przy barze</h3>
+
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Pęczak z hummusem</span><span class="znacznik">vegan</span><span class="kropki"></span><span class="cena">39 zł</span></div>
+        <p class="sklad">Kasza pęczak, winegret, cytrynowy hummus, marchew karmelizowana, harissa, orzechy laskowe, świeże zioła.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Tost z szynką</span><span class="kropki"></span><span class="cena">39 zł</span></div>
+        <p class="sklad">Chleb pszenny, prosciutto cotto, salami piccante, gouda, ser bursztyn, dressing pomidorowy, jajo sadzone, domowy ketchup.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Tosty z pomidorem</span><span class="znacznik">wege</span><span class="kropki"></span><span class="cena">36 zł</span></div>
+        <p class="sklad">Chleb pszenny, pasta z suszonych pomidorów, pieczony pomidor, mozzarella, grana padano, domowy ketchup.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Carpaccio z pomidorów</span><span class="znacznik">wege</span><span class="kropki"></span><span class="cena">36 zł</span></div>
+        <p class="sklad">Polskie pomidory, ser bundz, świeże zioła, oliwa, żywy ocet wiśniowy, pieczywo żytnie.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Frankfurterki z sałatką ziemniaczaną i jaja sadzone</span><span class="kropki"></span><span class="cena">42 zł</span></div>
+        <p class="sklad">Frankfurterki wieprzowe, sałatka ziemniaczana, jaja sadzone x2, pieczywo.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Kanapka z twarożkiem</span><span class="znacznik">wege</span><span class="kropki"></span><span class="cena">34 zł</span></div>
+        <p class="sklad">Chleb żytni, pasta twarogowa z ogórkiem kiszonym, jajo na miękko, świeże zioła, pikantna oliwa.</p>
+      </div>
+
+      <p class="nota etykieta">Lista alergenów dostępna w lokalu u obsługi na życzenie.</p>
+    </div>
+
+    <div class="grupa zjawia">
+      <h3 class="etykieta">Inne</h3>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Świeży sok pomarańczowy</span><span class="kropki"></span><span class="cena">20 zł</span></div></div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Świeży sok pomidorowy</span><span class="kropki"></span><span class="cena">18 zł</span></div>
+        <p class="sklad">Sok pomidorowy, oliwa z oliwek, sól, pieprz, bazylia.</p>
+      </div>
+      <div class="pozycja">
+        <div class="glowa"><span class="nazwa">Kefir</span><span class="kropki"></span><span class="cena">18 zł</span></div>
+        <p class="sklad">Kefir, ogórek, koperek, mięta, pieprz, sól.</p>
+      </div>
+      <div class="pozycja"><div class="glowa"><span class="nazwa">Woda</span><span class="kropki"></span><span class="cena">8 zł</span></div></div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="stopka ramka" id="kontakt">
+  <div class="naglowek etykieta"><span class="nr">04</span><span>Kontakt</span></div>
+  <div class="siatka">
+    <div>
+      <b>Adres</b>
+      <p>ul. Krótka 1<br>31-149 Kraków<br>Kleparz</p>
+    </div>
+    <div>
+      <b>Godziny</b>
+      <p>Poniedziałek–sobota 9:00–18:00<br>Niedziela 9:00–14:00<br>Śniadania 9:00–13:00</p>
+    </div>
+    <div>
+      <b>Znajdź nas</b>
+      <p><a href="https://www.instagram.com/brukcafe/" rel="noopener">Instagram @brukcafe</a><br>
+         <a href="https://www.facebook.com/p/BRUK-CAFE-61583492194061/" rel="noopener">Facebook</a></p>
+    </div>
+    <div>
+      <b>Język</b>
+      <p><a href="en/" hreflang="en">English version</a></p>
+    </div>
+  </div>
+  <img class="znak-stopka" src="img/logo.png" alt="" aria-hidden="true">
+</footer>
+
+<script>
+(function () {
+  var elementy = document.querySelectorAll('.zjawia');
+  function pokaz(el) { el.classList.add('widoczne'); }
+
+  // Brak wsparcia dla obserwatora albo wyłączone animacje: pokazujemy wszystko od razu.
+  if (!('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    elementy.forEach(pokaz);
+    return;
+  }
+
+  var obs = new IntersectionObserver(function (wpisy) {
+    wpisy.forEach(function (w) {
+      if (w.isIntersecting) { pokaz(w.target); obs.unobserve(w.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+  elementy.forEach(function (el) {
+    // Cokolwiek jest już nad dolną krawędzią ekranu (także powyżej niego, gdy
+    // wejście nastąpiło z kotwicą w adresie) odsłaniamy natychmiast — inaczej
+    // obserwator nigdy tego nie złapie i treść zostaje niewidoczna.
+    if (el.getBoundingClientRect().top < window.innerHeight) pokaz(el);
+    else obs.observe(el);
+  });
+
+  // Bezpiecznik: gdyby cokolwiek zawiodło, po 3 s treść i tak jest widoczna.
+  setTimeout(function () { elementy.forEach(pokaz); }, 3000);
+})();
+</script>
+
+<script src="skrypt.js"></script>
+</body>
+</html>
