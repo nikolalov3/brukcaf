@@ -332,3 +332,18 @@ h2{
 @media(max-width:620px){
   .pozycja .nazwa{flex:1 1 auto;min-width:0}
 }
+
+/* przycisk nawigacji przy adresie — ten sam język wizualny co znaczniki
+   wege/vegan w karcie, tylko klikalny */
+/* .stopka a nadpisuje font-size ze .znacznik, stad wlasna, mocniejsza regula */
+.stopka .prowadz{
+  font:500 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
+}
+.prowadz{
+  display:inline-flex;align-items:center;gap:5px;margin-top:12px;
+  padding:3px 6px;text-decoration:none;color:var(--cichy);
+  border-color:rgba(19,19,19,.26);
+  transition:color .25s ease,border-color .25s ease,background .25s ease;
+}
+.prowadz::before{content:"↗";font-size:9px;line-height:1;transform:translateY(-.5px)}
+.prowadz:hover{color:var(--tlo);background:var(--atrament);border-color:var(--atrament)}
