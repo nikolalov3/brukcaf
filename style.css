@@ -347,3 +347,17 @@ h2{
 }
 .prowadz::before{content:"↗";font-size:9px;line-height:1;transform:translateY(-.5px)}
 .prowadz:hover{color:var(--tlo);background:var(--atrament);border-color:var(--atrament)}
+
+/* ── pytania i odpowiedzi ──────────────────────────────── */
+.pytania{columns:2;column-gap:clamp(34px,5vw,72px)}
+.pytanie{break-inside:avoid;padding-block:16px;border-bottom:1px solid var(--wlos)}
+.pytanie h3{
+  font:600 clamp(15px,1.6vw,17px)/1.35 var(--grotesk);
+  letter-spacing:-.01em;margin-bottom:8px;
+}
+.pytanie p{color:var(--cichy);font-size:15px;line-height:1.65;max-width:52ch}
+@media(max-width:880px){.pytania{columns:1}}
+@media(max-width:620px){
+  .pytanie{padding-block:18px}
+  .pytanie p{font-size:14.5px}
+}
