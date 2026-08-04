@@ -24,11 +24,18 @@
   "@id": "https://bruk.cafe/#lokal",
   "name": "Bruk Cafe",
   "alternateName": ["Cafe Bruk", "Bruk"],
-  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Kawa specialty i drip V60, matcha w kilku wariantach, cold brew oraz śniadania podawane codziennie od 9:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Wi-Fi i gniazdka przy stolikach, miejsce, w którym można usiąść do pracy z laptopem na dłużej.",
+  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania podawane codziennie od 9:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane.",
   "url": "https://bruk.cafe/",
   "priceRange": "$$",
   "currenciesAccepted": "PLN",
   "paymentAccepted": "Gotówka, karta płatnicza, BLIK",
+  "image": [
+    "https://bruk.cafe/img/bar.jpg",
+    "https://bruk.cafe/img/fotele.jpg",
+    "https://bruk.cafe/img/ekspres.jpg",
+    "https://bruk.cafe/img/espresso.jpg",
+    "https://bruk.cafe/img/witryna.jpg"
+  ],
   "logo": "https://bruk.cafe/img/logo.png",
   "address": {
     "@type": "PostalAddress",
@@ -67,9 +74,17 @@
     { "@type": "LocationFeatureSpecification", "name": "Bezpłatne Wi-Fi", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Gniazdka elektryczne przy stolikach", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Miejsce do pracy z laptopem", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true }
+    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Psy mile widziane", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Mleko roślinne: owsiane, migdałowe, kokosowe", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Mleko bez laktozy", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Ogródek", "value": false }
   ],
   "publicAccess": true,
+  "petsAllowed": true,
+  "isAccessibleForFree": true,
+  "smokingAllowed": false,
+  "hasMap": "https://maps.google.com/?cid=11920639657712110502",
   "sameAs": [
     "https://www.instagram.com/brukcafe/",
     "https://www.facebook.com/p/BRUK-CAFE-61583492194061/",
@@ -87,14 +102,14 @@
         "name": "Kawa",
         "description": "Kawa specialty: espresso, flat white, cappuccino, latte, drip V60.",
         "hasMenuItem": [
-          { "@type": "MenuItem", "name": "Doppio", "offers": { "@type": "Offer", "price": "12", "priceCurrency": "PLN" } },
+          { "@type": "MenuItem", "name": "Doppio", "description": "HAYB Yellow, ciemny blend 100% arabiki z Brazylii i Gwatemali.", "offers": { "@type": "Offer", "price": "12", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Americano", "offers": { "@type": "Offer", "price": "14", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Flat white", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Cappuccino", "offers": { "@type": "Offer", "price": "16", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Latte", "offers": { "@type": "Offer", "price": "18", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Orange espresso", "offers": { "@type": "Offer", "price": "22", "priceCurrency": "PLN" } },
           { "@type": "MenuItem", "name": "Tonic espresso", "offers": { "@type": "Offer", "price": "22", "priceCurrency": "PLN" } },
-          { "@type": "MenuItem", "name": "Drip V60", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } }
+          { "@type": "MenuItem", "name": "Drip V60", "description": "Przelew ze zmiennego ziarna specialty.", "offers": { "@type": "Offer", "price": "24", "priceCurrency": "PLN" } }
         ]
       },
       {
@@ -312,10 +327,25 @@
       </p>
     </div>
     <figure class="plyta kolaz zjawia">
-      <span class="kafel"></span><span class="kafel"></span>
-      <span class="kafel"></span><span class="kafel"></span>
-      <span class="kafel"></span>
-      <figcaption class="etykieta">kolaż zdjęć</figcaption>
+      <span class="kafel"><img src="img/witryna.jpg" alt="Wejście do Bruk Cafe od ulicy Krótkiej, logo w witrynie" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/fotele.jpg" alt="Fotele, roślina i lampa na dywanie w Bruk Cafe" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/ekspres.jpg" alt="Barista zakłada kolbę do ekspresu w Bruk Cafe" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/espresso.jpg" alt="Dwa espresso w szklankach na marmurowym blacie" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/ciasto.jpg" alt="Kawałek czekoladowego ciasta i latte na zielonym marmurze" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/bar.jpg" alt="Bar Bruk Cafe: ekspres, lampy liniowe i kwiaty na tle betonowej ściany" loading="lazy" decoding="async"></span>
+      <span class="kafel"><img src="img/marzocco.jpg" alt="Ekspres La Marzocco i białe lilie za barem" loading="lazy" decoding="async"></span>
+      <template data-zdjecia>
+        <img data-src="img/witryna.jpg" data-alt="Wejście do Bruk Cafe od ulicy Krótkiej, logo w witrynie" data-kafel="0">
+        <img data-src="img/fotele.jpg" data-alt="Fotele, roślina i lampa na dywanie w Bruk Cafe">
+        <img data-src="img/ekspres.jpg" data-alt="Barista zakłada kolbę do ekspresu w Bruk Cafe">
+        <img data-src="img/espresso.jpg" data-alt="Dwa espresso w szklankach na marmurowym blacie">
+        <img data-src="img/ciasto.jpg" data-alt="Kawałek czekoladowego ciasta i latte na zielonym marmurze">
+        <img data-src="img/bar.jpg" data-alt="Bar Bruk Cafe: ekspres, lampy liniowe i kwiaty na tle betonowej ściany">
+        <img data-src="img/marzocco.jpg" data-alt="Ekspres La Marzocco i białe lilie za barem">
+        <img data-src="img/gosc.jpg" data-alt="Gość Bruk Cafe pije kawę, kadr czarno-biały">
+        <img data-src="img/ciastka.jpg" data-alt="Świeżo upieczone ciastka na blasze">
+        <img data-src="img/sloje.jpg" data-alt="Słoje z herbatami na półkach nad betonową ścianą">
+      </template>
     </figure>
   </div>
 </section>

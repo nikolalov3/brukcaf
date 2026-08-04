@@ -192,3 +192,114 @@
     przelacznik.setAttribute('href', id ? adres + '#' + id : adres);
   });
 })();
+
+/* 5. Kolaż: kadry podmieniają się w spokojnym, równym rytmie.
+
+   Jeden wspólny zegar zamiast pięciu osobnych. Wcześniej każdy kafel miał
+   własny licznik i zdarzało się, że dwa zmieniały się tuż po sobie, a potem
+   przez pół minuty nie działo się nic. Teraz co kilkanaście sekund zmienia
+   się dokładnie jeden kafel, nigdy dwa razy ten sam pod rząd.
+
+   Zajętość trzymamy we własnej tablicy, nie odczytujemy jej z DOM: w trakcie
+   przenikania kafel ma przez chwilę dwa obrazki i odczyt zwracał ten stary,
+   przez co inny kafel mógł sięgnąć po zdjęcie już wchodzące gdzie indziej.
+
+   Zdjęcie z atrybutem data-kafel trafia wyłącznie do kafla o tym numerze.
+   Przy włączonej redukcji ruchu podmiana nie startuje. */
+(function () {
+  var kolaz = document.querySelector('.kolaz');
+  if (!kolaz) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var zrodlo = kolaz.querySelector('template[data-zdjecia]');
+  if (!zrodlo) return;
+
+  var pula = Array.prototype.map.call(
+    (zrodlo.content || zrodlo).querySelectorAll('img'),
+    function (el) {
+      var tylko = el.getAttribute('data-kafel');
+      return {
+        src: el.getAttribute('data-src'),
+        alt: el.getAttribute('data-alt'),
+        tylko: tylko === null ? null : parseInt(tylko, 10)
+      };
+    });
+
+  var kafle = Array.prototype.slice.call(kolaz.querySelectorAll('.kafel'));
+  if (pula.length <= kafle.length) return;
+
+  var stan = kafle.map(function (k) {
+    var i = k.querySelector('img');
+    return i ? i.getAttribute('src') : null;
+  });
+  var wtrakcie = kafle.map(function () { return false; });
+  var ostatni = -1;
+
+  function kandydaci(nr) {
+    return pula.filter(function (z) {
+      if (z.tylko !== null && z.tylko !== nr) return false;   // przypisane do innego kafla
+      return stan.indexOf(z.src) === -1;                      // i jeszcze nigdzie nie wisi
+    });
+  }
+
+  function podmien(nr) {
+    if (wtrakcie[nr]) return false;
+
+    var wolne = kandydaci(nr);
+    if (!wolne.length) return false;
+
+    var wybor = wolne[Math.floor(Math.random() * wolne.length)];
+    var kafel = kafle[nr];
+    var stary = kafel.querySelector('img');
+
+    stan[nr] = wybor.src;      // rezerwacja przed wczytaniem
+    wtrakcie[nr] = true;
+
+    var nowy = new Image();
+    nowy.alt = wybor.alt;
+    nowy.decoding = 'async';
+    nowy.className = 'znika';
+    nowy.src = wybor.src;
+    kafel.appendChild(nowy);
+
+    function pokaz() {
+      requestAnimationFrame(function () {
+        nowy.classList.remove('znika');
+        if (stary) stary.classList.add('znika');
+        setTimeout(function () {
+          if (stary && stary.parentNode) stary.parentNode.removeChild(stary);
+          wtrakcie[nr] = false;
+        }, 1500);
+      });
+    }
+
+    if (nowy.complete) pokaz();
+    else {
+      nowy.onload = pokaz;
+      nowy.onerror = function () {
+        if (nowy.parentNode) nowy.parentNode.removeChild(nowy);
+        stan[nr] = stary ? stary.getAttribute('src') : null;
+        wtrakcie[nr] = false;
+      };
+    }
+    return true;
+  }
+
+  function tura() {
+    // kolejność losowa, ale bez powtórzenia poprzedniego kafla
+    var do_sprawdzenia = [];
+    for (var i = 0; i < kafle.length; i++) if (i !== ostatni) do_sprawdzenia.push(i);
+    for (var j = do_sprawdzenia.length - 1; j > 0; j--) {
+      var l = Math.floor(Math.random() * (j + 1));
+      var t = do_sprawdzenia[j]; do_sprawdzenia[j] = do_sprawdzenia[l]; do_sprawdzenia[l] = t;
+    }
+
+    for (var k = 0; k < do_sprawdzenia.length; k++) {
+      if (podmien(do_sprawdzenia[k])) { ostatni = do_sprawdzenia[k]; break; }
+    }
+
+    setTimeout(tura, 9000 + Math.random() * 3000);   // 9 do 12 sekund
+  }
+
+  setTimeout(tura, 6000);
+})();

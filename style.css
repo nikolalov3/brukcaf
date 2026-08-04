@@ -187,7 +187,7 @@ h2{
 @media(max-width:760px){.fakty{grid-template-columns:1fr}}
 
 /* blok o lokalu */
-.opowiesc{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,72px);align-items:start}
+.opowiesc{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(30px,5vw,72px);align-items:start}
 @media(max-width:900px){.opowiesc{grid-template-columns:1fr}}
 
 .plyta{
@@ -199,25 +199,63 @@ h2{
 }
 .plyta figcaption{position:absolute;left:14px;bottom:12px;color:rgba(19,19,19,.45)}
 
-/* Kolaż — ten sam obrys co pojedyncze zdjęcie, w środku siatka kadrów.
-   Docelowo każdy .kafel dostaje <img>; teraz to puste pola do podmiany. */
+/* Kolaż w duchu mirror cube. Trzy zasady:
+   1. tory siatki są nierówne, więc żaden blok nie powtarza proporcji sąsiada,
+   2. masa jest przesunięta w lewo i w górę, układ celowo niezrównoważony,
+   3. część pól zostaje pusta, przez co obrys panelu jest schodkowy.
+   Pod spodem ciemna plama wygaszana ku brzegom: spoiny w środku są prawie
+   czarne, przy krawędziach rozpływają się w kolor tła strony. */
 .kolaz{
-  display:grid;gap:6px;padding:6px;
-  grid-template-columns:repeat(3,1fr);
-  grid-template-rows:repeat(3,1fr);
-  background-image:none;background:var(--beton);
+  display:grid;gap:8px;padding:8px;
+  grid-template-columns:1.5fr .7fr 1.15fr .65fr;
+  grid-template-rows:.7fr 1.35fr .6fr 1.1fr .75fr;
+  aspect-ratio:1/1.16;
+  /* ciemna spoina tylko w środku panelu, gasnąca zanim dojdzie do brzegów,
+     żeby nie robiła wrażenia rozmytego cienia pod całym kolażem */
+  background-image:
+    radial-gradient(ellipse 44% 40% at 41% 43%,
+      #131313 0%,
+      #131313 46%,
+      color-mix(in srgb, #131313 30%, var(--tlo)) 72%,
+      var(--tlo) 92%);
 }
 .kolaz .kafel{
-  background:rgba(19,19,19,.055);
-  background-image:repeating-linear-gradient(115deg,rgba(0,0,0,.03) 0 1px,transparent 1px 9px);
+  position:relative;overflow:hidden;background:var(--beton);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 1px 0 0 rgba(255,255,255,.24),
+    inset 0 -1px 0 rgba(0,0,0,.5),
+    inset -1px 0 0 rgba(0,0,0,.34),
+    0 1px 4px rgba(0,0,0,.2);
 }
-.kolaz .kafel:nth-child(1){grid-column:1/3;grid-row:1/3}
-.kolaz .kafel:nth-child(2){grid-column:3/4;grid-row:1/2}
-.kolaz .kafel:nth-child(3){grid-column:3/4;grid-row:2/4}
-.kolaz .kafel:nth-child(4){grid-column:1/2;grid-row:3/4}
-.kolaz .kafel:nth-child(5){grid-column:2/3;grid-row:3/4}
-.kolaz .kafel img{width:100%;height:100%;object-fit:cover}
-.kolaz figcaption{left:16px;bottom:14px}
+
+/* Rozkład: pierwszy kafel jest wyraźnie największy i to w nim startuje
+   i wyłącznie w nim pojawia się kadr z witryną. Puste zostają pola przy
+   dolnej prawej krawędzi. */
+.kolaz .kafel:nth-child(1){grid-column:1/3;grid-row:1/4}   /* największy */
+.kolaz .kafel:nth-child(2){grid-column:3/5;grid-row:1/3}
+.kolaz .kafel:nth-child(3){grid-column:3/4;grid-row:3/5}
+.kolaz .kafel:nth-child(4){grid-column:1/3;grid-row:4/6}
+.kolaz .kafel:nth-child(5){grid-column:4/5;grid-row:3/4}
+.kolaz .kafel:nth-child(6){grid-column:4/5;grid-row:4/6}
+.kolaz .kafel:nth-child(7){grid-column:3/4;grid-row:5/6}
+
+.kolaz .kafel img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:opacity 1.4s cubic-bezier(.4,0,.2,1);
+}
+.kolaz .kafel img.znika{opacity:0}
+.kolaz template{display:none}
+
+@media(max-width:900px){
+  .kolaz{aspect-ratio:1/1.05}
+}
+@media(max-width:620px){
+  .kolaz{gap:6px;padding:6px}
+}
+@media(prefers-reduced-motion:reduce){
+  .kolaz .kafel img{transition:none}
+}
 
 /* ── karta / menu ──────────────────────────────────────── */
 .karta{columns:2;column-gap:clamp(34px,5vw,72px)}
