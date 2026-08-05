@@ -48,7 +48,7 @@ a{color:inherit}
 }
 .nawigacja .rzad{
   display:flex;align-items:center;justify-content:space-between;gap:18px;
-  height:clamp(56px,7vw,68px);overflow:hidden;
+  height:clamp(56px,7vw,68px);
 }
 /* Lewy slot nawigacji zmienia zawartość w zależności od pozycji na stronie:
    dopóki widać duże BRUK w hero, stoi tam przycisk Menu; kiedy hero zjedzie
@@ -61,7 +61,7 @@ a{color:inherit}
 
 .zmiennik{
   position:relative;display:grid;place-items:center;
-  min-height:44px;
+  min-height:44px;overflow:hidden;
 }
 .zmiennik>*{grid-area:1/1}
 .zmiennik .marka{display:inline-flex;align-items:center;justify-content:center}
@@ -398,4 +398,74 @@ h2{
 @media(max-width:620px){
   .pytanie{padding-block:18px}
   .pytanie p{font-size:14.5px}
+}
+
+/* ── hasło do Wi-Fi w nawigacji ────────────────────────── */
+/* Ikona jest widoczna na każdej szerokości, także na telefonie: to jedno
+   z najczęstszych pytań gości, więc nie chowa się razem z resztą linków. */
+.wifi{position:relative;display:flex;align-items:center}
+
+.wifi-ikona{
+  /* dokładnie ten sam obrys co przełącznik języka obok */
+  display:grid;place-items:center;width:46px;height:44px;
+  background:none;border:1px solid var(--wlos);color:var(--cichy);
+  cursor:pointer;transition:color .25s ease,border-color .25s ease,background .25s ease;
+}
+.wifi-ikona svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+.wifi-ikona svg circle{fill:currentColor;stroke:none}
+.wifi-ikona:hover,.wifi-ikona[aria-expanded="true"]{
+  color:var(--tlo);background:var(--atrament);border-color:var(--atrament);
+}
+
+.wifi-panel{
+  /* Panel siedzi w kontenerze z klasą .etykieta, która ustawia wersaliki.
+     Hasło jest wrażliwe na wielkość znaków, więc kasujemy to dziedziczenie,
+     inaczej gość przepisze je błędnie. */
+  text-transform:none;letter-spacing:normal;font-family:var(--grotesk);
+  position:absolute;top:calc(100% + 12px);right:0;z-index:60;
+  width:min(280px,calc(100vw - 32px));
+  background:var(--tlo);border:1px solid var(--atrament);
+  padding:16px 16px 14px;text-align:left;
+  box-shadow:0 12px 34px rgba(19,19,19,.16);
+  animation:wifi-wejscie .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.wifi-panel[hidden]{display:none}
+@keyframes wifi-wejscie{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+.wifi-naglowek{color:var(--atrament);margin-bottom:10px;
+  font:500 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+.wifi-opis{font-size:13px;line-height:1.55;color:var(--cichy);margin-bottom:14px}
+
+.wifi-dane{display:grid;gap:2px;margin-bottom:12px;padding-right:22px}
+.wifi-dane dt{color:var(--cichy);margin-top:0;
+  font:500 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.wifi-dane dd{margin-top:6px;font:500 15px/1.35 var(--mono);letter-spacing:.02em;word-break:break-all}
+
+.wifi-kopiuj{
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  width:100%;padding:11px 12px;cursor:pointer;
+  background:var(--atrament);color:var(--tlo);border:1px solid var(--atrament);
+  transition:opacity .25s ease;
+}
+.wifi-kopiuj:hover{opacity:.85}
+.wifi-kopiuj.gotowe{background:none;color:var(--atrament)}
+
+.wifi-zamknij{
+  position:absolute;top:8px;right:10px;width:26px;height:26px;
+  background:none;border:0;color:var(--cichy);font-size:20px;line-height:1;cursor:pointer;
+}
+.wifi-zamknij:hover{color:var(--atrament)}
+
+@media(max-width:620px){
+  .wifi-panel{width:min(290px,calc(100vw - 28px))}
+}
+@media(prefers-reduced-motion:reduce){
+  .wifi-panel{animation:none}
+}
+
+/* hasło pokazujemy wyłącznie wtedy, gdy schowek jest niedostępny */
+.wifi-awaryjne{
+  font:500 16px/1.35 var(--mono);letter-spacing:.02em;word-break:break-all;
+  margin-bottom:12px;
 }

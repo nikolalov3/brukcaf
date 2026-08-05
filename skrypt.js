@@ -303,3 +303,80 @@
 
   setTimeout(tura, 6000);
 })();
+
+/* 6. Hasło do Wi-Fi w nawigacji.
+   Okienko otwiera ikona, hasło kopiuje się jednym kliknięciem.
+   Nowoczesne przeglądarki mają navigator.clipboard, ale działa on tylko
+   w bezpiecznym kontekście, więc jest zapasowa droga przez pole tekstowe. */
+(function () {
+  var oprawa = document.querySelector('.wifi');
+  if (!oprawa) return;
+
+  var ikona = oprawa.querySelector('.wifi-ikona');
+  var panel = oprawa.querySelector('.wifi-panel');
+  var kopiuj = oprawa.querySelector('.wifi-kopiuj');
+  var zamknij = oprawa.querySelector('.wifi-zamknij');
+  // hasło trzymamy w atrybucie panelu, nie w widocznej treści
+  var haslo = panel.getAttribute('data-haslo') || '';
+  if (!ikona || !panel || !kopiuj || !haslo) return;
+
+  var etykietaKopiuj = panel.getAttribute('data-kopiuj') || 'Kopiuj';
+  var etykietaGotowe = panel.getAttribute('data-skopiowano') || 'Skopiowane';
+  var licznik = null;
+
+  function pokaz(czy) {
+    panel.hidden = !czy;
+    ikona.setAttribute('aria-expanded', czy ? 'true' : 'false');
+    if (czy) kopiuj.focus();
+  }
+
+  function doSchowka(tekst) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(tekst);
+    }
+    return new Promise(function (ok, blad) {
+      var pole = document.createElement('textarea');
+      pole.value = tekst;
+      pole.setAttribute('readonly', '');
+      pole.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(pole);
+      pole.select();
+      pole.setSelectionRange(0, tekst.length);   // iOS bywa uparty
+      var udalo = false;
+      try { udalo = document.execCommand('copy'); } catch (e) { udalo = false; }
+      document.body.removeChild(pole);
+      udalo ? ok() : blad();
+    });
+  }
+
+  ikona.addEventListener('click', function () { pokaz(panel.hidden); });
+  if (zamknij) zamknij.addEventListener('click', function () { pokaz(false); ikona.focus(); });
+
+  kopiuj.addEventListener('click', function () {
+    doSchowka(haslo).then(function () {
+      kopiuj.textContent = etykietaGotowe;
+      kopiuj.classList.add('gotowe');
+      clearTimeout(licznik);
+      licznik = setTimeout(function () {
+        kopiuj.textContent = etykietaKopiuj;
+        kopiuj.classList.remove('gotowe');
+      }, 2200);
+    }, function () {
+      // schowek zablokowany: pokazujemy hasło, żeby dało się je przepisać
+      var awaryjne = panel.querySelector('.wifi-awaryjne');
+      if (!awaryjne) {
+        awaryjne = document.createElement('p');
+        awaryjne.className = 'wifi-awaryjne';
+        panel.insertBefore(awaryjne, kopiuj);
+      }
+      awaryjne.textContent = haslo;
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!panel.hidden && !oprawa.contains(e.target)) pokaz(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) { pokaz(false); ikona.focus(); }
+  });
+})();
