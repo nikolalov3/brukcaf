@@ -93,7 +93,9 @@ html:not(.js) .zmiennik .marka{display:none}
 }
 .linki a:hover{color:var(--atrament)}
 .linki a:hover::after{transform:scaleX(1);transform-origin:left}
-.jezyk{color:var(--atrament)!important;border:1px solid var(--wlos);padding:6px 10px}
+/* ten sam obrys co ikona Wi-Fi obok: równy kwadracik nawigacji */
+.jezyk{color:var(--atrament)!important;border:1px solid var(--wlos);
+  display:inline-grid;place-items:center;width:46px;height:44px;padding:0}
 .jezyk::after{display:none}
 
 /* przycisk do karty — najważniejsza akcja, widoczna na każdej szerokości */
