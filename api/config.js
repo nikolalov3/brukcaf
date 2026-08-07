@@ -11,6 +11,7 @@ export default function handler(req, res) {
   const anonKey = process.env.SUPABASE_ANON_KEY || '';
 
   res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');   // endpoint poza indeksem
 
   if (!url || !anonKey) {
     return res.status(503).json({

@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /api
+
+# Panel /admin i endpoint /api celowo nie są tu blokowane: mają nagłówek
+# i znacznik noindex, więc roboty muszą móc je odwiedzić, żeby ten noindex
+# zobaczyć i wykluczyć je z wyników. Blokada w robots dałaby odwrotny skutek
+# (adres w indeksie bez możliwości odczytania noindex).
 
 Sitemap: https://bruk.cafe/sitemap.xml
