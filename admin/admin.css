@@ -1,0 +1,105 @@
+/* Panel Bruk Cafe — ten sam język wizualny co strona, ale nastawiony na
+   pracę: gęściej, spokojnie, bez ozdób. */
+:root{
+  --tlo:#e7e5e1; --tlo-2:#dedbd5; --karta:#f2f0ec;
+  --atrament:#131313; --cichy:#6f6b64; --wlos:rgba(19,19,19,.14);
+  --ok:#2f6b3d; --blad:#9a2c2c;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --grotesk:"Archivo","Helvetica Neue",Inter,system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--tlo);color:var(--atrament);font-family:var(--grotesk);
+  -webkit-font-smoothing:antialiased;line-height:1.5}
+button{font:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+a{color:inherit}
+
+.etykieta{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.cichy{color:var(--cichy)}
+
+/* ── nagłówek panelu ─────────────────────────────── */
+.pasek{position:sticky;top:0;z-index:10;background:rgba(231,229,225,.9);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--wlos)}
+.pasek .rzad{max-width:960px;margin:0 auto;padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px}
+.pasek b{font-weight:800;letter-spacing:.02em}
+.pasek .kto{color:var(--cichy);font:500 12px/1 var(--mono)}
+
+.ramka{max-width:960px;margin:0 auto;padding:28px 22px 80px}
+
+/* ── przyciski ───────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;
+  border:1px solid var(--atrament);background:var(--atrament);color:var(--tlo);
+  font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  transition:opacity .2s ease}
+.btn:hover{opacity:.85}
+.btn.pusty{background:none;color:var(--atrament)}
+.btn.pusty:hover{background:var(--atrament);color:var(--tlo);opacity:1}
+.btn.groźny{border-color:var(--blad);color:var(--blad);background:none}
+.btn.groźny:hover{background:var(--blad);color:#fff;opacity:1}
+.btn[disabled]{opacity:.4;cursor:default}
+.btn.mały{padding:7px 11px;font-size:11px}
+
+/* ── logowanie ───────────────────────────────────── */
+.login{min-height:100vh;display:grid;place-items:center;padding:22px}
+.login .pudlo{width:min(360px,100%);background:var(--karta);
+  border:1px solid var(--wlos);padding:30px 26px}
+.login h1{font-size:22px;letter-spacing:-.02em;margin-bottom:4px}
+.login p{color:var(--cichy);font-size:13px;margin-bottom:22px}
+.pole{margin-bottom:14px}
+.pole label{display:block;margin-bottom:6px}
+.pole input,.pole textarea,.pole select{width:100%;padding:11px 12px;
+  background:var(--tlo);border:1px solid var(--wlos);outline:none}
+.pole input:focus,.pole textarea:focus,.pole select:focus{border-color:var(--atrament)}
+.login .btn{width:100%;justify-content:center;margin-top:6px}
+
+/* ── lista wpisów ────────────────────────────────── */
+.gora{display:flex;align-items:center;justify-content:space-between;
+  gap:16px;margin-bottom:22px}
+.gora h2{font-size:clamp(24px,4vw,34px);letter-spacing:-.03em}
+
+.wpis{display:flex;align-items:center;gap:16px;padding:16px 0;
+  border-bottom:1px solid var(--wlos)}
+.wpis .mini{width:64px;height:48px;object-fit:cover;background:var(--tlo-2);flex:none}
+.wpis .tresc{flex:1;min-width:0}
+.wpis .tyt{font-weight:600;letter-spacing:-.01em}
+.wpis .meta{margin-top:3px;color:var(--cichy);font:500 11px/1.4 var(--mono);
+  letter-spacing:.04em}
+.znak{display:inline-block;padding:3px 7px;border:1px solid var(--wlos);
+  font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.znak.pub{border-color:var(--ok);color:var(--ok)}
+.wpis .akcje{display:flex;gap:8px;flex:none}
+.pusto{padding:56px 0;text-align:center;color:var(--cichy)}
+
+/* ── edytor ──────────────────────────────────────── */
+.dwie{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.dwie{grid-template-columns:1fr}}
+.sekcjaform{margin-top:26px;padding-top:22px;border-top:1px solid var(--wlos)}
+.sekcjaform>.etykieta{display:block;margin-bottom:16px;color:var(--cichy)}
+
+.narz{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.narz button{padding:6px 10px;border:1px solid var(--wlos);background:var(--tlo);
+  font:600 12px/1 var(--mono)}
+.narz button:hover{background:var(--atrament);color:var(--tlo)}
+.edytor{min-height:220px;padding:14px;background:var(--tlo);
+  border:1px solid var(--wlos);outline:none;line-height:1.65}
+.edytor:focus{border-color:var(--atrament)}
+.edytor:empty::before{content:attr(data-placeholder);color:var(--cichy)}
+.edytor h2{font-size:22px;margin:14px 0 8px}
+.edytor h3{font-size:18px;margin:12px 0 6px}
+.edytor p{margin:8px 0}
+.edytor a{text-decoration:underline}
+
+.okladka{display:flex;align-items:center;gap:14px;margin-top:6px}
+.okladka img{width:120px;height:80px;object-fit:cover;background:var(--tlo-2)}
+
+.stopka-edytora{position:sticky;bottom:0;margin-top:28px;
+  padding:14px 0;background:linear-gradient(transparent,var(--tlo) 30%);
+  display:flex;gap:10px;flex-wrap:wrap}
+
+/* ── komunikaty ──────────────────────────────────── */
+.info{padding:11px 14px;margin-bottom:16px;border:1px solid var(--wlos);
+  font-size:13px}
+.info.ok{border-color:var(--ok);color:var(--ok)}
+.info.zle{border-color:var(--blad);color:var(--blad)}
+[hidden]{display:none!important}

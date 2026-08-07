@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel — Bruk Cafe</title>
+<link rel="icon" href="../img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ── ekran logowania ──────────────────────────────────── -->
+<section class="login" id="ekran-login">
+  <form class="pudlo" id="form-login">
+    <h1>Bruk Cafe</h1>
+    <p class="cichy">Panel zarządzania blogiem.</p>
+    <div class="info zle" id="login-blad" hidden></div>
+    <div class="pole">
+      <label class="etykieta cichy" for="mail">E-mail</label>
+      <input type="email" id="mail" autocomplete="username" required>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="haslo">Hasło</label>
+      <input type="password" id="haslo" autocomplete="current-password" required>
+    </div>
+    <button class="btn" type="submit" id="btn-login">Zaloguj</button>
+  </form>
+</section>
+
+<!-- ── aplikacja po zalogowaniu ─────────────────────────── -->
+<div id="aplikacja" hidden>
+  <header class="pasek">
+    <div class="rzad">
+      <b>Bruk Cafe — panel</b>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span class="kto" id="kto"></span>
+        <button class="btn pusty mały" id="btn-wyloguj">Wyloguj</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- lista wpisów -->
+  <main class="ramka" id="widok-lista">
+    <div class="gora">
+      <h2>Wpisy</h2>
+      <button class="btn" id="btn-nowy">+ Nowy wpis</button>
+    </div>
+    <div class="info" id="lista-info" hidden></div>
+    <div id="lista"></div>
+  </main>
+
+  <!-- edytor wpisu -->
+  <main class="ramka" id="widok-edytor" hidden>
+    <div class="gora">
+      <h2 id="edytor-tytul">Nowy wpis</h2>
+      <button class="btn pusty mały" id="btn-wroc">← Wróć do listy</button>
+    </div>
+    <div class="info" id="edytor-info" hidden></div>
+
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="pole-slug">Adres wpisu (slug)</label>
+        <input type="text" id="pole-slug" placeholder="np. nowa-oferta-jesienna">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="pole-status">Status</label>
+        <select id="pole-status">
+          <option value="draft">Szkic (niewidoczny)</option>
+          <option value="published">Opublikowany</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="pole">
+      <label class="etykieta cichy">Zdjęcie główne</label>
+      <div class="okladka">
+        <img id="okladka-podglad" alt="" hidden>
+        <input type="file" id="pole-okladka" accept="image/*" hidden>
+        <button class="btn pusty mały" type="button" id="btn-okladka">Wybierz zdjęcie</button>
+        <button class="btn pusty mały" type="button" id="btn-okladka-usun" hidden>Usuń zdjęcie</button>
+      </div>
+    </div>
+
+    <!-- polski -->
+    <div class="sekcjaform">
+      <span class="etykieta">Wersja polska (wymagana)</span>
+      <div class="pole">
+        <label class="etykieta cichy" for="pl-tytul">Tytuł</label>
+        <input type="text" id="pl-tytul">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="pl-lead">Lead (krótkie wprowadzenie)</label>
+        <textarea id="pl-lead" rows="2"></textarea>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy">Treść</label>
+        <div class="narz" data-cel="pl-body">
+          <button type="button" data-cmd="bold"><b>B</b></button>
+          <button type="button" data-cmd="italic"><i>i</i></button>
+          <button type="button" data-cmd="h2">H2</button>
+          <button type="button" data-cmd="h3">H3</button>
+          <button type="button" data-cmd="ul">Lista</button>
+          <button type="button" data-cmd="link">Link</button>
+          <button type="button" data-cmd="clear">Czyść</button>
+        </div>
+        <div class="edytor" id="pl-body" contenteditable="true"
+             data-placeholder="Napisz treść wpisu po polsku…"></div>
+      </div>
+    </div>
+
+    <!-- angielski -->
+    <div class="sekcjaform">
+      <span class="etykieta">Wersja angielska (opcjonalna)</span>
+      <div class="pole">
+        <label class="etykieta cichy" for="en-tytul">Title</label>
+        <input type="text" id="en-tytul">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="en-lead">Lead</label>
+        <textarea id="en-lead" rows="2"></textarea>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy">Content</label>
+        <div class="narz" data-cel="en-body">
+          <button type="button" data-cmd="bold"><b>B</b></button>
+          <button type="button" data-cmd="italic"><i>i</i></button>
+          <button type="button" data-cmd="h2">H2</button>
+          <button type="button" data-cmd="h3">H3</button>
+          <button type="button" data-cmd="ul">List</button>
+          <button type="button" data-cmd="link">Link</button>
+          <button type="button" data-cmd="clear">Clear</button>
+        </div>
+        <div class="edytor" id="en-body" contenteditable="true"
+             data-placeholder="Leave empty if you don't want an English version…"></div>
+      </div>
+    </div>
+
+    <div class="stopka-edytora">
+      <button class="btn" id="btn-zapisz">Zapisz</button>
+      <button class="btn pusty" id="btn-anuluj">Anuluj</button>
+      <button class="btn groźny mały" id="btn-usun" hidden style="margin-left:auto">Usuń wpis</button>
+    </div>
+  </main>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
