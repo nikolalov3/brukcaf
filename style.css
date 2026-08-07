@@ -474,3 +474,7 @@ h2{
 
 /* hasło Wi-Fi widoczne w panelu — mono, zaznaczalne jednym gestem */
 .wifi-haslo{user-select:all;-webkit-user-select:all}
+
+/* H1 opakowuje logo w hero: nadaje stronie nagłówek dla SEO i dostępności,
+   sam w sobie niewidoczny (rolę wizualną pełni logo), bez własnych marginesów */
+.hero-h1{margin:0;padding:0;line-height:0;font:inherit}
