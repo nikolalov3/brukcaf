@@ -145,10 +145,16 @@ async function pobierz() {
   return { kawy: kawy || [], ciasta: ciasta || [] };
 }
 
+// Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
+// Te limity MUSZĄ być zgodne z admin/admin.js (LIMIT_KAWY / LIMIT_CIASTA).
+const LIMIT_KAWY = 5;
+const LIMIT_CIASTA = 6;
+
 // ── główny przebieg ─────────────────────────────────────────────
 const dane = await pobierz();
 if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
-const { kawy, ciasta } = dane;
+const kawy = dane.kawy.slice(0, LIMIT_KAWY);
+const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 
 for (const [lang, t] of Object.entries(L)) {
   let html = readFileSync(t.file, 'utf8');
@@ -158,5 +164,5 @@ for (const [lang, t] of Object.entries(L)) {
   html = podmienListe(html, 'data-ciasta', cInner);
   html = podmienLd(html, jsonLd(kawy, ciasta));
   writeFileSync(t.file, html);
-  console.log(`✓ ${t.file}: ${kawy.length} kaw, ${ciasta.length} ciast${DEMO ? ' (demo)' : ''}`);
+  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${DEMO ? ' (demo)' : ''}`);
 }

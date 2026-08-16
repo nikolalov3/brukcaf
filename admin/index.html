@@ -161,9 +161,15 @@
       <button class="btn" id="btn-nowa-kawa">+ Dodaj kawę</button>
     </div>
     <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
-      Zaznaczasz, która kawa jest teraz dostępna. Ziarenka 1–5 pokazują poziom.</p>
+      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 5</b> kaw — reszta jest wyszarzona,
+      przesuń ją wyżej, żeby weszła. Ziarenka 1–5 to poziom intensywności.</p>
     <div class="info" id="kawy-info" hidden></div>
     <div id="kawy-lista"></div>
+    <div class="publikuj">
+      <button class="btn" data-rebuild>Aktualizuj stronę</button>
+      <p class="cichy">Zmiany zapisują się od razu, ale <b>na stronie pojawią się dopiero po kliknięciu</b> —
+        dodaj i poukładaj wszystko, potem zaktualizuj raz.</p>
+    </div>
   </main>
 
   <main class="ramka grupa-kawy" id="widok-kawy-edytor" hidden>
@@ -236,9 +242,14 @@
       <button class="btn" id="btn-nowy-stan">+ Dodaj pozycję</button>
     </div>
     <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
-      Klikasz status wprost na liście — zmiana jest natychmiast widoczna na stronie.</p>
+      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 6</b> — reszta jest wyszarzona.
+      Status zmieniasz klikając w niego na liście.</p>
     <div class="info" id="stan-info" hidden></div>
     <div id="stan-lista"></div>
+    <div class="publikuj">
+      <button class="btn" data-rebuild>Aktualizuj stronę</button>
+      <p class="cichy">Publikuje wszystkie zmiany (kawy i ciasta) — na stronie zobaczysz je po ~minucie.</p>
+    </div>
   </main>
 
   <main class="ramka grupa-stan" id="widok-stan-edytor" hidden>

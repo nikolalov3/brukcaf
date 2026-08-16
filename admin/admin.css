@@ -143,6 +143,19 @@ a{color:inherit}
 .status.sold_out{border-color:var(--blad);color:var(--blad)}
 .niedostepna{opacity:.5}
 
+/* ── pozycje poza stroną (dalej niż limit) ───────── */
+.wpis.poza-strona{opacity:.55}
+.wpis.poza-strona .mini{filter:grayscale(1)}
+.poza-znak{display:inline-block;margin-left:8px;padding:2px 7px;
+  border:1px solid var(--wlos);border-radius:2px;
+  font:500 9px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--cichy)}
+
+/* ── blok „Aktualizuj stronę” ────────────────────── */
+.publikuj{margin-top:26px;padding-top:22px;border-top:1px solid var(--wlos);
+  display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.publikuj .btn{font-size:13px}
+.publikuj p{font-size:12px;max-width:52ch;line-height:1.5}
+
 /* ── strzałki kolejności na liście ───────────────── */
 .kolejnosc{display:flex;flex-direction:column;gap:2px;flex:none;margin-right:2px}
 .strzal{width:26px;height:22px;padding:0;border:1px solid var(--wlos);background:var(--tlo);

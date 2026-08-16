@@ -4,6 +4,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const $ = (id) => document.getElementById(id);
 
+// Ile pozycji pokazuje strona (reszta czeka w panelu, wyszarzona).
+// MUSI być zgodne z build.mjs (LIMIT_KAWY / LIMIT_CIASTA).
+const LIMIT_KAWY = 5;
+const LIMIT_CIASTA = 6;
+
 let sb = null;            // klient Supabase
 let wpisy = [];          // wczytana lista
 let edytowany = null;    // id wpisu w edytorze albo null przy nowym
@@ -70,6 +75,27 @@ $('form-login').addEventListener('submit', async (e) => {
 $('btn-wyloguj').addEventListener('click', async () => {
   await sb.auth.signOut();
   location.reload();
+});
+
+// ── „Aktualizuj stronę” — ręczne odpalenie przebudowy ──────────
+document.querySelectorAll('[data-rebuild]').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const info = btn.closest('main').querySelector('.info');
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { pokazInfo(info, 'Zaloguj się ponownie.', 'zle'); return; }
+    const ety = btn.textContent; btn.disabled = true; btn.textContent = 'Aktualizuję…';
+    try {
+      const r = await fetch('/api/rebuild', {
+        method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const j = await r.json().catch(() => ({}));
+      pokazInfo(info, r.ok ? 'Strona się przebudowuje — zmiany będą za około minutę.'
+                          : (j.error || 'Nie udało się uruchomić aktualizacji.'), r.ok ? 'ok' : 'zle');
+    } catch {
+      pokazInfo(info, 'Błąd połączenia.', 'zle');
+    }
+    btn.disabled = false; btn.textContent = ety;
+  });
 });
 
 async function wejdz() {
@@ -330,8 +356,9 @@ function renderKawy() {
   if (!kawy.length) { box.innerHTML = '<div class="pusto">Brak kaw. Kliknij „Dodaj kawę”.</div>'; return; }
   box.innerHTML = '';
   kawy.forEach((k, i) => {
+    const poza = i >= LIMIT_KAWY;
     const el = document.createElement('div');
-    el.className = 'wpis' + (k.available ? '' : ' niedostepna');
+    el.className = 'wpis' + (k.available ? '' : ' niedostepna') + (poza ? ' poza-strona' : '');
     el.innerHTML = `
       <div class="kolejnosc">
         <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
@@ -343,6 +370,7 @@ function renderKawy() {
         <div class="meta">
           ${odbicieZiaren(k.level)} &nbsp;
           <span class="znak ${k.available ? 'pub' : ''}">${k.available ? 'Dostępna' : 'Niedostępna'}</span>
+          ${poza ? '<span class="poza-znak">poza stroną</span>' : ''}
           ${k.origin ? '&nbsp; · ' + '' : ''}<span class="pochodz"></span>
         </div>
       </div>
@@ -476,8 +504,9 @@ function renderStan() {
   if (!stany.length) { box.innerHTML = '<div class="pusto">Brak pozycji. Kliknij „Dodaj pozycję”.</div>'; return; }
   box.innerHTML = '';
   stany.forEach((s, i) => {
+    const poza = i >= LIMIT_CIASTA;
     const el = document.createElement('div');
-    el.className = 'wpis';
+    el.className = 'wpis' + (poza ? ' poza-strona' : '');
     el.innerHTML = `
       <div class="kolejnosc">
         <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
@@ -486,7 +515,7 @@ function renderStan() {
       <img class="mini" src="${s.photo_url || ''}" alt="" ${s.photo_url ? '' : 'style="visibility:hidden"'}>
       <div class="tresc">
         <div class="tyt"></div>
-        <div class="meta"><span class="note"></span></div>
+        <div class="meta"><span class="note"></span>${poza ? ' <span class="poza-znak">poza stroną</span>' : ''}</div>
       </div>
       <div class="akcje">
         <button class="status ${s.status}" data-status title="Kliknij, aby zmienić">${NAZWY_STATUS[s.status]}</button>
