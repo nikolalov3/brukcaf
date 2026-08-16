@@ -104,3 +104,76 @@ create policy "zalogowany usuwa zdjęcia bloga"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'blog');
+
+-- ══════════════════════════════════════════════════════════════
+-- KAWY — "Dziś w młynku". Filip dodaje kawę, zaznacza dostępność
+-- i poziom (1–5 ziarenek). Kolejność na stronie przez sort.
+-- ══════════════════════════════════════════════════════════════
+create table if not exists public.coffees (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,                 -- np. "HAYB Yellow"
+  origin      text,                          -- pochodzenie / palarnia
+  method      text,                          -- espresso / V60 / itd.
+  note        text,                          -- krótki opis smaku
+  photo_url   text,                          -- zdjęcie ziarna/opakowania
+  level       int  not null default 3
+              check (level between 1 and 5), -- 1 mało .. 5 dużo (znaczenie do ustalenia)
+  available   boolean not null default true, -- czy teraz w młynku
+  sort        int  not null default 0,       -- kolejność wyświetlania
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists coffees_widoczne_idx on public.coffees (available, sort);
+
+drop trigger if exists coffees_updated_at on public.coffees;
+create trigger coffees_updated_at
+  before update on public.coffees
+  for each row execute function public.dotknij_updated_at();
+
+alter table public.coffees enable row level security;
+
+drop policy if exists "publiczny odczyt dostępnych kaw" on public.coffees;
+create policy "publiczny odczyt dostępnych kaw"
+  on public.coffees for select to anon, authenticated using (available = true);
+
+drop policy if exists "zalogowany widzi wszystkie kawy" on public.coffees;
+create policy "zalogowany widzi wszystkie kawy"
+  on public.coffees for select to authenticated using (true);
+
+drop policy if exists "zalogowany zarządza kawami" on public.coffees;
+create policy "zalogowany zarządza kawami"
+  on public.coffees for all to authenticated using (true) with check (true);
+
+-- ══════════════════════════════════════════════════════════════
+-- STANY — live menu. Filip zaznacza, ile zostało (np. ciast).
+-- status: dostępne / mało / wyprzedane. Napędza znacznik na stronie.
+-- ══════════════════════════════════════════════════════════════
+create table if not exists public.stock_items (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,                 -- np. "Sernik baskijski"
+  status      text not null default 'available'
+              check (status in ('available', 'low', 'sold_out')),
+  note        text,
+  photo_url   text,
+  sort        int  not null default 0,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists stock_widoczne_idx on public.stock_items (sort);
+
+drop trigger if exists stock_updated_at on public.stock_items;
+create trigger stock_updated_at
+  before update on public.stock_items
+  for each row execute function public.dotknij_updated_at();
+
+alter table public.stock_items enable row level security;
+
+drop policy if exists "publiczny odczyt stanów" on public.stock_items;
+create policy "publiczny odczyt stanów"
+  on public.stock_items for select to anon, authenticated using (true);
+
+drop policy if exists "zalogowany zarządza stanami" on public.stock_items;
+create policy "zalogowany zarządza stanami"
+  on public.stock_items for all to authenticated using (true) with check (true);

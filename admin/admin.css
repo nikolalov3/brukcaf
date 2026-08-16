@@ -103,3 +103,48 @@ a{color:inherit}
 .info.ok{border-color:var(--ok);color:var(--ok)}
 .info.zle{border-color:var(--blad);color:var(--blad)}
 [hidden]{display:none!important}
+
+/* ── zakładki panelu ─────────────────────────────── */
+.zakladki{display:flex;gap:6px;padding-top:20px;padding-bottom:0;
+  margin-bottom:6px;border-bottom:1px solid var(--wlos)}
+.zakl{padding:11px 16px;background:none;border:0;border-bottom:2px solid transparent;
+  color:var(--cichy);font:600 12px/1 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:-1px}
+.zakl:hover{color:var(--atrament)}
+.zakl.aktywna{color:var(--atrament);border-bottom-color:var(--atrament)}
+
+/* ── ziarenka (poziom kawy) ──────────────────────── */
+.ziarna{display:flex;gap:6px;align-items:center;padding-top:4px}
+.ziarno{width:26px;height:26px;padding:0;border:0;background:none;
+  color:var(--wlos);transition:color .15s ease}
+.ziarno::before{content:"";display:block;width:16px;height:22px;margin:0 auto;
+  background:currentColor;
+  -webkit-mask:var(--ziarno) center/contain no-repeat;
+  mask:var(--ziarno) center/contain no-repeat}
+.ziarno:hover{color:var(--cichy)}
+.ziarno.pelne{color:var(--atrament)}
+:root{--ziarno:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 22'%3E%3Cellipse cx='8' cy='11' rx='7' ry='10.5'/%3E%3Cpath d='M8 1.5c-2.4 3-2.4 16 0 19' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E")}
+
+/* podgląd ziarenek na liście (tylko odczyt) */
+.ziarna-mini{display:inline-flex;gap:3px;vertical-align:middle}
+.ziarna-mini i{width:11px;height:15px;display:inline-block;background:var(--wlos);
+  -webkit-mask:var(--ziarno) center/contain no-repeat;mask:var(--ziarno) center/contain no-repeat}
+.ziarna-mini i.pelne{background:var(--atrament)}
+
+/* ── przełącznik dostępności ─────────────────────── */
+.przelacz{display:inline-flex;align-items:center;gap:9px;cursor:pointer;padding-top:6px}
+.przelacz input{width:18px;height:18px;accent-color:var(--atrament)}
+
+/* ── status ciast na liście ──────────────────────── */
+.status{font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 8px;border:1px solid var(--wlos);cursor:pointer}
+.status.available{border-color:var(--ok);color:var(--ok)}
+.status.low{border-color:#9a6a2c;color:#9a6a2c}
+.status.sold_out{border-color:var(--blad);color:var(--blad)}
+.niedostepna{opacity:.5}
+
+/* logo w nagłówku panelu (zamiast tekstu) */
+.marka-panel{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.marka-panel img{height:22px;width:auto;display:block}
+.marka-panel span{font:500 11px/1 var(--mono);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cichy)}

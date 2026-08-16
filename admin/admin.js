@@ -54,7 +54,15 @@ $('form-login').addEventListener('submit', async (e) => {
     password: $('haslo').value
   });
   btn.disabled = false; btn.textContent = 'Zaloguj';
-  if (error) { pokazInfo($('login-blad'), 'Błędny e-mail lub hasło.', 'zle'); return; }
+  if (error) {
+    const m = /confirm/i.test(error.message)
+      ? 'Konto istnieje, ale e-mail nie jest potwierdzony. Potwierdź użytkownika w Supabase (Auto Confirm User).'
+      : /provider|disabled/i.test(error.message)
+        ? 'Logowanie e-mailem jest wyłączone w Supabase (Authentication → Providers → Email).'
+        : 'Błędny e-mail lub hasło.';
+    pokazInfo($('login-blad'), m, 'zle');
+    return;
+  }
   pokazInfo($('login-blad'), '', '');
   await wejdz();
 });
@@ -269,6 +277,278 @@ $('btn-usun').addEventListener('click', async () => {
   await wczytajListe();
   pokazWidok('lista');
   pokazInfo($('lista-info'), 'Wpis usunięty.', 'ok');
+});
+
+// ══════════════════════════════════════════════════════════════
+//  ZAKŁADKI
+// ══════════════════════════════════════════════════════════════
+let kawyZaladowane = false, stanZaladowany = false;
+
+function pokazZakladke(nazwa) {
+  document.querySelectorAll('.zakl').forEach((b) =>
+    b.classList.toggle('aktywna', b.dataset.tab === nazwa));
+  ['grupa-wpisy', 'grupa-kawy', 'grupa-stan'].forEach((kl) =>
+    document.querySelectorAll('.' + kl).forEach((el) => (el.hidden = true)));
+
+  if (nazwa === 'wpisy') $('widok-lista').hidden = false;
+  if (nazwa === 'kawy')  { $('widok-kawy').hidden = false; if (!kawyZaladowane) wczytajKawy(); }
+  if (nazwa === 'stan')  { $('widok-stan').hidden = false; if (!stanZaladowany) wczytajStan(); }
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.zakl').forEach((b) =>
+  b.addEventListener('click', () => pokazZakladke(b.dataset.tab)));
+
+// wspólne wgrywanie zdjęcia do magazynu 'blog'
+async function wgrajZdjecie(plik) {
+  const nazwa = Date.now() + '-' + slugify(plik.name.replace(/\.[^.]+$/, '')) + '.' +
+                (plik.name.split('.').pop() || 'jpg');
+  const { error } = await sb.storage.from('blog').upload(nazwa, plik, { upsert: false });
+  if (error) return null;
+  return sb.storage.from('blog').getPublicUrl(nazwa).data.publicUrl;
+}
+
+function odbicieZiaren(poziom) {
+  let s = '<span class="ziarna-mini">';
+  for (let i = 1; i <= 5; i++) s += '<i class="' + (i <= poziom ? 'pelne' : '') + '"></i>';
+  return s + '</span>';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  KAWY — „Dziś w młynku"
+// ══════════════════════════════════════════════════════════════
+let kawy = [], edytowanaKawa = null, kawaFoto = '', kawaPoziom = 3;
+
+async function wczytajKawy() {
+  const { data, error } = await sb.from('coffees')
+    .select('*').order('sort', { ascending: true }).order('created_at', { ascending: false });
+  if (error) { pokazInfo($('kawy-info'), 'Nie udało się wczytać kaw.', 'zle'); return; }
+  kawy = data || []; kawyZaladowane = true; renderKawy();
+}
+
+function renderKawy() {
+  const box = $('kawy-lista');
+  if (!kawy.length) { box.innerHTML = '<div class="pusto">Brak kaw. Kliknij „Dodaj kawę”.</div>'; return; }
+  box.innerHTML = '';
+  for (const k of kawy) {
+    const el = document.createElement('div');
+    el.className = 'wpis' + (k.available ? '' : ' niedostepna');
+    el.innerHTML = `
+      <img class="mini" src="${k.photo_url || ''}" alt="" ${k.photo_url ? '' : 'style="visibility:hidden"'}>
+      <div class="tresc">
+        <div class="tyt"></div>
+        <div class="meta">
+          ${odbicieZiaren(k.level)} &nbsp;
+          <span class="znak ${k.available ? 'pub' : ''}">${k.available ? 'Dostępna' : 'Niedostępna'}</span>
+          ${k.origin ? '&nbsp; · ' + '' : ''}<span class="pochodz"></span>
+        </div>
+      </div>
+      <div class="akcje">
+        <button class="btn pusty mały" data-dost>${k.available ? 'Zdejmij' : 'Wystaw'}</button>
+        <button class="btn pusty mały" data-edit>Edytuj</button>
+      </div>`;
+    el.querySelector('.tyt').textContent = k.name;
+    el.querySelector('.pochodz').textContent = k.origin || '';
+    el.querySelector('[data-edit]').addEventListener('click', () => otworzKawe(k.id));
+    el.querySelector('[data-dost]').addEventListener('click', async () => {
+      await sb.from('coffees').update({ available: !k.available }).eq('id', k.id);
+      await wczytajKawy();
+    });
+    box.appendChild(el);
+  }
+}
+
+$('btn-nowa-kawa').addEventListener('click', () => otworzKawe(null));
+$('btn-kawa-wroc').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
+$('btn-kawa-anuluj').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
+
+function ustawPoziom(p) {
+  kawaPoziom = p;
+  $('kawa-ziarna').querySelectorAll('.ziarno').forEach((z) =>
+    z.classList.toggle('pelne', +z.dataset.poziom <= p));
+}
+$('kawa-ziarna').querySelectorAll('.ziarno').forEach((z) =>
+  z.addEventListener('click', () => ustawPoziom(+z.dataset.poziom)));
+
+function ustawKawaFoto(url) {
+  kawaFoto = url || '';
+  const img = $('kawa-foto-podglad');
+  if (kawaFoto) { img.src = kawaFoto; img.hidden = false; $('btn-kawa-foto-usun').hidden = false; }
+  else { img.hidden = true; $('btn-kawa-foto-usun').hidden = true; }
+}
+$('btn-kawa-foto').addEventListener('click', () => $('kawa-foto').click());
+$('btn-kawa-foto-usun').addEventListener('click', () => ustawKawaFoto(''));
+$('kawa-foto').addEventListener('change', async (e) => {
+  const plik = e.target.files[0]; if (!plik) return;
+  pokazInfo($('kawa-info'), 'Wgrywam zdjęcie…', '');
+  const url = await wgrajZdjecie(plik);
+  if (!url) { pokazInfo($('kawa-info'), 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
+  ustawKawaFoto(url); pokazInfo($('kawa-info'), '', '');
+});
+
+async function otworzKawe(id) {
+  edytowanaKawa = id;
+  pokazInfo($('kawa-info'), '', '');
+  $('btn-kawa-usun').hidden = !id;
+  if (!id) {
+    $('kawa-tytul').textContent = 'Nowa kawa';
+    ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-opis'].forEach((f) => $(f).value = '');
+    $('kawa-dostepna').checked = true; ustawPoziom(3); ustawKawaFoto('');
+  } else {
+    const { data, error } = await sb.from('coffees').select('*').eq('id', id).single();
+    if (error || !data) { pokazInfo($('kawa-info'), 'Nie udało się wczytać kawy.', 'zle'); return; }
+    $('kawa-tytul').textContent = 'Edycja kawy';
+    $('kawa-nazwa').value = data.name || '';
+    $('kawa-metoda').value = data.method || '';
+    $('kawa-pochodzenie').value = data.origin || '';
+    $('kawa-opis').value = data.note || '';
+    $('kawa-dostepna').checked = !!data.available;
+    ustawPoziom(data.level || 3); ustawKawaFoto(data.photo_url || '');
+  }
+  $('widok-kawy').hidden = true; $('widok-kawy-edytor').hidden = false; window.scrollTo(0, 0);
+}
+
+$('btn-kawa-zapisz').addEventListener('click', async () => {
+  const nazwa = $('kawa-nazwa').value.trim();
+  if (!nazwa) { pokazInfo($('kawa-info'), 'Nazwa jest wymagana.', 'zle'); return; }
+  const rekord = {
+    name: nazwa,
+    method: $('kawa-metoda').value.trim() || null,
+    origin: $('kawa-pochodzenie').value.trim() || null,
+    note: $('kawa-opis').value.trim() || null,
+    level: kawaPoziom,
+    available: $('kawa-dostepna').checked,
+    photo_url: kawaFoto || null
+  };
+  const btn = $('btn-kawa-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
+  const odp = edytowanaKawa
+    ? await sb.from('coffees').update(rekord).eq('id', edytowanaKawa)
+    : await sb.from('coffees').insert(rekord);
+  btn.disabled = false; btn.textContent = 'Zapisz';
+  if (odp.error) { pokazInfo($('kawa-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  await wczytajKawy();
+  $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false;
+  pokazInfo($('kawy-info'), 'Zapisano. Strona odświeży się za chwilę.', 'ok');
+});
+
+$('btn-kawa-usun').addEventListener('click', async () => {
+  if (!edytowanaKawa) return;
+  if (!confirm('Usunąć tę kawę?')) return;
+  const { error } = await sb.from('coffees').delete().eq('id', edytowanaKawa);
+  if (error) { pokazInfo($('kawa-info'), 'Nie udało się usunąć.', 'zle'); return; }
+  await wczytajKawy();
+  $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false;
+  pokazInfo($('kawy-info'), 'Usunięto.', 'ok');
+});
+
+// ══════════════════════════════════════════════════════════════
+//  STAN — live (ciasta)
+// ══════════════════════════════════════════════════════════════
+let stany = [], edytowanyStan = null, stanFoto = '';
+const NAZWY_STATUS = { available: 'Dostępne', low: 'Zostało niewiele', sold_out: 'Wyprzedane' };
+const NAST_STATUS = { available: 'low', low: 'sold_out', sold_out: 'available' };
+
+async function wczytajStan() {
+  const { data, error } = await sb.from('stock_items')
+    .select('*').order('sort', { ascending: true }).order('created_at', { ascending: false });
+  if (error) { pokazInfo($('stan-info'), 'Nie udało się wczytać stanów.', 'zle'); return; }
+  stany = data || []; stanZaladowany = true; renderStan();
+}
+
+function renderStan() {
+  const box = $('stan-lista');
+  if (!stany.length) { box.innerHTML = '<div class="pusto">Brak pozycji. Kliknij „Dodaj pozycję”.</div>'; return; }
+  box.innerHTML = '';
+  for (const s of stany) {
+    const el = document.createElement('div');
+    el.className = 'wpis';
+    el.innerHTML = `
+      <img class="mini" src="${s.photo_url || ''}" alt="" ${s.photo_url ? '' : 'style="visibility:hidden"'}>
+      <div class="tresc">
+        <div class="tyt"></div>
+        <div class="meta"><span class="note"></span></div>
+      </div>
+      <div class="akcje">
+        <button class="status ${s.status}" data-status title="Kliknij, aby zmienić">${NAZWY_STATUS[s.status]}</button>
+        <button class="btn pusty mały" data-edit>Edytuj</button>
+      </div>`;
+    el.querySelector('.tyt').textContent = s.name;
+    el.querySelector('.note').textContent = s.note || '';
+    el.querySelector('[data-edit]').addEventListener('click', () => otworzStan(s.id));
+    el.querySelector('[data-status]').addEventListener('click', async () => {
+      await sb.from('stock_items').update({ status: NAST_STATUS[s.status] }).eq('id', s.id);
+      await wczytajStan();
+    });
+    box.appendChild(el);
+  }
+}
+
+$('btn-nowy-stan').addEventListener('click', () => otworzStan(null));
+$('btn-stan-wroc').addEventListener('click', () => { $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false; });
+$('btn-stan-anuluj').addEventListener('click', () => { $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false; });
+
+function ustawStanFoto(url) {
+  stanFoto = url || '';
+  const img = $('stan-foto-podglad');
+  if (stanFoto) { img.src = stanFoto; img.hidden = false; $('btn-stan-foto-usun').hidden = false; }
+  else { img.hidden = true; $('btn-stan-foto-usun').hidden = true; }
+}
+$('btn-stan-foto').addEventListener('click', () => $('stan-foto').click());
+$('btn-stan-foto-usun').addEventListener('click', () => ustawStanFoto(''));
+$('stan-foto').addEventListener('change', async (e) => {
+  const plik = e.target.files[0]; if (!plik) return;
+  pokazInfo($('stan-poz-info'), 'Wgrywam zdjęcie…', '');
+  const url = await wgrajZdjecie(plik);
+  if (!url) { pokazInfo($('stan-poz-info'), 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
+  ustawStanFoto(url); pokazInfo($('stan-poz-info'), '', '');
+});
+
+async function otworzStan(id) {
+  edytowanyStan = id;
+  pokazInfo($('stan-poz-info'), '', '');
+  $('btn-stan-usun').hidden = !id;
+  if (!id) {
+    $('stan-tytul').textContent = 'Nowa pozycja';
+    $('stan-nazwa').value = ''; $('stan-note').value = ''; $('stan-status').value = 'available'; ustawStanFoto('');
+  } else {
+    const { data, error } = await sb.from('stock_items').select('*').eq('id', id).single();
+    if (error || !data) { pokazInfo($('stan-poz-info'), 'Nie udało się wczytać pozycji.', 'zle'); return; }
+    $('stan-tytul').textContent = 'Edycja pozycji';
+    $('stan-nazwa').value = data.name || '';
+    $('stan-note').value = data.note || '';
+    $('stan-status').value = data.status || 'available';
+    ustawStanFoto(data.photo_url || '');
+  }
+  $('widok-stan').hidden = true; $('widok-stan-edytor').hidden = false; window.scrollTo(0, 0);
+}
+
+$('btn-stan-zapisz').addEventListener('click', async () => {
+  const nazwa = $('stan-nazwa').value.trim();
+  if (!nazwa) { pokazInfo($('stan-poz-info'), 'Nazwa jest wymagana.', 'zle'); return; }
+  const rekord = {
+    name: nazwa,
+    status: $('stan-status').value,
+    note: $('stan-note').value.trim() || null,
+    photo_url: stanFoto || null
+  };
+  const btn = $('btn-stan-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
+  const odp = edytowanyStan
+    ? await sb.from('stock_items').update(rekord).eq('id', edytowanyStan)
+    : await sb.from('stock_items').insert(rekord);
+  btn.disabled = false; btn.textContent = 'Zapisz';
+  if (odp.error) { pokazInfo($('stan-poz-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  await wczytajStan();
+  $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false;
+  pokazInfo($('stan-info'), 'Zapisano. Strona odświeży się za chwilę.', 'ok');
+});
+
+$('btn-stan-usun').addEventListener('click', async () => {
+  if (!edytowanyStan) return;
+  if (!confirm('Usunąć tę pozycję?')) return;
+  const { error } = await sb.from('stock_items').delete().eq('id', edytowanyStan);
+  if (error) { pokazInfo($('stan-poz-info'), 'Nie udało się usunąć.', 'zle'); return; }
+  await wczytajStan();
+  $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false;
+  pokazInfo($('stan-info'), 'Usunięto.', 'ok');
 });
 
 // ── start ───────────────────────────────────────────────────

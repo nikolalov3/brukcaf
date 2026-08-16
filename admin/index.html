@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Panel — Bruk Cafe</title>
-<link rel="icon" href="../img/logo.png">
+<link rel="icon" href="/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body>
 
@@ -35,7 +35,9 @@
 <div id="aplikacja" hidden>
   <header class="pasek">
     <div class="rzad">
-      <b>Bruk Cafe — panel</b>
+      <a class="marka-panel" href="/admin/" aria-label="Bruk Cafe — panel">
+        <img src="/img/logo.png" alt="Bruk Cafe"><span>panel</span>
+      </a>
       <div style="display:flex;align-items:center;gap:16px">
         <span class="kto" id="kto"></span>
         <button class="btn pusty mały" id="btn-wyloguj">Wyloguj</button>
@@ -43,8 +45,14 @@
     </div>
   </header>
 
+  <nav class="zakladki ramka">
+    <button type="button" class="zakl aktywna" data-tab="wpisy">Wpisy</button>
+    <button type="button" class="zakl" data-tab="kawy">Dziś w młynku</button>
+    <button type="button" class="zakl" data-tab="stan">Stan (ciasta)</button>
+  </nav>
+
   <!-- lista wpisów -->
-  <main class="ramka" id="widok-lista">
+  <main class="ramka grupa-wpisy" id="widok-lista">
     <div class="gora">
       <h2>Wpisy</h2>
       <button class="btn" id="btn-nowy">+ Nowy wpis</button>
@@ -54,7 +62,7 @@
   </main>
 
   <!-- edytor wpisu -->
-  <main class="ramka" id="widok-edytor" hidden>
+  <main class="ramka grupa-wpisy" id="widok-edytor" hidden>
     <div class="gora">
       <h2 id="edytor-tytul">Nowy wpis</h2>
       <button class="btn pusty mały" id="btn-wroc">← Wróć do listy</button>
@@ -145,8 +153,137 @@
       <button class="btn groźny mały" id="btn-usun" hidden style="margin-left:auto">Usuń wpis</button>
     </div>
   </main>
+
+  <!-- ═══ KAWY — „Dziś w młynku" ═══ -->
+  <main class="ramka grupa-kawy" id="widok-kawy" hidden>
+    <div class="gora">
+      <h2>Dziś w młynku</h2>
+      <button class="btn" id="btn-nowa-kawa">+ Dodaj kawę</button>
+    </div>
+    <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
+      Zaznaczasz, która kawa jest teraz dostępna. Ziarenka 1–5 pokazują poziom.</p>
+    <div class="info" id="kawy-info" hidden></div>
+    <div id="kawy-lista"></div>
+  </main>
+
+  <main class="ramka grupa-kawy" id="widok-kawy-edytor" hidden>
+    <div class="gora">
+      <h2 id="kawa-tytul">Nowa kawa</h2>
+      <button class="btn pusty mały" id="btn-kawa-wroc">← Wróć</button>
+    </div>
+    <div class="info" id="kawa-info" hidden></div>
+
+    <div class="pole">
+      <label class="etykieta cichy">Zdjęcie ziarna</label>
+      <div class="okladka">
+        <img id="kawa-foto-podglad" alt="" hidden>
+        <input type="file" id="kawa-foto" accept="image/*" hidden>
+        <button class="btn pusty mały" type="button" id="btn-kawa-foto">Wybierz zdjęcie</button>
+        <button class="btn pusty mały" type="button" id="btn-kawa-foto-usun" hidden>Usuń</button>
+      </div>
+    </div>
+
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="kawa-nazwa">Nazwa</label>
+        <input type="text" id="kawa-nazwa" placeholder="np. HAYB Yellow">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="kawa-metoda">Metoda</label>
+        <input type="text" id="kawa-metoda" placeholder="np. espresso / V60">
+      </div>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="kawa-pochodzenie">Pochodzenie / palarnia</label>
+      <input type="text" id="kawa-pochodzenie" placeholder="np. Brazylia i Gwatemala, HAYB">
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="kawa-opis">Opis smaku</label>
+      <textarea id="kawa-opis" rows="2" placeholder="np. czekolada, orzechy, pełne ciało"></textarea>
+    </div>
+
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy">Poziom (ziarenka)</label>
+        <div class="ziarna" id="kawa-ziarna" role="radiogroup" aria-label="Poziom">
+          <button type="button" class="ziarno" data-poziom="1" aria-label="1"></button>
+          <button type="button" class="ziarno" data-poziom="2" aria-label="2"></button>
+          <button type="button" class="ziarno" data-poziom="3" aria-label="3"></button>
+          <button type="button" class="ziarno" data-poziom="4" aria-label="4"></button>
+          <button type="button" class="ziarno" data-poziom="5" aria-label="5"></button>
+        </div>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy">Dostępność</label>
+        <label class="przelacz">
+          <input type="checkbox" id="kawa-dostepna" checked>
+          <span>Teraz w młynku</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="stopka-edytora">
+      <button class="btn" id="btn-kawa-zapisz">Zapisz</button>
+      <button class="btn pusty" id="btn-kawa-anuluj">Anuluj</button>
+      <button class="btn groźny mały" id="btn-kawa-usun" hidden style="margin-left:auto">Usuń kawę</button>
+    </div>
+  </main>
+
+  <!-- ═══ STAN — live (ciasta) ═══ -->
+  <main class="ramka grupa-stan" id="widok-stan" hidden>
+    <div class="gora">
+      <h2>Stan (ciasta)</h2>
+      <button class="btn" id="btn-nowy-stan">+ Dodaj pozycję</button>
+    </div>
+    <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
+      Klikasz status wprost na liście — zmiana jest natychmiast widoczna na stronie.</p>
+    <div class="info" id="stan-info" hidden></div>
+    <div id="stan-lista"></div>
+  </main>
+
+  <main class="ramka grupa-stan" id="widok-stan-edytor" hidden>
+    <div class="gora">
+      <h2 id="stan-tytul">Nowa pozycja</h2>
+      <button class="btn pusty mały" id="btn-stan-wroc">← Wróć</button>
+    </div>
+    <div class="info" id="stan-poz-info" hidden></div>
+
+    <div class="pole">
+      <label class="etykieta cichy">Zdjęcie</label>
+      <div class="okladka">
+        <img id="stan-foto-podglad" alt="" hidden>
+        <input type="file" id="stan-foto" accept="image/*" hidden>
+        <button class="btn pusty mały" type="button" id="btn-stan-foto">Wybierz zdjęcie</button>
+        <button class="btn pusty mały" type="button" id="btn-stan-foto-usun" hidden>Usuń</button>
+      </div>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="stan-nazwa">Nazwa</label>
+      <input type="text" id="stan-nazwa" placeholder="np. Sernik baskijski">
+    </div>
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="stan-status">Status</label>
+        <select id="stan-status">
+          <option value="available">Dostępne</option>
+          <option value="low">Zostało niewiele</option>
+          <option value="sold_out">Wyprzedane</option>
+        </select>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="stan-note">Notka (opcjonalnie)</label>
+        <input type="text" id="stan-note" placeholder="np. ostatnie 3 kawałki">
+      </div>
+    </div>
+
+    <div class="stopka-edytora">
+      <button class="btn" id="btn-stan-zapisz">Zapisz</button>
+      <button class="btn pusty" id="btn-stan-anuluj">Anuluj</button>
+      <button class="btn groźny mały" id="btn-stan-usun" hidden style="margin-left:auto">Usuń pozycję</button>
+    </div>
+  </main>
 </div>
 
-<script type="module" src="admin.js"></script>
+<script type="module" src="/admin/admin.js"></script>
 </body>
 </html>

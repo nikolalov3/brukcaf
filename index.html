@@ -251,6 +251,10 @@
   ]
 }
 </script>
+<!-- Dziś w młynku — dane strukturalne generuje build.mjs z bazy (nie edytować ręcznie) -->
+<!-- MLYN-LD -->
+
+<!-- /MLYN-LD -->
 </head>
 <body>
 
@@ -377,8 +381,36 @@
   </div>
 </section>
 
+<!-- Dziś w młynku — treść docelowo generowana z panelu przy przebudowie.
+     Poniżej stan wyjściowy z prawdziwymi danymi; markery data-* to punkty,
+     które podmienia build-skrypt. Semantyczna lista: bot widzi treść. -->
+<section class="sekcja ramka" id="mlyn" aria-label="Dziś w młynku, aktualna oferta Bruk Cafe">
+  <div class="naglowek etykieta"><span class="nr">03</span><span>Dziś w młynku</span></div>
+  <div class="mlyn">
+
+    <div class="mlyn-grupa">
+      <span class="etykieta cichy mlyn-label">Kawa</span>
+      <ul class="mlyn-strip" data-kawy>
+        <li class="mlyn-karta" style="flex-basis:100%">
+          <span class="karta-tresc"><span class="karta-op">Zapytaj baristę, co dziś mielimy — świeże ziarno czeka.</span></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mlyn-grupa">
+      <span class="etykieta cichy mlyn-label">Wypieki</span>
+      <ul class="mlyn-strip ciasta" data-ciasta>
+        <li class="mlyn-karta" style="flex-basis:100%">
+          <span class="karta-tresc"><span class="karta-op">Dziś bez wypieków. Zajrzyj jutro.</span></span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
 <section class="sekcja ramka" id="karta">
-  <div class="naglowek etykieta"><span class="nr">03</span><span>Menu</span></div>
+  <div class="naglowek etykieta"><span class="nr">04</span><span>Menu</span></div>
 
   <div class="karta">
 
@@ -466,7 +498,7 @@
 </section>
 
 <section class="sekcja ramka" id="pytania">
-  <div class="naglowek etykieta"><span class="nr">04</span><span>Pytania</span></div>
+  <div class="naglowek etykieta"><span class="nr">05</span><span>Pytania</span></div>
   <div class="pytania">
       <div class="pytanie zjawia">
         <h3>Można u was pracować z laptopem?</h3>
@@ -506,7 +538,7 @@
 </main>
 
 <footer class="stopka ramka" id="kontakt">
-  <div class="naglowek etykieta"><span class="nr">05</span><span>Kontakt</span></div>
+  <div class="naglowek etykieta"><span class="nr">06</span><span>Kontakt</span></div>
   <div class="siatka">
     <div>
       <b>Adres</b>

@@ -1,0 +1,13 @@
+{
+  "name": "bruk-cafe",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Strona Bruk Cafe — statyczna, z sekcją 'Dziś w młynku' generowaną z Supabase przy deployu.",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
