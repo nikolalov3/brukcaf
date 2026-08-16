@@ -46,7 +46,8 @@ function beans(level) {
 
 // ── renderowanie kart ───────────────────────────────────────────
 function kartaKawy(k, t) {
-  const metoda = k.method ? `\n            <span class="etykieta cichy">${esc(k.method)}</span>` : '';
+  // metoda zawsze obecna (pusta rezerwuje wysokość), żeby nazwy się równały
+  const metoda = `\n            <span class="etykieta cichy karta-metoda">${esc(k.method || '')}</span>`;
   const poch = k.origin ? `\n            <span class="karta-poch">${esc(k.origin)}</span>` : '';
   const op = k.note ? `\n            <span class="karta-op">${esc(k.note)}</span>` : '';
   const poziom = k.level ? `\n            <span class="karta-poziom" aria-label="${esc(t.intensity)} ${k.level} z 5">

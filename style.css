@@ -508,6 +508,8 @@ h2{
 .karta-tresc{flex:1;display:flex;flex-direction:column;gap:8px;
   padding:clamp(18px,2.2vw,24px)}
 .karta-tresc .etykieta{color:var(--cichy)}
+/* metoda zawsze zajmuje swoją linię (nawet pusta), żeby nazwy się równały */
+.karta-metoda{min-height:11px}
 .karta-nz{font-size:clamp(19px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.06}
 .karta-op{color:var(--cichy);font-size:14.5px;line-height:1.55;max-width:40ch}
 
