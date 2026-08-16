@@ -165,7 +165,7 @@
     </div>
     <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
       Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 6</b> kaw — reszta jest wyszarzona,
-      przesuń ją wyżej, żeby weszła. Ziarenka 1–5 to poziom intensywności.</p>
+      przesuń ją wyżej, żeby weszła.</p>
     <div class="info" id="kawy-info" hidden></div>
     <div id="kawy-lista"></div>
     <div class="publikuj">
@@ -201,37 +201,30 @@
         <input type="text" id="kawa-nazwa" placeholder="np. HAYB Yellow">
       </div>
       <div class="pole">
-        <label class="etykieta cichy" for="kawa-metoda">Metoda</label>
+        <label class="etykieta cichy" for="kawa-metoda">Metoda parzenia</label>
         <input type="text" id="kawa-metoda" placeholder="np. espresso / V60">
       </div>
     </div>
-    <div class="pole">
-      <label class="etykieta cichy" for="kawa-pochodzenie">Pochodzenie / palarnia</label>
-      <input type="text" id="kawa-pochodzenie" placeholder="np. Brazylia i Gwatemala, HAYB">
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="kawa-pochodzenie">Pochodzenie / palarnia</label>
+        <input type="text" id="kawa-pochodzenie" placeholder="np. Brazylia i Gwatemala, HAYB">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="kawa-obrobka">Obróbka ziaren</label>
+        <input type="text" id="kawa-obrobka" placeholder="np. myta / naturalna / honey">
+      </div>
     </div>
     <div class="pole">
       <label class="etykieta cichy" for="kawa-opis">Opis smaku</label>
       <textarea id="kawa-opis" rows="2" placeholder="np. czekolada, orzechy, pełne ciało"></textarea>
     </div>
-
-    <div class="dwie">
-      <div class="pole">
-        <label class="etykieta cichy">Poziom (ziarenka)</label>
-        <div class="ziarna" id="kawa-ziarna" role="radiogroup" aria-label="Poziom">
-          <button type="button" class="ziarno" data-poziom="1" aria-label="1"></button>
-          <button type="button" class="ziarno" data-poziom="2" aria-label="2"></button>
-          <button type="button" class="ziarno" data-poziom="3" aria-label="3"></button>
-          <button type="button" class="ziarno" data-poziom="4" aria-label="4"></button>
-          <button type="button" class="ziarno" data-poziom="5" aria-label="5"></button>
-        </div>
-      </div>
-      <div class="pole">
-        <label class="etykieta cichy">Dostępność</label>
-        <label class="przelacz">
-          <input type="checkbox" id="kawa-dostepna" checked>
-          <span>Teraz w młynku</span>
-        </label>
-      </div>
+    <div class="pole">
+      <label class="etykieta cichy">Dostępność</label>
+      <label class="przelacz">
+        <input type="checkbox" id="kawa-dostepna" checked>
+        <span>Teraz w młynku</span>
+      </label>
     </div>
 
     <div class="stopka-edytora">

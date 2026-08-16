@@ -113,11 +113,11 @@ create table if not exists public.coffees (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,                 -- np. "HAYB Yellow"
   origin      text,                          -- pochodzenie / palarnia
-  method      text,                          -- espresso / V60 / itd.
+  method      text,                          -- metoda parzenia: espresso / V60 / itd.
+  obrobka     text,                          -- metoda obróbki ziaren: myta / naturalna / honey
   note        text,                          -- krótki opis smaku
   photo_url   text,                          -- zdjęcie ziarna/opakowania
-  level       int  not null default 3
-              check (level between 1 and 5), -- 1 mało .. 5 dużo (znaczenie do ustalenia)
+  level       int  default 3,                -- (wycofane z UI; kolumna zostaje dla starych wierszy)
   available   boolean not null default true, -- czy teraz w młynku
   sort        int  not null default 0,       -- kolejność wyświetlania
   created_at  timestamptz not null default now(),

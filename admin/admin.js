@@ -358,16 +358,10 @@ document.addEventListener('paste', (e) => {
   if (otwarty) { e.preventDefault(); otwarty.wgraj(it.getAsFile()); }
 });
 
-function odbicieZiaren(poziom) {
-  let s = '<span class="ziarna-mini">';
-  for (let i = 1; i <= 5; i++) s += '<i class="' + (i <= poziom ? 'pelne' : '') + '"></i>';
-  return s + '</span>';
-}
-
 // ══════════════════════════════════════════════════════════════
 //  KAWY — „Dziś w młynku"
 // ══════════════════════════════════════════════════════════════
-let kawy = [], edytowanaKawa = null, kawaFoto = '', kawaPoziom = 3;
+let kawy = [], edytowanaKawa = null, kawaFoto = '';
 
 async function wczytajKawy() {
   const { data, error } = await sb.from('coffees')
@@ -393,10 +387,9 @@ function renderKawy() {
       <div class="tresc">
         <div class="tyt"></div>
         <div class="meta">
-          ${odbicieZiaren(k.level)} &nbsp;
           <span class="znak ${k.available ? 'pub' : ''}">${k.available ? 'Dostępna' : 'Niedostępna'}</span>
           ${poza ? '<span class="poza-znak">poza stroną</span>' : ''}
-          ${k.origin ? '&nbsp; · ' + '' : ''}<span class="pochodz"></span>
+          <span class="detale"></span>
         </div>
       </div>
       <div class="akcje">
@@ -404,7 +397,7 @@ function renderKawy() {
         <button class="btn pusty mały" data-edit>Edytuj</button>
       </div>`;
     el.querySelector('.tyt').textContent = k.name;
-    el.querySelector('.pochodz').textContent = k.origin || '';
+    el.querySelector('.detale').textContent = [k.method, k.obrobka, k.origin].filter(Boolean).join(' · ');
     el.querySelector('[data-edit]').addEventListener('click', () => otworzKawe(k.id));
     el.querySelector('[data-gora]').addEventListener('click', () => przesunKawe(i, -1));
     el.querySelector('[data-dol]').addEventListener('click', () => przesunKawe(i, 1));
@@ -430,14 +423,6 @@ $('btn-nowa-kawa').addEventListener('click', () => otworzKawe(null));
 $('btn-kawa-wroc').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
 $('btn-kawa-anuluj').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
 
-function ustawPoziom(p) {
-  kawaPoziom = p;
-  $('kawa-ziarna').querySelectorAll('.ziarno').forEach((z) =>
-    z.classList.toggle('pelne', +z.dataset.poziom <= p));
-}
-$('kawa-ziarna').querySelectorAll('.ziarno').forEach((z) =>
-  z.addEventListener('click', () => ustawPoziom(+z.dataset.poziom)));
-
 function ustawKawaFoto(url) {
   kawaFoto = url || '';
   const img = $('kawa-foto-podglad');
@@ -452,8 +437,8 @@ async function otworzKawe(id) {
   $('btn-kawa-usun').hidden = !id;
   if (!id) {
     $('kawa-tytul').textContent = 'Nowa kawa';
-    ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-opis'].forEach((f) => $(f).value = '');
-    $('kawa-dostepna').checked = true; ustawPoziom(3); ustawKawaFoto('');
+    ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-obrobka','kawa-opis'].forEach((f) => $(f).value = '');
+    $('kawa-dostepna').checked = true; ustawKawaFoto('');
   } else {
     const { data, error } = await sb.from('coffees').select('*').eq('id', id).single();
     if (error || !data) { pokazInfo($('kawa-info'), 'Nie udało się wczytać kawy.', 'zle'); return; }
@@ -461,9 +446,10 @@ async function otworzKawe(id) {
     $('kawa-nazwa').value = data.name || '';
     $('kawa-metoda').value = data.method || '';
     $('kawa-pochodzenie').value = data.origin || '';
+    $('kawa-obrobka').value = data.obrobka || '';
     $('kawa-opis').value = data.note || '';
     $('kawa-dostepna').checked = !!data.available;
-    ustawPoziom(data.level || 3); ustawKawaFoto(data.photo_url || '');
+    ustawKawaFoto(data.photo_url || '');
   }
   $('widok-kawy').hidden = true; $('widok-kawy-edytor').hidden = false; window.scrollTo(0, 0);
 }
@@ -475,8 +461,8 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
     name: nazwa,
     method: $('kawa-metoda').value.trim() || null,
     origin: $('kawa-pochodzenie').value.trim() || null,
+    obrobka: $('kawa-obrobka').value.trim() || null,
     note: $('kawa-opis').value.trim() || null,
-    level: kawaPoziom,
     available: $('kawa-dostepna').checked,
     photo_url: kawaFoto || null
   };

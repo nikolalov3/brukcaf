@@ -508,37 +508,16 @@ h2{
 .karta-tresc{flex:1;display:flex;flex-direction:column;gap:8px;
   padding:clamp(18px,2.2vw,24px)}
 .karta-tresc .etykieta{color:var(--cichy)}
-/* metoda zawsze zajmuje swoją linię (nawet pusta), żeby nazwy się równały */
-.karta-metoda{min-height:11px}
 .karta-nz{font-size:clamp(19px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.06}
 .karta-op{color:var(--cichy);font-size:14.5px;line-height:1.55;max-width:40ch}
 
 /* pochodzenie / palarnia — drobna linia pod nazwą */
 .karta-poch{font:500 12px/1.35 var(--mono);letter-spacing:.02em;color:var(--cichy)}
 
-/* poziom (ziarenka) — na dole karty kawy, w delikatnej ramce jak znacznik diety */
-.karta-poziom{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:7px;
-  padding:4px 9px;border:1px solid var(--wlos);border-radius:3px}
-.karta-poziom .cap{font:500 8.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cichy)}
-.karta-poziom .beans{display:inline-flex;gap:3px}
-.karta-poziom i{width:10px;height:13px;transform-origin:center;
-  background:var(--ziarno-pusty) center/contain no-repeat}
-.karta-poziom i.pelne{background:var(--ziarno-pelny) center/contain no-repeat}
-
-/* animacja „nalewania” ziaren — po kolei, z lekkim odbiciem */
-@keyframes ziarnoWlej{
-  0%{transform:scale(.3) rotate(-14deg);opacity:0}
-  60%{transform:scale(1.15) rotate(3deg)}
-  100%{transform:scale(1) rotate(0);opacity:1}
-}
-@media(prefers-reduced-motion:no-preference){
-  .karta-poziom i.pelne{animation:ziarnoWlej .5s cubic-bezier(.34,1.56,.64,1) both}
-  .karta-poziom i.pelne:nth-child(1){animation-delay:.02s}
-  .karta-poziom i.pelne:nth-child(2){animation-delay:.10s}
-  .karta-poziom i.pelne:nth-child(3){animation-delay:.18s}
-  .karta-poziom i.pelne:nth-child(4){animation-delay:.26s}
-  .karta-poziom i.pelne:nth-child(5){animation-delay:.34s}
-}
+/* chipy na dole karty: metoda parzenia + metoda obróbki ziaren */
+.karta-chipy{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px;padding-top:8px}
+.karta-chip{font:500 9px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--wlos);padding:5px 8px;color:var(--cichy);border-radius:3px}
 
 /* znacznik stanu wypieku */
 .stan-znak{margin-top:auto;align-self:flex-start;

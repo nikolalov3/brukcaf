@@ -46,18 +46,18 @@ function beans(level) {
 
 // ── renderowanie kart ───────────────────────────────────────────
 function kartaKawy(k, t) {
-  // metoda zawsze obecna (pusta rezerwuje wysokość), żeby nazwy się równały
-  const metoda = `\n            <span class="etykieta cichy karta-metoda">${esc(k.method || '')}</span>`;
   const poch = k.origin ? `\n            <span class="karta-poch">${esc(k.origin)}</span>` : '';
   const op = k.note ? `\n            <span class="karta-op">${esc(k.note)}</span>` : '';
-  const poziom = k.level ? `\n            <span class="karta-poziom" aria-label="${esc(t.intensity)} ${k.level} z 5">
-              <span class="cap">${esc(t.intensity)}</span>
-              <span class="beans">${beans(k.level)}</span>
-            </span>` : '';
+  // chipy na dole: metoda parzenia + metoda obróbki ziaren
+  const chipy = [];
+  if (k.method) chipy.push(`<span class="karta-chip">${esc(k.method)}</span>`);
+  if (k.obrobka) chipy.push(`<span class="karta-chip">${esc(k.obrobka)}</span>`);
+  const chipRow = chipy.length
+    ? `\n            <span class="karta-chipy">${chipy.join('')}</span>` : '';
   return `        <li class="mlyn-karta">
           <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(k.photo_url)}></span>
-          <span class="karta-tresc">${metoda}
-            <span class="karta-nz">${esc(k.name)}</span>${poch}${op}${poziom}
+          <span class="karta-tresc">
+            <span class="karta-nz">${esc(k.name)}</span>${poch}${op}${chipRow}
           </span>
         </li>`;
 }
@@ -120,9 +120,9 @@ async function pobierz() {
   if (DEMO) {
     return {
       kawy: [
-        { name: 'HAYB Yellow', method: 'Espresso', origin: 'Brazylia + Gwatemala · palarnia HAYB', note: 'Ciemny blend stu procent arabiki. Czekolada, orzechy, pełne ciało.', level: 5 },
-        { name: 'Etiopia Guji', method: 'Przelew V60', origin: 'Etiopia · obróbka myta', note: 'Owoce pestkowe, herbaciana lekkość, klarowna słodycz.', level: 2 },
-        { name: 'Kolumbia Huila', method: 'Przelew V60', origin: 'Kolumbia · obróbka myta', note: 'Czekolada, karmel, orzech laskowy.', level: 3 },
+        { name: 'HAYB Yellow', method: 'Espresso', obrobka: 'naturalna', origin: 'Brazylia + Gwatemala · palarnia HAYB', note: 'Ciemny blend stu procent arabiki. Czekolada, orzechy, pełne ciało.' },
+        { name: 'Etiopia Guji', method: 'Przelew V60', obrobka: 'myta', origin: 'palarnia HAYB', note: 'Owoce pestkowe, herbaciana lekkość, klarowna słodycz.' },
+        { name: 'Kolumbia Huila', method: 'Przelew V60', obrobka: 'honey', origin: 'palarnia Coffee Proficiency', note: 'Czekolada, karmel, orzech laskowy.' },
       ],
       ciasta: [
         { name: 'Sernik baskijski', status: 'available', note: '' },
