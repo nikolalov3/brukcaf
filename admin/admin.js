@@ -472,7 +472,7 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
   if (odp.error) { pokazInfo($('kawa-info'), 'Nie udało się zapisać.', 'zle'); return; }
   await wczytajKawy();
   $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false;
-  pokazInfo($('kawy-info'), 'Zapisano. Strona odświeży się za chwilę.', 'ok');
+  pokazInfo($('kawy-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
 });
 
 $('btn-kawa-usun').addEventListener('click', async () => {
@@ -600,7 +600,7 @@ $('btn-stan-zapisz').addEventListener('click', async () => {
   if (odp.error) { pokazInfo($('stan-poz-info'), 'Nie udało się zapisać.', 'zle'); return; }
   await wczytajStan();
   $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false;
-  pokazInfo($('stan-info'), 'Zapisano. Strona odświeży się za chwilę.', 'ok');
+  pokazInfo($('stan-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
 });
 
 $('btn-stan-usun').addEventListener('click', async () => {

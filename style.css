@@ -514,11 +514,12 @@ h2{
 /* pochodzenie / palarnia — drobna linia pod nazwą */
 .karta-poch{font:500 12px/1.35 var(--mono);letter-spacing:.02em;color:var(--cichy)}
 
-/* poziom (ziarenka) — na dole karty kawy */
-.karta-poziom{margin-top:auto;display:flex;align-items:center;gap:8px;padding-top:6px}
-.karta-poziom .cap{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy)}
-.karta-poziom .beans{display:inline-flex;gap:5px}
-.karta-poziom i{width:15px;height:19px;transform-origin:center;
+/* poziom (ziarenka) — na dole karty kawy, w delikatnej ramce jak znacznik diety */
+.karta-poziom{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:7px;
+  padding:4px 9px;border:1px solid var(--wlos);border-radius:3px}
+.karta-poziom .cap{font:500 8.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cichy)}
+.karta-poziom .beans{display:inline-flex;gap:3px}
+.karta-poziom i{width:10px;height:13px;transform-origin:center;
   background:var(--ziarno-pusty) center/contain no-repeat}
 .karta-poziom i.pelne{background:var(--ziarno-pelny) center/contain no-repeat}
 
@@ -551,7 +552,7 @@ h2{
   --ziarno-hero:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11'/%3E%3Cpath d='M9 2.4c-2.9 3.5-2.9 15.7 0 19.2' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
   /* narysowane ziarno kawy — pełne (brąz + ciemniejsza bruzda) i puste (kontur) */
   --ziarno-pelny:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11' fill='%235a3d2a'/%3E%3Cpath d='M9 3.2c-2.7 3.4-2.7 14.2 0 17.6' fill='none' stroke='%23331f12' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
-  --ziarno-pusty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='7.2' ry='10.2' fill='none' stroke='%23c4bcae' stroke-width='1.6'/%3E%3Cpath d='M9 4.2c-2.3 2.9-2.3 12.7 0 15.6' fill='none' stroke='%23c4bcae' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+  --ziarno-pusty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11' fill='%23cbc4b8'/%3E%3Cpath d='M9 3.2c-2.7 3.4-2.7 14.2 0 17.6' fill='none' stroke='%23aca391' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 /* wypieki — niższy, kompaktowy pasek (dodatek do kaw): miniatura z boku */

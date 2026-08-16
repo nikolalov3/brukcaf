@@ -253,7 +253,25 @@
 </script>
 <!-- Dziś w młynku — dane strukturalne generuje build.mjs z bazy (nie edytować ręcznie) -->
 <!-- MLYN-LD -->
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Menu",
+  "name": "Dziś w młynku — Bruk Cafe",
+  "hasMenuSection": [
+    {
+      "@type": "MenuSection",
+      "name": "Kawa",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "TEST"
+        }
+      ]
+    }
+  ]
+}
+</script>
 <!-- /MLYN-LD -->
 </head>
 <body>
@@ -391,8 +409,15 @@
     <div class="mlyn-grupa">
       <span class="etykieta cichy mlyn-label">Kawa</span>
       <ul class="mlyn-strip" data-kawy>
-        <li class="mlyn-karta" style="flex-basis:100%">
-          <span class="karta-tresc"><span class="karta-op">Zapytaj baristę, co dziś mielimy — świeże ziarno czeka.</span></span>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true"></span>
+          <span class="karta-tresc">
+            <span class="karta-nz">TEST</span>
+            <span class="karta-poziom" aria-label="Intensywność 5 z 5">
+              <span class="cap">Intensywność</span>
+              <span class="beans"><i class="pelne"></i><i class="pelne"></i><i class="pelne"></i><i class="pelne"></i><i class="pelne"></i></span>
+            </span>
+          </span>
         </li>
       </ul>
     </div>
