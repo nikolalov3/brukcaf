@@ -90,8 +90,15 @@ a{color:inherit}
 .edytor p{margin:8px 0}
 .edytor a{text-decoration:underline}
 
-.okladka{display:flex;align-items:center;gap:14px;margin-top:6px}
-.okladka img{width:120px;height:80px;object-fit:cover;background:var(--tlo-2)}
+.okladka{display:flex;align-items:center;gap:16px;margin-top:6px;padding:14px;
+  border:1.5px dashed var(--wlos);background:var(--tlo);
+  transition:border-color .15s ease,background .15s ease}
+.okladka.nad{border-color:var(--atrament);background:var(--tlo-2)}
+.okladka.nad *{pointer-events:none}
+.okladka img{width:128px;height:86px;object-fit:cover;object-position:center;
+  background:var(--tlo-2);flex:none}
+.okladka-akcje{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.okladka-hint{font:500 11px/1.4 var(--mono);color:var(--cichy);letter-spacing:.02em}
 
 .stopka-edytora{position:sticky;bottom:0;margin-top:28px;
   padding:14px 0;background:linear-gradient(transparent,var(--tlo) 30%);

@@ -148,7 +148,7 @@ async function pobierz() {
 
 // Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
 // Te limity MUSZĄ być zgodne z admin/admin.js (LIMIT_KAWY / LIMIT_CIASTA).
-const LIMIT_KAWY = 5;
+const LIMIT_KAWY = 6;
 const LIMIT_CIASTA = 6;
 
 // ── główny przebieg ─────────────────────────────────────────────

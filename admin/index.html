@@ -85,11 +85,14 @@
 
     <div class="pole">
       <label class="etykieta cichy">Zdjęcie główne</label>
-      <div class="okladka">
+      <div class="okladka" id="okladka-strefa">
         <img id="okladka-podglad" alt="" hidden>
-        <input type="file" id="pole-okladka" accept="image/*" hidden>
-        <button class="btn pusty mały" type="button" id="btn-okladka">Wybierz zdjęcie</button>
-        <button class="btn pusty mały" type="button" id="btn-okladka-usun" hidden>Usuń zdjęcie</button>
+        <div class="okladka-akcje">
+          <input type="file" id="pole-okladka" accept="image/*" hidden>
+          <button class="btn pusty mały" type="button" id="btn-okladka">Wybierz zdjęcie</button>
+          <button class="btn pusty mały" type="button" id="btn-okladka-usun" hidden>Usuń zdjęcie</button>
+          <span class="okladka-hint">albo przeciągnij plik / wklej zrzut (⌘V)</span>
+        </div>
       </div>
     </div>
 
@@ -161,7 +164,7 @@
       <button class="btn" id="btn-nowa-kawa">+ Dodaj kawę</button>
     </div>
     <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
-      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 5</b> kaw — reszta jest wyszarzona,
+      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 6</b> kaw — reszta jest wyszarzona,
       przesuń ją wyżej, żeby weszła. Ziarenka 1–5 to poziom intensywności.</p>
     <div class="info" id="kawy-info" hidden></div>
     <div id="kawy-lista"></div>
@@ -181,11 +184,14 @@
 
     <div class="pole">
       <label class="etykieta cichy">Zdjęcie ziarna</label>
-      <div class="okladka">
+      <div class="okladka" id="kawa-strefa">
         <img id="kawa-foto-podglad" alt="" hidden>
-        <input type="file" id="kawa-foto" accept="image/*" hidden>
-        <button class="btn pusty mały" type="button" id="btn-kawa-foto">Wybierz zdjęcie</button>
-        <button class="btn pusty mały" type="button" id="btn-kawa-foto-usun" hidden>Usuń</button>
+        <div class="okladka-akcje">
+          <input type="file" id="kawa-foto" accept="image/*" hidden>
+          <button class="btn pusty mały" type="button" id="btn-kawa-foto">Wybierz zdjęcie</button>
+          <button class="btn pusty mały" type="button" id="btn-kawa-foto-usun" hidden>Usuń</button>
+          <span class="okladka-hint">albo przeciągnij plik / wklej zrzut (⌘V)</span>
+        </div>
       </div>
     </div>
 
@@ -261,11 +267,14 @@
 
     <div class="pole">
       <label class="etykieta cichy">Zdjęcie</label>
-      <div class="okladka">
+      <div class="okladka" id="stan-strefa">
         <img id="stan-foto-podglad" alt="" hidden>
-        <input type="file" id="stan-foto" accept="image/*" hidden>
-        <button class="btn pusty mały" type="button" id="btn-stan-foto">Wybierz zdjęcie</button>
-        <button class="btn pusty mały" type="button" id="btn-stan-foto-usun" hidden>Usuń</button>
+        <div class="okladka-akcje">
+          <input type="file" id="stan-foto" accept="image/*" hidden>
+          <button class="btn pusty mały" type="button" id="btn-stan-foto">Wybierz zdjęcie</button>
+          <button class="btn pusty mały" type="button" id="btn-stan-foto-usun" hidden>Usuń</button>
+          <span class="okladka-hint">albo przeciągnij plik / wklej zrzut (⌘V)</span>
+        </div>
       </div>
     </div>
     <div class="pole">

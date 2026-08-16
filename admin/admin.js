@@ -6,7 +6,7 @@ const $ = (id) => document.getElementById(id);
 
 // Ile pozycji pokazuje strona (reszta czeka w panelu, wyszarzona).
 // MUSI być zgodne z build.mjs (LIMIT_KAWY / LIMIT_CIASTA).
-const LIMIT_KAWY = 5;
+const LIMIT_KAWY = 6;
 const LIMIT_CIASTA = 6;
 
 let sb = null;            // klient Supabase
@@ -225,20 +225,7 @@ function ustawOkladke(url) {
   if (okladkaUrl) { img.src = okladkaUrl; img.hidden = false; $('btn-okladka-usun').hidden = false; }
   else { img.hidden = true; $('btn-okladka-usun').hidden = true; }
 }
-$('btn-okladka').addEventListener('click', () => $('pole-okladka').click());
-$('btn-okladka-usun').addEventListener('click', () => ustawOkladke(''));
-$('pole-okladka').addEventListener('change', async (e) => {
-  const plik = e.target.files[0];
-  if (!plik) return;
-  pokazInfo($('edytor-info'), 'Wgrywam zdjęcie…', '');
-  const nazwa = Date.now() + '-' + slugify(plik.name.replace(/\.[^.]+$/, '')) + '.' +
-                (plik.name.split('.').pop() || 'jpg');
-  const { error } = await sb.storage.from('blog').upload(nazwa, plik, { upsert: false });
-  if (error) { pokazInfo($('edytor-info'), 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
-  const { data } = sb.storage.from('blog').getPublicUrl(nazwa);
-  ustawOkladke(data.publicUrl);
-  pokazInfo($('edytor-info'), '', '');
-});
+// uploader okładki bloga podpinany niżej przez podepnijFoto()
 
 // ── zapis ───────────────────────────────────────────────────
 $('btn-zapisz').addEventListener('click', async () => {
@@ -326,12 +313,50 @@ document.querySelectorAll('.zakl').forEach((b) =>
 
 // wspólne wgrywanie zdjęcia do magazynu 'blog'
 async function wgrajZdjecie(plik) {
-  const nazwa = Date.now() + '-' + slugify(plik.name.replace(/\.[^.]+$/, '')) + '.' +
-                (plik.name.split('.').pop() || 'jpg');
-  const { error } = await sb.storage.from('blog').upload(nazwa, plik, { upsert: false });
+  const surowa = (plik.name || 'zdjecie').replace(/\.[^.]+$/, '');
+  const rozsz = (plik.name && plik.name.includes('.')) ? plik.name.split('.').pop()
+              : (plik.type && plik.type.split('/')[1]) || 'png';
+  const nazwa = Date.now() + '-' + (slugify(surowa) || 'zdjecie') + '.' + rozsz;
+  const { error } = await sb.storage.from('blog').upload(nazwa, plik, { upsert: false, contentType: plik.type || undefined });
   if (error) return null;
   return sb.storage.from('blog').getPublicUrl(nazwa).data.publicUrl;
 }
+
+// ── wspólny uploader zdjęć: klik, przeciągnięcie pliku, wklejenie zrzutu ──
+const fotoUploadery = {};  // przechowuje { wgraj, widokId } do routingu wklejania
+function podepnijFoto({ strefaId, inputId, btnId, usunId, infoId, widokId, ustaw }) {
+  const strefa = $(strefaId), input = $(inputId), info = $(infoId);
+  const wgraj = async (plik) => {
+    if (!plik) return;
+    if (!(plik.type || '').startsWith('image/')) { pokazInfo(info, 'To nie jest obrazek.', 'zle'); return; }
+    pokazInfo(info, 'Wgrywam zdjęcie…', '');
+    const url = await wgrajZdjecie(plik);
+    if (!url) { pokazInfo(info, 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
+    ustaw(url); pokazInfo(info, '', '');
+  };
+  $(btnId).addEventListener('click', () => input.click());
+  $(usunId).addEventListener('click', () => ustaw(''));
+  input.addEventListener('change', (e) => wgraj(e.target.files[0]));
+  ['dragenter', 'dragover'].forEach((ev) =>
+    strefa.addEventListener(ev, (e) => { e.preventDefault(); strefa.classList.add('nad'); }));
+  ['dragleave', 'dragend'].forEach((ev) =>
+    strefa.addEventListener(ev, () => strefa.classList.remove('nad')));
+  strefa.addEventListener('drop', (e) => {
+    e.preventDefault(); strefa.classList.remove('nad');
+    wgraj([...(e.dataTransfer?.files || [])].find((f) => f.type.startsWith('image/')));
+  });
+  fotoUploadery[strefaId] = { wgraj, widokId };
+}
+
+// wklejenie zrzutu ekranu (Cmd/Ctrl+V) trafia do otwartego edytora zdjęć
+document.addEventListener('paste', (e) => {
+  const a = document.activeElement;
+  if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable)) return;
+  const it = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'));
+  if (!it) return;
+  const otwarty = Object.values(fotoUploadery).find((u) => !$(u.widokId).hidden);
+  if (otwarty) { e.preventDefault(); otwarty.wgraj(it.getAsFile()); }
+});
 
 function odbicieZiaren(poziom) {
   let s = '<span class="ziarna-mini">';
@@ -419,15 +444,7 @@ function ustawKawaFoto(url) {
   if (kawaFoto) { img.src = kawaFoto; img.hidden = false; $('btn-kawa-foto-usun').hidden = false; }
   else { img.hidden = true; $('btn-kawa-foto-usun').hidden = true; }
 }
-$('btn-kawa-foto').addEventListener('click', () => $('kawa-foto').click());
-$('btn-kawa-foto-usun').addEventListener('click', () => ustawKawaFoto(''));
-$('kawa-foto').addEventListener('change', async (e) => {
-  const plik = e.target.files[0]; if (!plik) return;
-  pokazInfo($('kawa-info'), 'Wgrywam zdjęcie…', '');
-  const url = await wgrajZdjecie(plik);
-  if (!url) { pokazInfo($('kawa-info'), 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
-  ustawKawaFoto(url); pokazInfo($('kawa-info'), '', '');
-});
+// uploader zdjęcia kawy podpinany niżej przez podepnijFoto()
 
 async function otworzKawe(id) {
   edytowanaKawa = id;
@@ -553,15 +570,15 @@ function ustawStanFoto(url) {
   if (stanFoto) { img.src = stanFoto; img.hidden = false; $('btn-stan-foto-usun').hidden = false; }
   else { img.hidden = true; $('btn-stan-foto-usun').hidden = true; }
 }
-$('btn-stan-foto').addEventListener('click', () => $('stan-foto').click());
-$('btn-stan-foto-usun').addEventListener('click', () => ustawStanFoto(''));
-$('stan-foto').addEventListener('change', async (e) => {
-  const plik = e.target.files[0]; if (!plik) return;
-  pokazInfo($('stan-poz-info'), 'Wgrywam zdjęcie…', '');
-  const url = await wgrajZdjecie(plik);
-  if (!url) { pokazInfo($('stan-poz-info'), 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
-  ustawStanFoto(url); pokazInfo($('stan-poz-info'), '', '');
-});
+// uploader zdjęcia ciasta podpinany niżej przez podepnijFoto()
+
+// ── podpięcie trzech uploaderów (po zdefiniowaniu funkcji ustaw…) ──
+podepnijFoto({ strefaId: 'okladka-strefa', inputId: 'pole-okladka', btnId: 'btn-okladka',
+  usunId: 'btn-okladka-usun', infoId: 'edytor-info', widokId: 'widok-edytor', ustaw: ustawOkladke });
+podepnijFoto({ strefaId: 'kawa-strefa', inputId: 'kawa-foto', btnId: 'btn-kawa-foto',
+  usunId: 'btn-kawa-foto-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor', ustaw: ustawKawaFoto });
+podepnijFoto({ strefaId: 'stan-strefa', inputId: 'stan-foto', btnId: 'btn-stan-foto',
+  usunId: 'btn-stan-foto-usun', infoId: 'stan-poz-info', widokId: 'widok-stan-edytor', ustaw: ustawStanFoto });
 
 async function otworzStan(id) {
   edytowanyStan = id;
