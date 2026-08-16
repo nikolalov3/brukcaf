@@ -517,11 +517,25 @@ h2{
 /* poziom (ziarenka) — na dole karty kawy */
 .karta-poziom{margin-top:auto;display:flex;align-items:center;gap:8px;padding-top:6px}
 .karta-poziom .cap{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy)}
-.karta-poziom .beans{display:inline-flex;gap:3px}
-.karta-poziom i{width:11px;height:15px;background:var(--wlos);
-  -webkit-mask:var(--ziarno-hero) center/contain no-repeat;
-  mask:var(--ziarno-hero) center/contain no-repeat}
-.karta-poziom i.pelne{background:var(--atrament)}
+.karta-poziom .beans{display:inline-flex;gap:5px}
+.karta-poziom i{width:15px;height:19px;transform-origin:center;
+  background:var(--ziarno-pusty) center/contain no-repeat}
+.karta-poziom i.pelne{background:var(--ziarno-pelny) center/contain no-repeat}
+
+/* animacja „nalewania” ziaren — po kolei, z lekkim odbiciem */
+@keyframes ziarnoWlej{
+  0%{transform:scale(.3) rotate(-14deg);opacity:0}
+  60%{transform:scale(1.15) rotate(3deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+@media(prefers-reduced-motion:no-preference){
+  .karta-poziom i.pelne{animation:ziarnoWlej .5s cubic-bezier(.34,1.56,.64,1) both}
+  .karta-poziom i.pelne:nth-child(1){animation-delay:.02s}
+  .karta-poziom i.pelne:nth-child(2){animation-delay:.10s}
+  .karta-poziom i.pelne:nth-child(3){animation-delay:.18s}
+  .karta-poziom i.pelne:nth-child(4){animation-delay:.26s}
+  .karta-poziom i.pelne:nth-child(5){animation-delay:.34s}
+}
 
 /* znacznik stanu wypieku */
 .stan-znak{margin-top:auto;align-self:flex-start;
@@ -531,7 +545,14 @@ h2{
 .stan-znak.malo{border-color:#9a6a2c;color:#9a6a2c}
 .stan-znak.wyprzedane{border-color:var(--blad);color:var(--blad)}
 
-:root{--ziarno-hero:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 22'%3E%3Cellipse cx='8' cy='11' rx='7' ry='10.5'/%3E%3Cpath d='M8 1.5c-2.4 3-2.4 16 0 19' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E")}
+:root{
+  --kawa:#5a3d2a;   /* kolor palonego ziarna */
+  /* sylwetka ziarna (maska) — placeholder na zdjęciu kawy */
+  --ziarno-hero:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11'/%3E%3Cpath d='M9 2.4c-2.9 3.5-2.9 15.7 0 19.2' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* narysowane ziarno kawy — pełne (brąz + ciemniejsza bruzda) i puste (kontur) */
+  --ziarno-pelny:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11' fill='%235a3d2a'/%3E%3Cpath d='M9 3.2c-2.7 3.4-2.7 14.2 0 17.6' fill='none' stroke='%23331f12' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  --ziarno-pusty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='7.2' ry='10.2' fill='none' stroke='%23c4bcae' stroke-width='1.6'/%3E%3Cpath d='M9 4.2c-2.3 2.9-2.3 12.7 0 15.6' fill='none' stroke='%23c4bcae' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+}
 
 /* wypieki — niższy, kompaktowy pasek (dodatek do kaw): miniatura z boku */
 .mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(238px,82vw,286px);flex-direction:row}

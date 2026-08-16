@@ -329,10 +329,14 @@ function renderKawy() {
   const box = $('kawy-lista');
   if (!kawy.length) { box.innerHTML = '<div class="pusto">Brak kaw. Kliknij „Dodaj kawę”.</div>'; return; }
   box.innerHTML = '';
-  for (const k of kawy) {
+  kawy.forEach((k, i) => {
     const el = document.createElement('div');
     el.className = 'wpis' + (k.available ? '' : ' niedostepna');
     el.innerHTML = `
+      <div class="kolejnosc">
+        <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
+        <button class="strzal" data-dol title="W dół" ${i === kawy.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
+      </div>
       <img class="mini" src="${k.photo_url || ''}" alt="" ${k.photo_url ? '' : 'style="visibility:hidden"'}>
       <div class="tresc">
         <div class="tyt"></div>
@@ -349,12 +353,24 @@ function renderKawy() {
     el.querySelector('.tyt').textContent = k.name;
     el.querySelector('.pochodz').textContent = k.origin || '';
     el.querySelector('[data-edit]').addEventListener('click', () => otworzKawe(k.id));
+    el.querySelector('[data-gora]').addEventListener('click', () => przesunKawe(i, -1));
+    el.querySelector('[data-dol]').addEventListener('click', () => przesunKawe(i, 1));
     el.querySelector('[data-dost]').addEventListener('click', async () => {
       await sb.from('coffees').update({ available: !k.available }).eq('id', k.id);
       await wczytajKawy();
     });
     box.appendChild(el);
-  }
+  });
+}
+
+// zamiana miejscami z sąsiadem i zapis nowej kolejności (sort = pozycja na liście)
+async function przesunKawe(i, kierunek) {
+  const j = i + kierunek;
+  if (j < 0 || j >= kawy.length) return;
+  [kawy[i], kawy[j]] = [kawy[j], kawy[i]];
+  renderKawy(); // natychmiastowy ruch w UI
+  await Promise.all(kawy.map((k, idx) => sb.from('coffees').update({ sort: idx }).eq('id', k.id)));
+  await wczytajKawy();
 }
 
 $('btn-nowa-kawa').addEventListener('click', () => otworzKawe(null));
@@ -419,6 +435,7 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
     available: $('kawa-dostepna').checked,
     photo_url: kawaFoto || null
   };
+  if (!edytowanaKawa) rekord.sort = kawy.length ? Math.max(...kawy.map((k) => k.sort ?? 0)) + 1 : 0;
   const btn = $('btn-kawa-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
   const odp = edytowanaKawa
     ? await sb.from('coffees').update(rekord).eq('id', edytowanaKawa)
@@ -458,10 +475,14 @@ function renderStan() {
   const box = $('stan-lista');
   if (!stany.length) { box.innerHTML = '<div class="pusto">Brak pozycji. Kliknij „Dodaj pozycję”.</div>'; return; }
   box.innerHTML = '';
-  for (const s of stany) {
+  stany.forEach((s, i) => {
     const el = document.createElement('div');
     el.className = 'wpis';
     el.innerHTML = `
+      <div class="kolejnosc">
+        <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
+        <button class="strzal" data-dol title="W dół" ${i === stany.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
+      </div>
       <img class="mini" src="${s.photo_url || ''}" alt="" ${s.photo_url ? '' : 'style="visibility:hidden"'}>
       <div class="tresc">
         <div class="tyt"></div>
@@ -474,12 +495,23 @@ function renderStan() {
     el.querySelector('.tyt').textContent = s.name;
     el.querySelector('.note').textContent = s.note || '';
     el.querySelector('[data-edit]').addEventListener('click', () => otworzStan(s.id));
+    el.querySelector('[data-gora]').addEventListener('click', () => przesunStan(i, -1));
+    el.querySelector('[data-dol]').addEventListener('click', () => przesunStan(i, 1));
     el.querySelector('[data-status]').addEventListener('click', async () => {
       await sb.from('stock_items').update({ status: NAST_STATUS[s.status] }).eq('id', s.id);
       await wczytajStan();
     });
     box.appendChild(el);
-  }
+  });
+}
+
+async function przesunStan(i, kierunek) {
+  const j = i + kierunek;
+  if (j < 0 || j >= stany.length) return;
+  [stany[i], stany[j]] = [stany[j], stany[i]];
+  renderStan();
+  await Promise.all(stany.map((s, idx) => sb.from('stock_items').update({ sort: idx }).eq('id', s.id)));
+  await wczytajStan();
 }
 
 $('btn-nowy-stan').addEventListener('click', () => otworzStan(null));
@@ -530,6 +562,7 @@ $('btn-stan-zapisz').addEventListener('click', async () => {
     note: $('stan-note').value.trim() || null,
     photo_url: stanFoto || null
   };
+  if (!edytowanyStan) rekord.sort = stany.length ? Math.max(...stany.map((s) => s.sort ?? 0)) + 1 : 0;
   const btn = $('btn-stan-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
   const odp = edytowanyStan
     ? await sb.from('stock_items').update(rekord).eq('id', edytowanyStan)

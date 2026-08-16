@@ -143,6 +143,13 @@ a{color:inherit}
 .status.sold_out{border-color:var(--blad);color:var(--blad)}
 .niedostepna{opacity:.5}
 
+/* ── strzałki kolejności na liście ───────────────── */
+.kolejnosc{display:flex;flex-direction:column;gap:2px;flex:none;margin-right:2px}
+.strzal{width:26px;height:22px;padding:0;border:1px solid var(--wlos);background:var(--tlo);
+  font:600 12px/1 var(--mono);color:var(--cichy)}
+.strzal:hover:not([disabled]){background:var(--atrament);color:var(--tlo);border-color:var(--atrament)}
+.strzal[disabled]{opacity:.3;cursor:default}
+
 /* logo w nagłówku panelu (zamiast tekstu) */
 .marka-panel{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
 .marka-panel img{height:22px;width:auto;display:block}
