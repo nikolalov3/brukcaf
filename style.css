@@ -480,9 +480,12 @@ h2{
 .hero-h1{margin:0;padding:0;line-height:0;font:inherit}
 
 /* ── Dziś w młynku ─────────────────────────────────────── */
+:root{--bordo:#6b2233;}  /* bordo — subtelny akcent (dywany we wnętrzu) */
+
 .mlyn{display:flex;flex-direction:column;gap:clamp(26px,3.6vw,42px)}
 .mlyn-grupa{display:flex;flex-direction:column;gap:12px}
-.mlyn-label{color:var(--cichy)}
+.mlyn-label{color:var(--bordo);opacity:.9}
+#mlyn .naglowek .nr{color:var(--bordo)}
 
 /* poziomo przesuwany pasek kart (kawy / wypieki) */
 .mlyn-strip{list-style:none;display:flex;gap:1px;overflow-x:auto;
@@ -501,6 +504,11 @@ h2{
   background:var(--tlo-2) center/cover no-repeat}
 /* zdjęcie kawy (opakowanie PNG) pokazujemy w całości, wyśrodkowane */
 .mlyn-strip:not(.ciasta) .karta-foto{background-size:contain}
+/* drugie zdjęcie — warstwa na wierzchu; desktop: hover, mobile: cykl (klasa .pokaz2) */
+.karta-foto2{position:absolute;inset:0;background:center/contain no-repeat;
+  opacity:0;transition:opacity .5s ease}
+@media(hover:hover){.mlyn-karta:hover .karta-foto2{opacity:1}}
+.mlyn-karta.pokaz2 .karta-foto2{opacity:1}
 /* placeholder, gdy brak zdjęcia — faint ziarno */
 .karta-foto:not([style*="url"])::after{content:"";position:absolute;inset:0;
   background:currentColor;color:var(--wlos);
@@ -510,7 +518,13 @@ h2{
 .karta-tresc{flex:1;display:flex;flex-direction:column;gap:8px;
   padding:clamp(18px,2.2vw,24px)}
 .karta-tresc .etykieta{color:var(--cichy)}
-.karta-nz{font-size:clamp(19px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.06}
+/* nazwa: stała wysokość bloku (opis zawsze na tym samym poziomie), a długie
+   nazwy dostają mniejszą czcionkę zamiast rosnąć w dół */
+.karta-nz{min-height:56px;display:flex;align-items:flex-start;
+  font-size:clamp(18px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.08;
+  overflow:hidden}
+.karta-nz.nz-sredni{font-size:clamp(16px,1.9vw,21px)}
+.karta-nz.nz-maly{font-size:clamp(15px,1.7vw,18px)}
 .karta-op{color:var(--cichy);font-size:14.5px;line-height:1.55;max-width:40ch}
 
 /* pochodzenie / palarnia — drobna linia pod nazwą */

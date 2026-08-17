@@ -182,15 +182,29 @@
     </div>
     <div class="info" id="kawa-info" hidden></div>
 
-    <div class="pole">
-      <label class="etykieta cichy">Zdjęcie ziarna</label>
-      <div class="okladka" id="kawa-strefa">
-        <img id="kawa-foto-podglad" alt="" hidden>
-        <div class="okladka-akcje">
-          <input type="file" id="kawa-foto" accept="image/*" hidden>
-          <button class="btn pusty mały" type="button" id="btn-kawa-foto">Wybierz zdjęcie</button>
-          <button class="btn pusty mały" type="button" id="btn-kawa-foto-usun" hidden>Usuń</button>
-          <span class="okladka-hint">albo przeciągnij plik / wklej zrzut (⌘V)</span>
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy">Zdjęcie 1 (główne)</label>
+        <div class="okladka" id="kawa-strefa">
+          <img id="kawa-foto-podglad" alt="" hidden>
+          <div class="okladka-akcje">
+            <input type="file" id="kawa-foto" accept="image/*" hidden>
+            <button class="btn pusty mały" type="button" id="btn-kawa-foto">Wybierz</button>
+            <button class="btn pusty mały" type="button" id="btn-kawa-foto-usun" hidden>Usuń</button>
+            <span class="okladka-hint">przeciągnij / wklej (⌘V)</span>
+          </div>
+        </div>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy">Zdjęcie 2 (po najechaniu)</label>
+        <div class="okladka" id="kawa-strefa2">
+          <img id="kawa-foto2-podglad" alt="" hidden>
+          <div class="okladka-akcje">
+            <input type="file" id="kawa-foto2" accept="image/*" hidden>
+            <button class="btn pusty mały" type="button" id="btn-kawa-foto2">Wybierz</button>
+            <button class="btn pusty mały" type="button" id="btn-kawa-foto2-usun" hidden>Usuń</button>
+            <span class="okladka-hint">opcjonalne</span>
+          </div>
         </div>
       </div>
     </div>

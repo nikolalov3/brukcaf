@@ -54,10 +54,15 @@ function kartaKawy(k, t) {
   if (k.obrobka) chipy.push(`<span class="karta-chip">${esc(k.obrobka)}</span>`);
   const chipRow = chipy.length
     ? `\n            <span class="karta-chipy">${chipy.join('')}</span>` : '';
+  const foto2 = k.photo_url2
+    ? `<span class="karta-foto2" aria-hidden="true"${fotoStyle(k.photo_url2)}></span>` : '';
+  // nazwa skaluje się w dół dla długich, żeby blok pod nią był zawsze na tej samej wysokości
+  const dl = (k.name || '').length;
+  const nzKl = dl > 26 ? ' nz-maly' : dl > 16 ? ' nz-sredni' : '';
   return `        <li class="mlyn-karta">
-          <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(k.photo_url)}></span>
+          <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(k.photo_url)}>${foto2}</span>
           <span class="karta-tresc">
-            <span class="karta-nz">${esc(k.name)}</span>${poch}${op}${chipRow}
+            <span class="karta-nz${nzKl}">${esc(k.name)}</span>${poch}${op}${chipRow}
           </span>
         </li>`;
 }

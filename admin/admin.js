@@ -409,7 +409,7 @@ document.addEventListener('paste', (e) => {
 // ══════════════════════════════════════════════════════════════
 //  KAWY — „Dziś w młynku"
 // ══════════════════════════════════════════════════════════════
-let kawy = [], edytowanaKawa = null, kawaFoto = '';
+let kawy = [], edytowanaKawa = null, kawaFoto = '', kawaFoto2 = '';
 
 async function wczytajKawy() {
   const { data, error } = await sb.from('coffees')
@@ -477,7 +477,13 @@ function ustawKawaFoto(url) {
   if (kawaFoto) { img.src = kawaFoto; img.hidden = false; $('btn-kawa-foto-usun').hidden = false; }
   else { img.hidden = true; $('btn-kawa-foto-usun').hidden = true; }
 }
-// uploader zdjęcia kawy podpinany niżej przez podepnijFoto()
+function ustawKawaFoto2(url) {
+  kawaFoto2 = url || '';
+  const img = $('kawa-foto2-podglad');
+  if (kawaFoto2) { img.src = kawaFoto2; img.hidden = false; $('btn-kawa-foto2-usun').hidden = false; }
+  else { img.hidden = true; $('btn-kawa-foto2-usun').hidden = true; }
+}
+// uploadery zdjęć kawy podpinane niżej przez podepnijFoto()
 
 async function otworzKawe(id) {
   edytowanaKawa = id;
@@ -486,7 +492,7 @@ async function otworzKawe(id) {
   if (!id) {
     $('kawa-tytul').textContent = 'Nowa kawa';
     ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-obrobka','kawa-opis'].forEach((f) => $(f).value = '');
-    $('kawa-dostepna').checked = true; ustawKawaFoto('');
+    $('kawa-dostepna').checked = true; ustawKawaFoto(''); ustawKawaFoto2('');
   } else {
     const { data, error } = await sb.from('coffees').select('*').eq('id', id).single();
     if (error || !data) { pokazInfo($('kawa-info'), 'Nie udało się wczytać kawy.', 'zle'); return; }
@@ -497,7 +503,7 @@ async function otworzKawe(id) {
     $('kawa-obrobka').value = data.obrobka || '';
     $('kawa-opis').value = data.note || '';
     $('kawa-dostepna').checked = !!data.available;
-    ustawKawaFoto(data.photo_url || '');
+    ustawKawaFoto(data.photo_url || ''); ustawKawaFoto2(data.photo_url2 || '');
   }
   $('widok-kawy').hidden = true; $('widok-kawy-edytor').hidden = false; window.scrollTo(0, 0);
 }
@@ -512,7 +518,8 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
     obrobka: $('kawa-obrobka').value.trim() || null,
     note: $('kawa-opis').value.trim() || null,
     available: $('kawa-dostepna').checked,
-    photo_url: kawaFoto || null
+    photo_url: kawaFoto || null,
+    photo_url2: kawaFoto2 || null
   };
   if (!edytowanaKawa) rekord.sort = kawy.length ? Math.max(...kawy.map((k) => k.sort ?? 0)) + 1 : 0;
   const btn = $('btn-kawa-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
@@ -612,6 +619,9 @@ podepnijFoto({ strefaId: 'okladka-strefa', inputId: 'pole-okladka', btnId: 'btn-
 podepnijFoto({ strefaId: 'kawa-strefa', inputId: 'kawa-foto', btnId: 'btn-kawa-foto',
   usunId: 'btn-kawa-foto-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor',
   ustaw: ustawKawaFoto, przetworz: normalizujKawe });
+podepnijFoto({ strefaId: 'kawa-strefa2', inputId: 'kawa-foto2', btnId: 'btn-kawa-foto2',
+  usunId: 'btn-kawa-foto2-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor',
+  ustaw: ustawKawaFoto2, przetworz: normalizujKawe });
 podepnijFoto({ strefaId: 'stan-strefa', inputId: 'stan-foto', btnId: 'btn-stan-foto',
   usunId: 'btn-stan-foto-usun', infoId: 'stan-poz-info', widokId: 'widok-stan-edytor', ustaw: ustawStanFoto });
 

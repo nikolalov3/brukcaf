@@ -380,3 +380,20 @@
     if (e.key === 'Escape' && !panel.hidden) { pokaz(false); ikona.focus(); }
   });
 })();
+
+/* Dwa zdjęcia kawy: na desktopie zmiana po najechaniu (CSS :hover),
+   a na urządzeniach dotykowych automatyczny cykl co 4,4 s — kaskadowo
+   od pierwszej karty do ostatniej i w pętlę. */
+(function () {
+  if (!window.matchMedia || !matchMedia('(hover: none)').matches) return;
+  var karty = Array.prototype.filter.call(
+    document.querySelectorAll('.mlyn-karta'),
+    function (k) { return k.querySelector('.karta-foto2'); }
+  );
+  if (!karty.length) return;
+  var i = 0;
+  setInterval(function () {
+    karty[i % karty.length].classList.toggle('pokaz2');
+    i++;
+  }, 4400);
+})();

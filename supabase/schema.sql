@@ -116,7 +116,8 @@ create table if not exists public.coffees (
   method      text,                          -- metoda parzenia: espresso / V60 / itd.
   obrobka     text,                          -- metoda obróbki ziaren: myta / naturalna / honey
   note        text,                          -- krótki opis smaku
-  photo_url   text,                          -- zdjęcie ziarna/opakowania
+  photo_url   text,                          -- zdjęcie 1 (główne)
+  photo_url2  text,                          -- zdjęcie 2 (po najechaniu / cykl na mobile)
   level       int  default 3,                -- (wycofane z UI; kolumna zostaje dla starych wierszy)
   available   boolean not null default true, -- czy teraz w młynku
   sort        int  not null default 0,       -- kolejność wyświetlania
