@@ -397,3 +397,17 @@
     i++;
   }, 4400);
 })();
+
+/* Opis kawy: gdy treść jest dłuższa niż widoczny obszar, oznacz go klasą
+   .przewijalny — CSS doda wtedy delikatne wygaszenie u dołu (sygnał, że jest
+   więcej), bez brzydkiego paska scrolla. */
+(function () {
+  function oznacz() {
+    document.querySelectorAll('.karta-op').forEach(function (o) {
+      o.classList.toggle('przewijalny', o.scrollHeight > o.clientHeight + 2);
+    });
+  }
+  if (document.readyState !== 'loading') oznacz();
+  else document.addEventListener('DOMContentLoaded', oznacz);
+  window.addEventListener('resize', oznacz);
+})();
