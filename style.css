@@ -535,7 +535,7 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
   max-height:210px;overflow-y:auto;overscroll-behavior:contain;
   scrollbar-width:none}
 .karta-op::-webkit-scrollbar{display:none}
-.karta-op.przewijalny{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);
+.karta-op.przewijalny:not(.na-dole){-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);
   mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent)}
 
 /* pochodzenie / palarnia — drobna linia pod nazwą */

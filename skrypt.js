@@ -400,11 +400,20 @@
 
 /* Opis kawy: gdy treść jest dłuższa niż widoczny obszar, oznacz go klasą
    .przewijalny — CSS doda wtedy delikatne wygaszenie u dołu (sygnał, że jest
-   więcej), bez brzydkiego paska scrolla. */
+   więcej), bez brzydkiego paska scrolla. Gdy opis doscrollowany do samego dołu,
+   dokładamy .na-dole i wygaszenie znika (nie ma już czego zapowiadać). */
 (function () {
+  function stan(o) {
+    o.classList.toggle('przewijalny', o.scrollHeight > o.clientHeight + 2);
+    o.classList.toggle('na-dole', o.scrollTop + o.clientHeight >= o.scrollHeight - 2);
+  }
   function oznacz() {
     document.querySelectorAll('.karta-op').forEach(function (o) {
-      o.classList.toggle('przewijalny', o.scrollHeight > o.clientHeight + 2);
+      stan(o);
+      if (!o.dataset.podpiety) {
+        o.addEventListener('scroll', function () { stan(o); });
+        o.dataset.podpiety = '1';
+      }
     });
   }
   if (document.readyState !== 'loading') oznacz();
