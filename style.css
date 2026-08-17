@@ -499,6 +499,8 @@ h2{
 
 .karta-foto{aspect-ratio:4/3;display:block;position:relative;
   background:var(--tlo-2) center/cover no-repeat}
+/* zdjęcie kawy (opakowanie PNG) pokazujemy w całości, wyśrodkowane */
+.mlyn-strip:not(.ciasta) .karta-foto{background-size:contain}
 /* placeholder, gdy brak zdjęcia — faint ziarno */
 .karta-foto:not([style*="url"])::after{content:"";position:absolute;inset:0;
   background:currentColor;color:var(--wlos);

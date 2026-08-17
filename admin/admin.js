@@ -322,15 +322,63 @@ async function wgrajZdjecie(plik) {
   return sb.storage.from('blog').getPublicUrl(nazwa).data.publicUrl;
 }
 
+// wczytuje plik do obiektu Image
+function wczytajObraz(plik) {
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = URL.createObjectURL(plik);
+  });
+}
+
+// Normalizacja zdjęcia kawy: przycina przezroczyste marginesy wokół opakowania
+// i wcentrowuje je na jednym płótnie 4:3 (1000x750). Efekt: wszystkie kawy tej
+// samej wielkości i na środku. Działa, bo opakowania wpadają jako PNG bez tła.
+async function normalizujKawe(plik) {
+  const img = await wczytajObraz(plik);
+  const src = document.createElement('canvas');
+  src.width = img.naturalWidth; src.height = img.naturalHeight;
+  const sc = src.getContext('2d');
+  sc.drawImage(img, 0, 0);
+  const dane = sc.getImageData(0, 0, src.width, src.height).data;
+
+  // bounding box nieprzezroczystych pikseli
+  let minX = src.width, minY = src.height, maxX = -1, maxY = -1;
+  for (let y = 0; y < src.height; y++) {
+    for (let x = 0; x < src.width; x++) {
+      if (dane[(y * src.width + x) * 4 + 3] > 12) {
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
+  }
+  // brak przezroczystości (zwykłe zdjęcie) — bierzemy całość
+  if (maxX < minX || maxY < minY) { minX = 0; minY = 0; maxX = src.width - 1; maxY = src.height - 1; }
+  const bw = maxX - minX + 1, bh = maxY - minY + 1;
+
+  const TW = 1000, TH = 750, WYPELNIENIE = 0.86;
+  const out = document.createElement('canvas'); out.width = TW; out.height = TH;
+  const oc = out.getContext('2d');
+  const skala = Math.min((TW * WYPELNIENIE) / bw, (TH * WYPELNIENIE) / bh);
+  const dw = bw * skala, dh = bh * skala;
+  oc.drawImage(src, minX, minY, bw, bh, (TW - dw) / 2, (TH - dh) / 2, dw, dh);
+
+  const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+  return new File([blob], (plik.name || 'kawa').replace(/\.[^.]+$/, '') + '.png', { type: 'image/png' });
+}
+
 // ── wspólny uploader zdjęć: klik, przeciągnięcie pliku, wklejenie zrzutu ──
 const fotoUploadery = {};  // przechowuje { wgraj, widokId } do routingu wklejania
-function podepnijFoto({ strefaId, inputId, btnId, usunId, infoId, widokId, ustaw }) {
+function podepnijFoto({ strefaId, inputId, btnId, usunId, infoId, widokId, ustaw, przetworz }) {
   const strefa = $(strefaId), input = $(inputId), info = $(infoId);
   const wgraj = async (plik) => {
     if (!plik) return;
     if (!(plik.type || '').startsWith('image/')) { pokazInfo(info, 'To nie jest obrazek.', 'zle'); return; }
-    pokazInfo(info, 'Wgrywam zdjęcie…', '');
-    const url = await wgrajZdjecie(plik);
+    pokazInfo(info, 'Przetwarzam zdjęcie…', '');
+    let doWyslania = plik;
+    if (przetworz) { try { doWyslania = await przetworz(plik); } catch { doWyslania = plik; } }
+    const url = await wgrajZdjecie(doWyslania);
     if (!url) { pokazInfo(info, 'Nie udało się wgrać zdjęcia.', 'zle'); return; }
     ustaw(url); pokazInfo(info, '', '');
   };
@@ -562,7 +610,8 @@ function ustawStanFoto(url) {
 podepnijFoto({ strefaId: 'okladka-strefa', inputId: 'pole-okladka', btnId: 'btn-okladka',
   usunId: 'btn-okladka-usun', infoId: 'edytor-info', widokId: 'widok-edytor', ustaw: ustawOkladke });
 podepnijFoto({ strefaId: 'kawa-strefa', inputId: 'kawa-foto', btnId: 'btn-kawa-foto',
-  usunId: 'btn-kawa-foto-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor', ustaw: ustawKawaFoto });
+  usunId: 'btn-kawa-foto-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor',
+  ustaw: ustawKawaFoto, przetworz: normalizujKawe });
 podepnijFoto({ strefaId: 'stan-strefa', inputId: 'stan-foto', btnId: 'btn-stan-foto',
   usunId: 'btn-stan-foto-usun', infoId: 'stan-poz-info', widokId: 'widok-stan-edytor', ustaw: ustawStanFoto });
 
