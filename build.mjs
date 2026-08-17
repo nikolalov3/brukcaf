@@ -167,10 +167,12 @@ if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
 const kawy = dane.kawy.slice(0, LIMIT_KAWY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 
+let plKawyHtml = '';  // kawy z wersji PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
   let html = readFileSync(t.file, 'utf8');
   const kInner = kawy.length ? kawy.map((k) => kartaKawy(k, t)).join('\n') : pustaKarta(t.pustoKawy);
   const cInner = ciasta.length ? ciasta.map((c) => kartaCiasta(c, t)).join('\n') : pustaKarta(t.pustoCiasta);
+  if (lang === 'pl') plKawyHtml = kInner;
   html = podmienListe(html, 'data-kawy', kInner);
   html = podmienListe(html, 'data-ciasta', cInner);
   html = podmienLd(html, jsonLd(kawy, ciasta));
@@ -178,11 +180,28 @@ for (const [lang, t] of Object.entries(L)) {
   console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${DEMO ? ' (demo)' : ''}`);
 }
 
-// ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT) o zmianie stron ──
+// Czy sekcja KAW zmieniła się względem tego, co jest teraz na żywej stronie?
+// Jeśli zmieniły się tylko ciasta, nie ma sensu pingować wyszukiwarek.
+async function kawyBezZmian(nowyKInner) {
+  try {
+    const r = await fetch('https://bruk.cafe/');
+    if (!r.ok) return false;                 // nie wiemy → dla bezpieczeństwa pinguj
+    const live = await r.text();
+    const m = live.match(/<ul class="mlyn-strip" data-kawy>([\s\S]*?)<\/ul>/);
+    if (!m) return false;
+    return m[1].trim() === nowyKInner.trim();
+  } catch {
+    return false;
+  }
+}
+
+// ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT), TYLKO gdy zmieniły się kawy ──
 // Klucz jest jawny z założenia (hostowany w publicznym pliku KLUCZ.txt).
 const INDEXNOW_KEY = 'dcdea3335dc57ab36cf2c27e6166e0e7';
 if (!DEMO) {
-  try {
+  if (await kawyBezZmian(plKawyHtml)) {
+    console.log('IndexNow: kawy bez zmian (zmiana tylko ciast?) — pomijam ping');
+  } else try {
     const r = await fetch('https://api.indexnow.org/indexnow', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
