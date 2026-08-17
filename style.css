@@ -518,11 +518,11 @@ h2{
 .karta-tresc{flex:1;display:flex;flex-direction:column;gap:8px;
   padding:clamp(18px,2.2vw,24px)}
 .karta-tresc .etykieta{color:var(--cichy)}
-/* nazwa: stała wysokość bloku (opis zawsze na tym samym poziomie), a długie
-   nazwy dostają mniejszą czcionkę zamiast rosnąć w dół */
-.karta-nz{min-height:56px;display:flex;align-items:flex-start;
-  font-size:clamp(18px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.08;
-  overflow:hidden}
+/* nazwa + pochodzenie razem: pochodzenie tuż pod tytułem; cały blok ma stałą
+   wysokość, żeby opis niżej zawsze startował na tym samym poziomie */
+.karta-glowa{min-height:74px;display:flex;flex-direction:column;gap:5px}
+.karta-nz{font-size:clamp(18px,2.2vw,25px);letter-spacing:-.03em;font-weight:700;line-height:1.08;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .karta-nz.nz-sredni{font-size:clamp(16px,1.9vw,21px)}
 .karta-nz.nz-maly{font-size:clamp(15px,1.7vw,18px)}
 /* nazwa-link do produktu: wygląda jak zwykły tekst, subtelny akcent przy najechaniu */

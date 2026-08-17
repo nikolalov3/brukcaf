@@ -66,7 +66,7 @@ function kartaKawy(k, t) {
   return `        <li class="mlyn-karta">
           <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(k.photo_url)}>${foto2}</span>
           <span class="karta-tresc">
-            ${nazwaHtml}${poch}${op}${chipRow}
+            <span class="karta-glowa">${nazwaHtml}${poch}</span>${op}${chipRow}
           </span>
         </li>`;
 }
