@@ -59,10 +59,14 @@ function kartaKawy(k, t) {
   // nazwa skaluje się w dół dla długich, żeby blok pod nią był zawsze na tej samej wysokości
   const dl = (k.name || '').length;
   const nzKl = dl > 26 ? ' nz-maly' : dl > 16 ? ' nz-sredni' : '';
+  // gdy jest link do produktu — nazwa staje się linkiem (styl jak tekst)
+  const nazwaHtml = k.link_url
+    ? `<a class="karta-nz karta-link${nzKl}" href="${esc(k.link_url)}" target="_blank" rel="noopener">${esc(k.name)}</a>`
+    : `<span class="karta-nz${nzKl}">${esc(k.name)}</span>`;
   return `        <li class="mlyn-karta">
           <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(k.photo_url)}>${foto2}</span>
           <span class="karta-tresc">
-            <span class="karta-nz${nzKl}">${esc(k.name)}</span>${poch}${op}${chipRow}
+            ${nazwaHtml}${poch}${op}${chipRow}
           </span>
         </li>`;
 }
@@ -92,6 +96,7 @@ function jsonLd(kawy, ciasta) {
     '@type': 'MenuItem',
     name: x.name,
     ...(x.note ? { description: x.note } : {}),
+    ...(x.link_url ? { url: x.link_url, sameAs: x.link_url } : {}),
   });
   const sekcje = [];
   if (kawy.length) sekcje.push({ '@type': 'MenuSection', name: 'Kawa', hasMenuItem: kawy.map(pozycja) });
@@ -125,7 +130,7 @@ async function pobierz() {
   if (DEMO) {
     return {
       kawy: [
-        { name: 'HAYB Yellow', method: 'Espresso', obrobka: 'naturalna', origin: 'Brazylia + Gwatemala · palarnia HAYB', note: 'Ciemny blend stu procent arabiki. Czekolada, orzechy, pełne ciało.' },
+        { name: 'HAYB Yellow', method: 'Espresso', obrobka: 'naturalna', origin: 'Brazylia + Gwatemala · palarnia HAYB', note: 'Ciemny blend stu procent arabiki. Czekolada, orzechy, pełne ciało.', link_url: 'https://hayb.pl/produkt/yellow/' },
         { name: 'Etiopia Guji', method: 'Przelew V60', obrobka: 'myta', origin: 'palarnia HAYB', note: 'Owoce pestkowe, herbaciana lekkość, klarowna słodycz.' },
         { name: 'Kolumbia Huila', method: 'Przelew V60', obrobka: 'honey', origin: 'palarnia Coffee Proficiency', note: 'Czekolada, karmel, orzech laskowy.' },
       ],
@@ -171,4 +176,25 @@ for (const [lang, t] of Object.entries(L)) {
   html = podmienLd(html, jsonLd(kawy, ciasta));
   writeFileSync(t.file, html);
   console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${DEMO ? ' (demo)' : ''}`);
+}
+
+// ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT) o zmianie stron ──
+// Klucz jest jawny z założenia (hostowany w publicznym pliku KLUCZ.txt).
+const INDEXNOW_KEY = 'dcdea3335dc57ab36cf2c27e6166e0e7';
+if (!DEMO) {
+  try {
+    const r = await fetch('https://api.indexnow.org/indexnow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({
+        host: 'bruk.cafe',
+        key: INDEXNOW_KEY,
+        keyLocation: `https://bruk.cafe/${INDEXNOW_KEY}.txt`,
+        urlList: ['https://bruk.cafe/', 'https://bruk.cafe/en/'],
+      }),
+    });
+    console.log('IndexNow:', r.status);
+  } catch (e) {
+    console.log('IndexNow pominięty:', e.message);
+  }
 }

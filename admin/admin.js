@@ -491,7 +491,7 @@ async function otworzKawe(id) {
   $('btn-kawa-usun').hidden = !id;
   if (!id) {
     $('kawa-tytul').textContent = 'Nowa kawa';
-    ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-obrobka','kawa-opis'].forEach((f) => $(f).value = '');
+    ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-obrobka','kawa-opis','kawa-link'].forEach((f) => $(f).value = '');
     $('kawa-dostepna').checked = true; ustawKawaFoto(''); ustawKawaFoto2('');
   } else {
     const { data, error } = await sb.from('coffees').select('*').eq('id', id).single();
@@ -502,6 +502,7 @@ async function otworzKawe(id) {
     $('kawa-pochodzenie').value = data.origin || '';
     $('kawa-obrobka').value = data.obrobka || '';
     $('kawa-opis').value = data.note || '';
+    $('kawa-link').value = data.link_url || '';
     $('kawa-dostepna').checked = !!data.available;
     ustawKawaFoto(data.photo_url || ''); ustawKawaFoto2(data.photo_url2 || '');
   }
@@ -517,6 +518,7 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
     origin: $('kawa-pochodzenie').value.trim() || null,
     obrobka: $('kawa-obrobka').value.trim() || null,
     note: $('kawa-opis').value.trim() || null,
+    link_url: $('kawa-link').value.trim() || null,
     available: $('kawa-dostepna').checked,
     photo_url: kawaFoto || null,
     photo_url2: kawaFoto2 || null

@@ -116,6 +116,7 @@ create table if not exists public.coffees (
   method      text,                          -- metoda parzenia: espresso / V60 / itd.
   obrobka     text,                          -- metoda obróbki ziaren: myta / naturalna / honey
   note        text,                          -- krótki opis smaku
+  link_url    text,                          -- link do produktu (palarnia/sklep); nazwa staje się linkiem + sameAs w schemie
   photo_url   text,                          -- zdjęcie 1 (główne)
   photo_url2  text,                          -- zdjęcie 2 (po najechaniu / cykl na mobile)
   level       int  default 3,                -- (wycofane z UI; kolumna zostaje dla starych wierszy)

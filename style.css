@@ -525,6 +525,9 @@ h2{
   overflow:hidden}
 .karta-nz.nz-sredni{font-size:clamp(16px,1.9vw,21px)}
 .karta-nz.nz-maly{font-size:clamp(15px,1.7vw,18px)}
+/* nazwa-link do produktu: wygląda jak zwykły tekst, subtelny akcent przy najechaniu */
+a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color .15s ease}
+@media(hover:hover){a.karta-link:hover{color:var(--bordo)}}
 .karta-op{color:var(--cichy);font-size:14.5px;line-height:1.55;max-width:40ch}
 
 /* pochodzenie / palarnia — drobna linia pod nazwą */
