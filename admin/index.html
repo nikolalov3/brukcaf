@@ -49,6 +49,7 @@
     <button type="button" class="zakl aktywna" data-tab="wpisy">Wpisy</button>
     <button type="button" class="zakl" data-tab="kawy">Dziś w młynku</button>
     <button type="button" class="zakl" data-tab="stan">Stan (ciasta)</button>
+    <button type="button" class="zakl" data-tab="menu">Menu</button>
   </nav>
 
   <!-- lista wpisów -->
@@ -311,6 +312,64 @@
       <button class="btn" id="btn-stan-zapisz">Zapisz</button>
       <button class="btn pusty" id="btn-stan-anuluj">Anuluj</button>
       <button class="btn groźny mały" id="btn-stan-usun" hidden style="margin-left:auto">Usuń pozycję</button>
+    </div>
+  </main>
+
+  <!-- ═══ MENU (karta lokalu) ═══ -->
+  <main class="ramka grupa-menu" id="widok-menu" hidden>
+    <div class="gora">
+      <h2>Menu</h2>
+      <button class="btn" id="btn-nowa-poz">+ Dodaj pozycję</button>
+    </div>
+    <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
+      Ceny, kolejność i pozycje karty. Strzałki układają w obrębie sekcji.
+      Po zmianach kliknij „Aktualizuj stronę".</p>
+    <div class="info" id="menu-info" hidden></div>
+    <div id="menu-lista"></div>
+    <div class="publikuj">
+      <button class="btn" data-rebuild>Aktualizuj stronę</button>
+      <p class="cichy">Publikuje wszystkie zmiany — na stronie za ~minutę.</p>
+    </div>
+  </main>
+
+  <main class="ramka grupa-menu" id="widok-menu-edytor" hidden>
+    <div class="gora">
+      <h2 id="poz-tytul">Nowa pozycja</h2>
+      <button class="btn pusty mały" id="btn-poz-wroc">← Wróć</button>
+    </div>
+    <div class="info" id="poz-info" hidden></div>
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="poz-sekcja">Sekcja</label>
+        <input type="text" id="poz-sekcja" list="lista-sekcji" placeholder="np. Kawa">
+        <datalist id="lista-sekcji"></datalist>
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="poz-cena">Cena</label>
+        <input type="text" id="poz-cena" placeholder="np. 17 zł">
+      </div>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="poz-nazwa">Nazwa</label>
+      <input type="text" id="poz-nazwa" placeholder="np. Flat white">
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="poz-sklad">Skład / opis (opcjonalnie)</label>
+      <textarea id="poz-sklad" rows="2" placeholder="np. Chleb żytni, twarożek, jajo na miękko…"></textarea>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="poz-dieta">Dieta (opcjonalnie)</label>
+      <select id="poz-dieta">
+        <option value="">—</option>
+        <option value="vegan">vegan</option>
+        <option value="wege">wege</option>
+      </select>
+    </div>
+
+    <div class="stopka-edytora">
+      <button class="btn" id="btn-poz-zapisz">Zapisz</button>
+      <button class="btn pusty" id="btn-poz-anuluj">Anuluj</button>
+      <button class="btn groźny mały" id="btn-poz-usun" hidden style="margin-left:auto">Usuń pozycję</button>
     </div>
   </main>
 </div>

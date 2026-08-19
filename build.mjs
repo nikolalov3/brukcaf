@@ -125,6 +125,64 @@ function podmienLd(html, ld) {
   return html.replace(re, `<!-- MLYN-LD -->\n${ld}\n<!-- /MLYN-LD -->`);
 }
 
+// ── MENU: grupowanie po sekcji (kolejność wg sekcja_sort/sort z zapytania) ──
+function grupujMenu(items) {
+  const sekcje = [], mapa = new Map();
+  for (const it of items) {
+    if (!mapa.has(it.sekcja)) { mapa.set(it.sekcja, []); sekcje.push(it.sekcja); }
+    mapa.get(it.sekcja).push(it);
+  }
+  return { sekcje, mapa };
+}
+
+// widoczny HTML menu (te same klasy co szablon)
+function renderMenu(items) {
+  const { sekcje, mapa } = grupujMenu(items);
+  return sekcje.map((sek) => {
+    const poz = mapa.get(sek).map((it) => {
+      const zn = it.dieta ? `<span class="znacznik">${esc(it.dieta)}</span>` : '';
+      const cena = it.cena ? `<span class="cena">${esc(it.cena)}</span>` : '';
+      const glowa = `<div class="glowa"><span class="nazwa">${esc(it.nazwa)}</span>${zn}<span class="kropki"></span>${cena}</div>`;
+      return it.sklad
+        ? `      <div class="pozycja">\n        ${glowa}\n        <p class="sklad">${esc(it.sklad)}</p>\n      </div>`
+        : `      <div class="pozycja">${glowa}</div>`;
+    }).join('\n');
+    return `    <div class="grupa zjawia">\n      <h3 class="etykieta">${esc(sek)}</h3>\n${poz}\n    </div>`;
+  }).join('\n\n');
+}
+
+// JSON-LD Menu (z @id, referencjonowany z CafeOrCoffeeShop.hasMenu)
+function menuLd(items) {
+  const { sekcje, mapa } = grupujMenu(items);
+  const DIETY = { vegan: 'https://schema.org/VeganDiet', wege: 'https://schema.org/VegetarianDiet', vege: 'https://schema.org/VegetarianDiet' };
+  const data = {
+    '@context': 'https://schema.org', '@type': 'Menu', '@id': 'https://bruk.cafe/#menu',
+    name: 'Menu Bruk Cafe', inLanguage: ['pl-PL', 'en'],
+    hasMenuSection: sekcje.map((sek) => ({
+      '@type': 'MenuSection', name: sek,
+      hasMenuItem: mapa.get(sek).map((it) => ({
+        '@type': 'MenuItem', name: it.nazwa,
+        ...(it.sklad ? { description: it.sklad } : {}),
+        ...(it.dieta && DIETY[it.dieta] ? { suitableForDiet: DIETY[it.dieta] } : {}),
+        ...(it.cena ? { offers: { '@type': 'Offer', price: String(it.cena).replace(/[^\d.,]/g, '').replace(',', '.'), priceCurrency: 'PLN' } } : {}),
+      })),
+    })),
+  };
+  return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2).replaceAll('</', '<\\/')}\n</script>`;
+}
+
+// Tolerancyjne: brak markera = pomijamy (np. EN trzyma statyczne angielskie menu).
+function podmienMenu(html, inner) {
+  const re = /<!-- MENU -->[\s\S]*?<!-- \/MENU -->/;
+  if (!re.test(html)) return html;
+  return html.replace(re, `<!-- MENU -->\n${inner}\n  <!-- /MENU -->`);
+}
+function podmienMenuLd(html, ld) {
+  const re = /<!-- MENU-LD -->[\s\S]*?<!-- \/MENU-LD -->/;
+  if (!re.test(html)) return html;
+  return html.replace(re, `<!-- MENU-LD -->\n${ld}\n<!-- /MENU-LD -->`);
+}
+
 // ── pobranie danych ─────────────────────────────────────────────
 async function pobierz() {
   if (DEMO) {
@@ -138,6 +196,12 @@ async function pobierz() {
         { name: 'Sernik baskijski', status: 'available', note: '' },
         { name: 'Brownie', status: 'low', note: 'zostały 2 kawałki' },
         { name: 'Chlebek bananowy', status: 'sold_out', note: 'będzie jutro rano' },
+      ],
+      menu: [
+        { sekcja: 'Kawa', nazwa: 'Doppio', cena: '12 zł', sort: 10 },
+        { sekcja: 'Kawa', nazwa: 'Flat white', cena: '17 zł', sort: 20 },
+        { sekcja: 'Herbata i matcha', nazwa: 'Matcha latte', cena: '21 zł', sort: 10 },
+        { sekcja: 'Śniadania', nazwa: 'Pęczak z hummusem', cena: '39 zł', dieta: 'vegan', sklad: 'Kasza pęczak, hummus, marchew, harissa.', sort: 10 },
       ],
     };
   }
@@ -153,7 +217,14 @@ async function pobierz() {
     sb.from('stock_items').select('*').order('sort').order('created_at'),
   ]);
   if (e1 || e2) { console.warn('⚠ Błąd odczytu z Supabase — pomijam generowanie, zostaje szablon.', (e1 || e2).message); return null; }
-  return { kawy: kawy || [], ciasta: ciasta || [] };
+
+  // Menu osobno: brak tabeli menu_items NIE może wywalić buildu (zostaje statyczne menu).
+  let menu = null;
+  const mr = await sb.from('menu_items').select('*').order('sekcja_sort').order('sort').order('created_at');
+  if (!mr.error) menu = mr.data || [];
+  else console.log('menu_items niedostępne — zostaje statyczne menu (' + mr.error.message + ')');
+
+  return { kawy: kawy || [], ciasta: ciasta || [], menu };
 }
 
 // Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
@@ -166,6 +237,7 @@ const dane = await pobierz();
 if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
 const kawy = dane.kawy.slice(0, LIMIT_KAWY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
+const menu = dane.menu;  // null gdy brak tabeli → zostaje statyczne menu
 
 let plKawyHtml = '';  // kawy z wersji PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
@@ -176,8 +248,13 @@ for (const [lang, t] of Object.entries(L)) {
   html = podmienListe(html, 'data-kawy', kInner);
   html = podmienListe(html, 'data-ciasta', cInner);
   html = podmienLd(html, jsonLd(kawy, ciasta));
+  if (menu && menu.length) {
+    html = podmienMenu(html, renderMenu(menu));
+    html = podmienMenuLd(html, menuLd(menu));
+  }
   writeFileSync(t.file, html);
-  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${DEMO ? ' (demo)' : ''}`);
+  const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';
+  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${info}${DEMO ? ' (demo)' : ''}`);
 }
 
 // Czy sekcja KAW zmieniła się względem tego, co jest teraz na żywej stronie?

@@ -295,17 +295,18 @@ $('btn-usun').addEventListener('click', async () => {
 // ══════════════════════════════════════════════════════════════
 //  ZAKŁADKI
 // ══════════════════════════════════════════════════════════════
-let kawyZaladowane = false, stanZaladowany = false;
+let kawyZaladowane = false, stanZaladowany = false, menuZaladowane = false;
 
 function pokazZakladke(nazwa) {
   document.querySelectorAll('.zakl').forEach((b) =>
     b.classList.toggle('aktywna', b.dataset.tab === nazwa));
-  ['grupa-wpisy', 'grupa-kawy', 'grupa-stan'].forEach((kl) =>
+  ['grupa-wpisy', 'grupa-kawy', 'grupa-stan', 'grupa-menu'].forEach((kl) =>
     document.querySelectorAll('.' + kl).forEach((el) => (el.hidden = true)));
 
   if (nazwa === 'wpisy') $('widok-lista').hidden = false;
   if (nazwa === 'kawy')  { $('widok-kawy').hidden = false; if (!kawyZaladowane) wczytajKawy(); }
   if (nazwa === 'stan')  { $('widok-stan').hidden = false; if (!stanZaladowany) wczytajStan(); }
+  if (nazwa === 'menu')  { $('widok-menu').hidden = false; if (!menuZaladowane) wczytajMenu(); }
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.zakl').forEach((b) =>
@@ -688,3 +689,147 @@ $('btn-stan-usun').addEventListener('click', async () => {
   const { data } = await sb.auth.getSession();
   if (data.session) await wejdz();
 })();
+
+// ══════════════════════════════════════════════════════════════
+//  MENU (karta lokalu)
+// ══════════════════════════════════════════════════════════════
+let menu = [], edytowanaPoz = null;
+
+async function wczytajMenu() {
+  const { data, error } = await sb.from('menu_items')
+    .select('*')
+    .order('sekcja_sort', { ascending: true })
+    .order('sort', { ascending: true })
+    .order('created_at', { ascending: true });
+  if (error) {
+    pokazInfo($('menu-info'), 'Nie udało się wczytać menu. Czy tabela menu_items istnieje?', 'zle');
+    return;
+  }
+  menu = data || []; menuZaladowane = true; renderMenu();
+}
+
+function grupyMenu() {
+  const sekcje = [], mapa = new Map();
+  for (const it of menu) {
+    if (!mapa.has(it.sekcja)) { mapa.set(it.sekcja, []); sekcje.push(it.sekcja); }
+    mapa.get(it.sekcja).push(it);
+  }
+  return { sekcje, mapa };
+}
+
+function wypelnijSekcje() {
+  const sekcje = [...new Set(menu.map((m) => m.sekcja))];
+  $('lista-sekcji').innerHTML = sekcje
+    .map((s) => `<option value="${String(s).replace(/"/g, '&quot;')}"></option>`).join('');
+}
+
+function renderMenu() {
+  const box = $('menu-lista');
+  if (!menu.length) { box.innerHTML = '<div class="pusto">Brak pozycji. Kliknij „Dodaj pozycję”.</div>'; return; }
+  box.innerHTML = '';
+  const { sekcje, mapa } = grupyMenu();
+  for (const sek of sekcje) {
+    const naglowek = document.createElement('div');
+    naglowek.className = 'menu-sekcja etykieta';
+    naglowek.textContent = sek;
+    box.appendChild(naglowek);
+    const poz = mapa.get(sek);
+    poz.forEach((it, i) => {
+      const el = document.createElement('div');
+      el.className = 'wpis';
+      el.innerHTML = `
+        <div class="kolejnosc">
+          <button class="strzal" data-gora ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
+          <button class="strzal" data-dol ${i === poz.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
+        </div>
+        <div class="tresc">
+          <div class="tyt"></div>
+          <div class="meta"><span class="detale"></span></div>
+        </div>
+        <div class="akcje">
+          <span class="menu-cena"></span>
+          <button class="btn pusty mały" data-edit>Edytuj</button>
+        </div>`;
+      el.querySelector('.tyt').textContent = it.nazwa;
+      el.querySelector('.menu-cena').textContent = it.cena || '';
+      el.querySelector('.detale').textContent = [it.dieta, it.sklad ? 'opis' : ''].filter(Boolean).join(' · ');
+      el.querySelector('[data-edit]').addEventListener('click', () => otworzPoz(it.id));
+      el.querySelector('[data-gora]').addEventListener('click', () => przesunPoz(it, sek, -1));
+      el.querySelector('[data-dol]').addEventListener('click', () => przesunPoz(it, sek, 1));
+      box.appendChild(el);
+    });
+  }
+}
+
+// zamiana miejscami w obrębie sekcji + przenumerowanie sort (10,20,30…)
+async function przesunPoz(it, sek, kierunek) {
+  const wSekcji = menu.filter((m) => m.sekcja === sek);
+  const idx = wSekcji.findIndex((m) => m.id === it.id);
+  const j = idx + kierunek;
+  if (j < 0 || j >= wSekcji.length) return;
+  [wSekcji[idx], wSekcji[j]] = [wSekcji[j], wSekcji[idx]];
+  await Promise.all(wSekcji.map((m, k) => sb.from('menu_items').update({ sort: (k + 1) * 10 }).eq('id', m.id)));
+  await wczytajMenu();
+}
+
+async function otworzPoz(id) {
+  edytowanaPoz = id;
+  pokazInfo($('poz-info'), '', '');
+  $('btn-poz-usun').hidden = !id;
+  wypelnijSekcje();
+  if (!id) {
+    $('poz-tytul').textContent = 'Nowa pozycja';
+    ['poz-sekcja', 'poz-nazwa', 'poz-cena', 'poz-sklad'].forEach((f) => ($(f).value = ''));
+    $('poz-dieta').value = '';
+  } else {
+    const { data, error } = await sb.from('menu_items').select('*').eq('id', id).single();
+    if (error || !data) { pokazInfo($('poz-info'), 'Nie udało się wczytać pozycji.', 'zle'); return; }
+    $('poz-tytul').textContent = 'Edycja pozycji';
+    $('poz-sekcja').value = data.sekcja || '';
+    $('poz-nazwa').value = data.nazwa || '';
+    $('poz-cena').value = data.cena || '';
+    $('poz-sklad').value = data.sklad || '';
+    $('poz-dieta').value = data.dieta || '';
+  }
+  $('widok-menu').hidden = true; $('widok-menu-edytor').hidden = false; window.scrollTo(0, 0);
+}
+
+$('btn-nowa-poz').addEventListener('click', () => otworzPoz(null));
+$('btn-poz-wroc').addEventListener('click', () => { $('widok-menu-edytor').hidden = true; $('widok-menu').hidden = false; });
+$('btn-poz-anuluj').addEventListener('click', () => { $('widok-menu-edytor').hidden = true; $('widok-menu').hidden = false; });
+
+$('btn-poz-zapisz').addEventListener('click', async () => {
+  const sekcja = $('poz-sekcja').value.trim();
+  const nazwa = $('poz-nazwa').value.trim();
+  if (!sekcja || !nazwa) { pokazInfo($('poz-info'), 'Sekcja i nazwa są wymagane.', 'zle'); return; }
+  const rekord = {
+    sekcja, nazwa,
+    cena: $('poz-cena').value.trim() || null,
+    sklad: $('poz-sklad').value.trim() || null,
+    dieta: $('poz-dieta').value || null,
+  };
+  const wSekcji = menu.filter((m) => m.sekcja === sekcja && m.id !== edytowanaPoz);
+  if (wSekcji.length) rekord.sekcja_sort = wSekcji[0].sekcja_sort;
+  else rekord.sekcja_sort = menu.length ? Math.max(...menu.map((m) => m.sekcja_sort ?? 0)) + 10 : 10;
+  if (!edytowanaPoz) rekord.sort = wSekcji.length ? Math.max(...wSekcji.map((m) => m.sort ?? 0)) + 10 : 10;
+
+  const btn = $('btn-poz-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
+  const odp = edytowanaPoz
+    ? await sb.from('menu_items').update(rekord).eq('id', edytowanaPoz)
+    : await sb.from('menu_items').insert(rekord);
+  btn.disabled = false; btn.textContent = 'Zapisz';
+  if (odp.error) { pokazInfo($('poz-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  await wczytajMenu();
+  $('widok-menu-edytor').hidden = true; $('widok-menu').hidden = false;
+  pokazInfo($('menu-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
+});
+
+$('btn-poz-usun').addEventListener('click', async () => {
+  if (!edytowanaPoz) return;
+  if (!confirm('Usunąć tę pozycję z menu?')) return;
+  const { error } = await sb.from('menu_items').delete().eq('id', edytowanaPoz);
+  if (error) { pokazInfo($('poz-info'), 'Nie udało się usunąć.', 'zle'); return; }
+  await wczytajMenu();
+  $('widok-menu-edytor').hidden = true; $('widok-menu').hidden = false;
+  pokazInfo($('menu-info'), 'Usunięto.', 'ok');
+});

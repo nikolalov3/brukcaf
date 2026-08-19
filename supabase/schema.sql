@@ -179,3 +179,34 @@ create policy "publiczny odczyt stanów"
 drop policy if exists "zalogowany zarządza stanami" on public.stock_items;
 create policy "zalogowany zarządza stanami"
   on public.stock_items for all to authenticated using (true) with check (true);
+
+-- ── MENU (karta lokalu) ─────────────────────────────────────────
+create table if not exists public.menu_items (
+  id          uuid primary key default gen_random_uuid(),
+  sekcja      text not null,                 -- np. "Kawa", "Herbata i matcha"
+  sekcja_sort int  not null default 0,       -- kolejność sekcji
+  nazwa       text not null,
+  cena        text,                          -- "12 zł" (tekst; bywa "2 zł", zakresy)
+  sklad       text,                          -- opcjonalny opis pozycji
+  dieta       text,                          -- null / 'vegan' / 'wege'
+  sort        int  not null default 0,       -- kolejność w sekcji
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists menu_kolejnosc_idx on public.menu_items (sekcja_sort, sort);
+
+drop trigger if exists menu_updated_at on public.menu_items;
+create trigger menu_updated_at
+  before update on public.menu_items
+  for each row execute function public.dotknij_updated_at();
+
+alter table public.menu_items enable row level security;
+
+drop policy if exists "publiczny odczyt menu" on public.menu_items;
+create policy "publiczny odczyt menu"
+  on public.menu_items for select to anon, authenticated using (true);
+
+drop policy if exists "zalogowany zarządza menu" on public.menu_items;
+create policy "zalogowany zarządza menu"
+  on public.menu_items for all to authenticated using (true) with check (true);

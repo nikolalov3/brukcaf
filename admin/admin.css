@@ -175,3 +175,8 @@ a{color:inherit}
 .marka-panel img{height:22px;width:auto;display:block}
 .marka-panel span{font:500 11px/1 var(--mono);letter-spacing:.16em;
   text-transform:uppercase;color:var(--cichy)}
+
+/* ── lista menu w panelu ─────────────────────────── */
+.menu-sekcja{margin:24px 0 4px;color:var(--cichy)}
+.menu-sekcja:first-child{margin-top:2px}
+.menu-cena{font:600 13px/1 var(--mono);color:var(--atrament)}
