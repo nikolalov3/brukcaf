@@ -239,12 +239,12 @@ const kawy = dane.kawy.slice(0, LIMIT_KAWY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 const menu = dane.menu;  // null gdy brak tabeli → zostaje statyczne menu
 
-let plKawyHtml = '';  // kawy z wersji PL — do porównania z żywą stroną
+let plKawyHtml = '', plMenuHtml = null;  // kawy i menu z PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
   let html = readFileSync(t.file, 'utf8');
   const kInner = kawy.length ? kawy.map((k) => kartaKawy(k, t)).join('\n') : pustaKarta(t.pustoKawy);
   const cInner = ciasta.length ? ciasta.map((c) => kartaCiasta(c, t)).join('\n') : pustaKarta(t.pustoCiasta);
-  if (lang === 'pl') plKawyHtml = kInner;
+  if (lang === 'pl') { plKawyHtml = kInner; plMenuHtml = (menu && menu.length) ? renderMenu(menu) : null; }
   html = podmienListe(html, 'data-kawy', kInner);
   html = podmienListe(html, 'data-ciasta', cInner);
   html = podmienLd(html, jsonLd(kawy, ciasta));
@@ -257,27 +257,33 @@ for (const [lang, t] of Object.entries(L)) {
   console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${info}${DEMO ? ' (demo)' : ''}`);
 }
 
-// Czy sekcja KAW zmieniła się względem tego, co jest teraz na żywej stronie?
+// Czy treść ważna dla GEO (KAWY lub MENU) zmieniła się względem żywej strony?
 // Jeśli zmieniły się tylko ciasta, nie ma sensu pingować wyszukiwarek.
-async function kawyBezZmian(nowyKInner) {
+async function trescBezZmian(nowyKInner, noweMenu) {
   try {
     const r = await fetch('https://bruk.cafe/');
     if (!r.ok) return false;                 // nie wiemy → dla bezpieczeństwa pinguj
     const live = await r.text();
-    const m = live.match(/<ul class="mlyn-strip" data-kawy>([\s\S]*?)<\/ul>/);
-    if (!m) return false;
-    return m[1].trim() === nowyKInner.trim();
+    const mk = live.match(/<ul class="mlyn-strip" data-kawy>([\s\S]*?)<\/ul>/);
+    if (!mk) return false;
+    if (mk[1].trim() !== nowyKInner.trim()) return false;   // kawy się zmieniły
+    if (noweMenu != null) {                                 // menu z bazy — porównaj
+      const mm = live.match(/<!-- MENU -->([\s\S]*?)<!-- \/MENU -->/);
+      if (!mm) return false;
+      if (mm[1].trim() !== noweMenu.trim()) return false;   // menu się zmieniło
+    }
+    return true;                                            // ani kawy, ani menu — pewnie tylko ciasta
   } catch {
     return false;
   }
 }
 
-// ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT), TYLKO gdy zmieniły się kawy ──
+// ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT), TYLKO gdy zmieniły się kawy lub menu ──
 // Klucz jest jawny z założenia (hostowany w publicznym pliku KLUCZ.txt).
 const INDEXNOW_KEY = 'dcdea3335dc57ab36cf2c27e6166e0e7';
 if (!DEMO) {
-  if (await kawyBezZmian(plKawyHtml)) {
-    console.log('IndexNow: kawy bez zmian (zmiana tylko ciast?) — pomijam ping');
+  if (await trescBezZmian(plKawyHtml, plMenuHtml)) {
+    console.log('IndexNow: kawy i menu bez zmian (zmiana tylko ciast?) — pomijam ping');
   } else try {
     const r = await fetch('https://api.indexnow.org/indexnow', {
       method: 'POST',
