@@ -563,13 +563,24 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
   --ziarno-pusty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11' fill='%23cbc4b8'/%3E%3Cpath d='M9 3.2c-2.7 3.4-2.7 14.2 0 17.6' fill='none' stroke='%23aca391' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
-/* wypieki — niższy, kompaktowy pasek (dodatek do kaw): miniatura z boku */
-.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(238px,82vw,286px);flex-direction:row}
-.mlyn-strip.ciasta .karta-foto{aspect-ratio:1;width:84px;flex:none}
-.mlyn-strip.ciasta .karta-foto:not([style*="url"])::after{-webkit-mask-size:22px 30px;mask-size:22px 30px}
-.mlyn-strip.ciasta .karta-tresc{padding:13px 15px;gap:5px;justify-content:center}
-.mlyn-strip.ciasta .karta-nz{font-size:16px;line-height:1.1}
-.mlyn-strip.ciasta .karta-op{font-size:13px;line-height:1.45;max-width:34ch}
-.mlyn-strip.ciasta .stan-znak{margin-top:3px;padding:4px 7px;font-size:9px}
-.mlyn-strip.ciasta .karta-notka{font:500 11px/1.3 var(--mono);color:var(--cichy);margin-top:4px}
-@media(min-width:760px){.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(240px,26%,272px)}}
+/* wypieki — kafle ze zdjęciem w tle, nazwa wyśrodkowana, biały status */
+.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(210px,66vw,250px);aspect-ratio:3/4;
+  position:relative;overflow:hidden;
+  background:var(--tlo-2) center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center}
+/* bez zdjęcia — ciemniejsze tło, żeby biały tekst był czytelny */
+.mlyn-strip.ciasta .mlyn-karta:not([style*="url"]){background:#3a352f}
+/* przyciemnienie u dołu pod tekst */
+.mlyn-strip.ciasta .mlyn-karta::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.16) 0%,rgba(0,0,0,.12) 42%,rgba(0,0,0,.6) 100%)}
+.ciasto-tresc{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:11px;text-align:center;padding:22px 18px}
+.ciasto-nz{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:500;
+  font-size:clamp(22px,3.2vw,30px);line-height:1.14;color:#fff;letter-spacing:.01em;
+  text-shadow:0 2px 16px rgba(0,0,0,.5)}
+.mlyn-strip.ciasta .stan-znak{margin:0;align-self:center;color:#fff;
+  border-color:rgba(255,255,255,.55);background:rgba(0,0,0,.34);padding:5px 10px;font-size:9px;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.ciasto-notka{font:500 11px/1.35 var(--mono);color:rgba(255,255,255,.92);
+  text-shadow:0 1px 10px rgba(0,0,0,.55)}
+@media(min-width:760px){.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(220px,24%,250px)}}

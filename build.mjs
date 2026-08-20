@@ -74,11 +74,10 @@ function kartaKawy(k, t) {
 function kartaCiasta(c, t) {
   const st = t.status[c.status] || t.status.available;
   const cls = c.status === 'low' ? 'malo' : c.status === 'sold_out' ? 'wyprzedane' : 'dostepne';
-  const notka = c.note ? `\n            <span class="karta-notka">${esc(c.note)}</span>` : '';
-  return `        <li class="mlyn-karta">
-          <span class="karta-foto" data-foto aria-hidden="true"${fotoStyle(c.photo_url)}></span>
-          <span class="karta-tresc">
-            <span class="karta-nz">${esc(c.name)}</span>
+  const notka = c.note ? `\n            <span class="ciasto-notka">${esc(c.note)}</span>` : '';
+  return `        <li class="mlyn-karta ciasto-kafel"${fotoStyle(c.photo_url)}>
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">${esc(c.name)}</span>
             <span class="stan-znak ${cls}">${esc(st)}</span>${notka}
           </span>
         </li>`;
@@ -193,8 +192,8 @@ async function pobierz() {
         { name: 'Kolumbia Huila', method: 'Przelew V60', obrobka: 'honey', origin: 'palarnia Coffee Proficiency', note: 'Czekolada, karmel, orzech laskowy.' },
       ],
       ciasta: [
-        { name: 'Sernik baskijski', status: 'available', note: '' },
-        { name: 'Brownie', status: 'low', note: 'zostały 2 kawałki' },
+        { name: 'Sernik baskijski', status: 'available', note: '', photo_url: '/img/ciasto.jpg' },
+        { name: 'Brownie', status: 'low', note: 'zostały 2 kawałki', photo_url: '/img/ciastka.jpg' },
         { name: 'Chlebek bananowy', status: 'sold_out', note: 'będzie jutro rano' },
       ],
       menu: [
