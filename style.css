@@ -564,7 +564,7 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
 }
 
 /* wypieki — kafle ze zdjęciem w tle, nazwa wyśrodkowana, biały status */
-.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(210px,66vw,250px);aspect-ratio:3/4;
+.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(210px,66vw,250px);aspect-ratio:1/1;
   position:relative;overflow:hidden;
   background:var(--tlo-2) center/cover no-repeat;
   display:flex;align-items:center;justify-content:center}
