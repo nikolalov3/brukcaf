@@ -180,3 +180,8 @@ a{color:inherit}
 .menu-sekcja{margin:24px 0 4px;color:var(--cichy)}
 .menu-sekcja:first-child{margin-top:2px}
 .menu-cena{font:600 13px/1 var(--mono);color:var(--atrament)}
+
+/* siatka wielu zdjęć (ciasta: 1 główne + 3 do story) */
+.zdj-siatka{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.zdj-siatka .okladka{margin-top:0}
+.zdj-siatka .okladka img{width:96px;height:96px}

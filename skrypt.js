@@ -421,19 +421,19 @@
   window.addEventListener('resize', oznacz);
 })();
 
-/* Wypieki jako „stories": klik w kafel otwiera pełnoekranowy podgląd z paskami
-   postępu, auto-przewijaniem i nawigacją tap lewo/prawo (jak Instagram). */
+/* Wypieki jako story w telefonowym oknie: klik w kafel otwiera zdjęcia danego
+   ciasta jako slajdy (paski postępu, auto 4 s, tap lewo/prawo). Po ostatnim
+   zdjęciu przechodzi do kolejnego ciasta (jak Instagram). */
 (function () {
-  var kafle = Array.prototype.slice.call(document.querySelectorAll('.mlyn-strip.ciasta .ciasto-kafel'));
+  var kafle = Array.prototype.slice.call(document.querySelectorAll('.mlyn-strip.ciasta .ciasto-kafel.klik'));
   if (!kafle.length) return;
 
-  var dane = kafle.map(function (k) {
-    var foto = k.querySelector('.ciasto-foto');
-    var bg = foto ? getComputedStyle(foto).backgroundImage : '';
-    var m = bg && bg.match(/url\(["']?(.*?)["']?\)/);
+  var ciasta = kafle.map(function (k) {
+    var fotki = [];
+    try { fotki = JSON.parse(k.getAttribute('data-fotki') || '[]'); } catch (e) { fotki = []; }
     var zn = k.querySelector('.stan-znak');
     return {
-      foto: m ? m[1] : '',
+      fotki: fotki,
       nazwa: (k.querySelector('.ciasto-nz') || {}).textContent || '',
       status: zn ? zn.textContent : '',
       statusKl: zn ? zn.className.replace('stan-znak', '').trim() : '',
@@ -446,8 +446,9 @@
   box.className = 'stories';
   box.style.setProperty('--czas', (CZAS / 1000) + 's');
   box.innerHTML =
-    '<div class="stories-paski"></div>' +
-    '<div class="stories-scena">' +
+    '<div class="stories-okno">' +
+      '<div class="stories-scena"></div>' +
+      '<div class="stories-paski"></div>' +
       '<button class="stories-zamknij" aria-label="Zamknij">×</button>' +
       '<div class="stories-nawig"><span data-prev></span><span data-next></span></div>' +
       '<div class="stories-tresc">' +
@@ -458,37 +459,44 @@
     '</div>';
   document.body.appendChild(box);
 
-  var paski = box.querySelector('.stories-paski');
-  paski.innerHTML = dane.map(function () { return '<div class="stories-pasek"><i></i></div>'; }).join('');
-  var paskiEl = Array.prototype.slice.call(paski.querySelectorAll('.stories-pasek'));
   var scena = box.querySelector('.stories-scena');
+  var paski = box.querySelector('.stories-paski');
   var nz = box.querySelector('.stories-nz');
   var znak = box.querySelector('.stan-znak');
   var notka = box.querySelector('.stories-notka');
-  var i = 0, timer = null;
+  var iC = 0, iF = 0, timer = null;
 
-  function pokaz(idx) {
-    if (idx < 0) return;
-    if (idx >= dane.length) { zamknij(); return; }
-    i = idx;
-    var d = dane[i];
-    scena.style.backgroundImage = d.foto ? 'url("' + d.foto + '")' : '';
-    nz.textContent = d.nazwa;
-    znak.textContent = d.status;
-    znak.className = 'stan-znak ' + d.statusKl;
-    znak.style.display = d.status ? '' : 'none';
-    notka.textContent = d.notka;
-    paskiEl.forEach(function (p, k) {
-      p.classList.remove('trwa', 'zrobiony');
-      var bar = p.querySelector('i'); bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
-      if (k < i) p.classList.add('zrobiony');
-    });
-    paskiEl[i].classList.add('trwa');
-    clearTimeout(timer);
-    timer = setTimeout(function () { pokaz(i + 1); }, CZAS);
+  function rysujPaski(n, akt) {
+    var h = '';
+    for (var k = 0; k < n; k++) {
+      var kl = k < akt ? 'zrobiony' : (k === akt ? 'trwa' : '');
+      h += '<div class="stories-pasek ' + kl + '"><i></i></div>';
+    }
+    paski.innerHTML = h;
   }
 
-  function otworz(idx) { box.classList.add('otwarte'); document.body.style.overflow = 'hidden'; pokaz(idx); }
+  function pokaz(ic, if_) {
+    if (ic < 0) { ic = 0; if_ = 0; }
+    while (ic < ciasta.length && if_ >= ciasta[ic].fotki.length) { ic++; if_ = 0; }
+    if (ic >= ciasta.length) { zamknij(); return; }
+    if (if_ < 0) {
+      if (ic === 0) if_ = 0;
+      else { ic--; if_ = ciasta[ic].fotki.length - 1; }
+    }
+    var c = ciasta[ic];
+    iC = ic; iF = if_;
+    scena.style.backgroundImage = c.fotki[iF] ? 'url("' + c.fotki[iF] + '")' : '';
+    nz.textContent = c.nazwa;
+    znak.textContent = c.status;
+    znak.className = 'stan-znak ' + c.statusKl;
+    znak.style.display = c.status ? '' : 'none';
+    notka.textContent = c.notka;
+    rysujPaski(c.fotki.length, iF);
+    clearTimeout(timer);
+    timer = setTimeout(function () { pokaz(iC, iF + 1); }, CZAS);
+  }
+
+  function otworz(ic) { box.classList.add('otwarte'); document.body.style.overflow = 'hidden'; pokaz(ic, 0); }
   function zamknij() { clearTimeout(timer); box.classList.remove('otwarte'); document.body.style.overflow = ''; }
 
   kafle.forEach(function (k, idx) {
@@ -496,12 +504,13 @@
     k.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); otworz(idx); } });
   });
   box.querySelector('.stories-zamknij').addEventListener('click', zamknij);
-  box.querySelector('[data-next]').addEventListener('click', function () { pokaz(i + 1); });
-  box.querySelector('[data-prev]').addEventListener('click', function () { pokaz(i - 1); });
+  box.querySelector('[data-next]').addEventListener('click', function () { pokaz(iC, iF + 1); });
+  box.querySelector('[data-prev]').addEventListener('click', function () { pokaz(iC, iF - 1); });
+  box.addEventListener('click', function (e) { if (e.target === box) zamknij(); });
   document.addEventListener('keydown', function (e) {
     if (!box.classList.contains('otwarte')) return;
     if (e.key === 'Escape') zamknij();
-    else if (e.key === 'ArrowRight') pokaz(i + 1);
-    else if (e.key === 'ArrowLeft') pokaz(i - 1);
+    else if (e.key === 'ArrowRight') pokaz(iC, iF + 1);
+    else if (e.key === 'ArrowLeft') pokaz(iC, iF - 1);
   });
 })();
