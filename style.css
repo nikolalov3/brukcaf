@@ -496,8 +496,23 @@ h2{
 .mlyn-tab:hover{color:var(--atrament);border-color:var(--cichy)}
 .mlyn-tab.aktywny{background:var(--bordo);border-color:var(--bordo);color:#f4efe9}
 @media(min-width:760px){.mlyn-tab{padding:8px 18px}}
+/* mobile: wyraźnie większe przyciski przełącznika */
+@media(max-width:759px){.mlyn-tab{padding:13px 24px;font-size:13px;letter-spacing:.1em}}
+/* gdy przełącznik jest aktywny, zapasowa etykieta „Kawa" nigdy się nie pokazuje */
+.mlyn-napoje:has(.mlyn-przelacz:not([hidden])) [data-tylko-kawa]{display:none}
 /* atrybut hidden musi wygrać z .mlyn-strip{display:flex} */
 .mlyn-strip[hidden]{display:none}
+
+/* przełączenie Kawa/Herbata: karty wjeżdżają z dołu, schodkowo */
+@keyframes kartaWjazd{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.mlyn-strip.wjazd .mlyn-karta{animation:kartaWjazd .5s cubic-bezier(.2,.7,.2,1) both}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(1){animation-delay:0ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(2){animation-delay:55ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(3){animation-delay:110ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(4){animation-delay:165ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(5){animation-delay:220ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(6){animation-delay:275ms}
+@media(prefers-reduced-motion:reduce){.mlyn-strip.wjazd .mlyn-karta{animation:none}}
 
 /* poziomo przesuwany pasek kart (kawy / wypieki) */
 .mlyn-strip{list-style:none;display:flex;gap:1px;overflow-x:auto;

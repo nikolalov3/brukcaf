@@ -531,15 +531,21 @@
   if (label) label.hidden = true;
   if (przel) przel.hidden = false;
   const taby = [...przel.querySelectorAll('.mlyn-tab')];
-  function pokaz(cel) {
+  function pokaz(cel, animuj) {
     kawy.hidden = cel !== 'kawy';
     herb.hidden = cel !== 'herbaty';
+    if (animuj) {
+      const akt = cel === 'herbaty' ? herb : kawy;
+      akt.classList.remove('wjazd');
+      void akt.offsetWidth;        // reflow — animacja odpala od nowa przy każdym przełączeniu
+      akt.classList.add('wjazd');
+    }
     taby.forEach((t) => {
       const on = t.dataset.cel === cel;
       t.classList.toggle('aktywny', on);
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
   }
-  taby.forEach((t) => t.addEventListener('click', () => pokaz(t.dataset.cel)));
-  pokaz('kawy');
+  taby.forEach((t) => t.addEventListener('click', () => pokaz(t.dataset.cel, true)));
+  pokaz('kawy', false);
 })();
