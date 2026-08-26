@@ -563,24 +563,66 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
   --ziarno-pusty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 24'%3E%3Cellipse cx='9' cy='12' rx='8' ry='11' fill='%23cbc4b8'/%3E%3Cpath d='M9 3.2c-2.7 3.4-2.7 14.2 0 17.6' fill='none' stroke='%23aca391' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
-/* wypieki — kafle ze zdjęciem w tle, nazwa wyśrodkowana, biały status */
-.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(210px,66vw,250px);aspect-ratio:1/1;
-  position:relative;overflow:hidden;
-  background:var(--tlo-2) center/cover no-repeat;
-  display:flex;align-items:center;justify-content:center}
-/* bez zdjęcia — ciemniejsze tło, żeby biały tekst był czytelny */
-.mlyn-strip.ciasta .mlyn-karta:not([style*="url"]){background:#3a352f}
-/* przyciemnienie u dołu pod tekst */
-.mlyn-strip.ciasta .mlyn-karta::before{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.16) 0%,rgba(0,0,0,.12) 42%,rgba(0,0,0,.6) 100%)}
+/* wypieki jako „stories" — cukierkowa animowana ramka, wnętrze ze zdjęciem */
+.mlyn-strip.ciasta{background:none;border:none;overflow-x:auto;overflow-y:visible;gap:14px;padding:4px 2px 8px}
+.mlyn-strip.ciasta .mlyn-karta.ciasto-kafel{flex-basis:clamp(196px,62vw,232px);aspect-ratio:1/1;
+  padding:4px;border-radius:22px;cursor:pointer;background-color:transparent;
+  background-image:linear-gradient(135deg,#ff6ec4,#ff9a6c,#ffd166,#4ade80,#38bdf8,#a78bfa,#ff6ec4);
+  background-size:320% 320%;animation:cukierek 7s ease infinite;display:flex;
+  transition:transform .15s ease}
+@keyframes cukierek{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.mlyn-strip.ciasta .ciasto-kafel:hover,.mlyn-strip.ciasta .ciasto-kafel:focus-visible{transform:translateY(-2px);outline:none}
+.ciasto-foto{position:relative;flex:1;border-radius:18px;overflow:hidden;
+  background:#3a352f center/cover no-repeat;display:flex;align-items:center;justify-content:center}
+.ciasto-foto::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.16) 0%,rgba(0,0,0,.12) 42%,rgba(0,0,0,.62) 100%)}
 .ciasto-tresc{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:11px;text-align:center;padding:22px 18px}
+  justify-content:center;gap:10px;text-align:center;padding:18px 15px}
 .ciasto-nz{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:500;
-  font-size:clamp(22px,3.2vw,30px);line-height:1.14;color:#fff;letter-spacing:.01em;
+  font-size:clamp(20px,3vw,28px);line-height:1.14;color:#fff;letter-spacing:.01em;
   text-shadow:0 2px 16px rgba(0,0,0,.5)}
 .mlyn-strip.ciasta .stan-znak{margin:0;align-self:center;color:#fff;
-  border-color:rgba(255,255,255,.55);background:rgba(0,0,0,.34);padding:5px 10px;font-size:9px;
+  border-color:rgba(255,255,255,.6);background:rgba(0,0,0,.34);padding:5px 10px;font-size:9px;
   -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 .ciasto-notka{font:500 11px/1.35 var(--mono);color:rgba(255,255,255,.92);
   text-shadow:0 1px 10px rgba(0,0,0,.55)}
-@media(min-width:760px){.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(220px,24%,250px)}}
+@media(min-width:760px){.mlyn-strip.ciasta .mlyn-karta.ciasto-kafel{flex-basis:clamp(190px,22%,220px)}}
+@media(prefers-reduced-motion:reduce){.mlyn-strip.ciasta .ciasto-kafel{animation:none}}
+
+/* duży cukierkowy napis „Wypieki" (mobilnie) */
+.wypieki-label{background:linear-gradient(90deg,#ff6ec4,#ff9a6c,#ffd166,#4ade80,#38bdf8,#a78bfa,#ff6ec4);
+  background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:cukierek-tekst 6s linear infinite}
+@keyframes cukierek-tekst{0%{background-position:0% 0}100%{background-position:300% 0}}
+@media(max-width:760px){
+  .wypieki-label{font-family:Georgia,"Times New Roman",serif;font-style:italic;
+    font-size:clamp(30px,9vw,46px);letter-spacing:0;text-transform:none;opacity:1}
+}
+@media(prefers-reduced-motion:reduce){.wypieki-label{animation:none}}
+
+/* ── pełnoekranowe stories z wypiekami ─────────────── */
+.stories{position:fixed;inset:0;z-index:100;background:rgba(12,10,9,.96);
+  display:none;flex-direction:column;padding:12px;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.stories.otwarte{display:flex}
+.stories-paski{display:flex;gap:5px;padding:4px 4px 10px}
+.stories-pasek{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.28);overflow:hidden}
+.stories-pasek i{display:block;height:100%;width:0;background:#fff}
+.stories-pasek.zrobiony i{width:100%}
+.stories-pasek.trwa i{animation:stories-postep var(--czas,4s) linear forwards}
+@keyframes stories-postep{from{width:0}to{width:100%}}
+.stories-scena{position:relative;flex:1;border-radius:18px;overflow:hidden;
+  background:#3a352f center/cover no-repeat}
+.stories-scena::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.28),transparent 30%,transparent 55%,rgba(0,0,0,.72))}
+.stories-tresc{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:26px 24px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:12px}
+.stories-nz{font-family:Georgia,"Times New Roman",serif;font-style:italic;
+  font-size:clamp(30px,7vw,44px);color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.stories .stan-znak{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(0,0,0,.4);
+  font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:6px 11px}
+.stories-notka{font:500 12px/1.4 var(--mono);color:rgba(255,255,255,.92)}
+.stories-zamknij{position:absolute;top:14px;right:12px;z-index:2;width:40px;height:40px;
+  border:0;background:rgba(0,0,0,.35);color:#fff;border-radius:50%;font-size:20px;line-height:1}
+.stories-nawig{position:absolute;inset:0;z-index:1;display:flex}
+.stories-nawig span{flex:1}

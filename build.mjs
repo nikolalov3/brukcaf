@@ -74,11 +74,13 @@ function kartaKawy(k, t) {
 function kartaCiasta(c, t) {
   const st = t.status[c.status] || t.status.available;
   const cls = c.status === 'low' ? 'malo' : c.status === 'sold_out' ? 'wyprzedane' : 'dostepne';
-  const notka = c.note ? `\n            <span class="ciasto-notka">${esc(c.note)}</span>` : '';
-  return `        <li class="mlyn-karta ciasto-kafel"${fotoStyle(c.photo_url)}>
-          <span class="ciasto-tresc">
-            <span class="ciasto-nz">${esc(c.name)}</span>
-            <span class="stan-znak ${cls}">${esc(st)}</span>${notka}
+  const notka = c.note ? `\n              <span class="ciasto-notka">${esc(c.note)}</span>` : '';
+  return `        <li class="mlyn-karta ciasto-kafel" data-ciasto tabindex="0" role="button" aria-label="${esc(c.name)} — otwórz">
+          <span class="ciasto-foto"${fotoStyle(c.photo_url)}>
+            <span class="ciasto-tresc">
+              <span class="ciasto-nz">${esc(c.name)}</span>
+              <span class="stan-znak ${cls}">${esc(st)}</span>${notka}
+            </span>
           </span>
         </li>`;
 }
@@ -182,6 +184,44 @@ function podmienMenuLd(html, ld) {
   return html.replace(re, `<!-- MENU-LD -->\n${ld}\n<!-- /MENU-LD -->`);
 }
 
+// ── automatyczne tłumaczenie PL→EN (DeepL) ──────────────────────
+// Klucz z env DEEPL_KEY (nie w repo!). Wolumen menu+kaw jest mały, więc
+// tłumaczymy przy każdym buildzie. Brak klucza / błąd = EN zostaje jak było.
+const DEEPL_KEY = process.env.DEEPL_KEY;
+async function tlumaczBatch(teksty) {
+  if (!DEEPL_KEY || !teksty.length) return teksty.map(() => null);
+  const endpoint = DEEPL_KEY.trim().endsWith(':fx')
+    ? 'https://api-free.deepl.com/v2/translate'
+    : 'https://api.deepl.com/v2/translate';
+  const wyniki = [];
+  for (let i = 0; i < teksty.length; i += 45) {
+    const partia = teksty.slice(i, i + 45);
+    const r = await fetch(endpoint, {
+      method: 'POST',
+      headers: { Authorization: `DeepL-Auth-Key ${DEEPL_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: partia, source_lang: 'PL', target_lang: 'EN-GB', preserve_formatting: true }),
+    });
+    if (!r.ok) { console.warn('⚠ DeepL', r.status, '— EN bez tłumaczenia'); return teksty.map(() => null); }
+    const j = await r.json();
+    (j.translations || []).forEach((t) => wyniki.push(t.text));
+  }
+  return wyniki;
+}
+async function mapaTlumaczen(dane) {
+  const zbior = new Set();
+  const dodaj = (s) => { if (s && String(s).trim()) zbior.add(String(s)); };
+  (dane.kawy || []).forEach((k) => { dodaj(k.note); dodaj(k.origin); dodaj(k.method); dodaj(k.obrobka); });
+  (dane.ciasta || []).forEach((c) => { dodaj(c.name); dodaj(c.note); });
+  (dane.menu || []).forEach((m) => { dodaj(m.sekcja); dodaj(m.nazwa); dodaj(m.sklad); });
+  const lista = [...zbior];
+  if (!lista.length) return new Map();
+  const en = await tlumaczBatch(lista);
+  const mapa = new Map();
+  lista.forEach((pl, i) => { if (en[i]) mapa.set(pl, en[i]); });
+  if (mapa.size) console.log(`DeepL: przetłumaczono ${mapa.size} fraz PL→EN`);
+  return mapa;
+}
+
 // ── pobranie danych ─────────────────────────────────────────────
 async function pobierz() {
   if (DEMO) {
@@ -238,22 +278,39 @@ const kawy = dane.kawy.slice(0, LIMIT_KAWY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 const menu = dane.menu;  // null gdy brak tabeli → zostaje statyczne menu
 
+// tłumaczenia PL→EN (pusta mapa gdy brak DEEPL_KEY albo błąd → EN zostaje jak było)
+const mapa = DEMO ? new Map() : await mapaTlumaczen(dane);
+const tr = (s) => (s && mapa.get(s)) || s;
+function daneDlaJezyka(lang) {
+  if (lang !== 'en' || !mapa.size) return { kawy, ciasta, menu, tlumaczone: false };
+  return {
+    kawy: kawy.map((k) => ({ ...k, note: tr(k.note), origin: tr(k.origin), method: tr(k.method), obrobka: tr(k.obrobka) })),
+    ciasta: ciasta.map((c) => ({ ...c, name: tr(c.name), note: tr(c.note) })),
+    menu: menu ? menu.map((m) => ({ ...m, sekcja: tr(m.sekcja), nazwa: tr(m.nazwa), sklad: tr(m.sklad) })) : menu,
+    tlumaczone: true,
+  };
+}
+
 let plKawyHtml = '', plMenuHtml = null;  // kawy i menu z PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
+  const dl = daneDlaJezyka(lang);
   let html = readFileSync(t.file, 'utf8');
-  const kInner = kawy.length ? kawy.map((k) => kartaKawy(k, t)).join('\n') : pustaKarta(t.pustoKawy);
-  const cInner = ciasta.length ? ciasta.map((c) => kartaCiasta(c, t)).join('\n') : pustaKarta(t.pustoCiasta);
+  const kInner = dl.kawy.length ? dl.kawy.map((k) => kartaKawy(k, t)).join('\n') : pustaKarta(t.pustoKawy);
+  const cInner = dl.ciasta.length ? dl.ciasta.map((c) => kartaCiasta(c, t)).join('\n') : pustaKarta(t.pustoCiasta);
   if (lang === 'pl') { plKawyHtml = kInner; plMenuHtml = (menu && menu.length) ? renderMenu(menu) : null; }
   html = podmienListe(html, 'data-kawy', kInner);
   html = podmienListe(html, 'data-ciasta', cInner);
-  html = podmienLd(html, jsonLd(kawy, ciasta));
-  if (menu && menu.length) {
-    html = podmienMenu(html, renderMenu(menu));
-    html = podmienMenuLd(html, menuLd(menu));
+  html = podmienLd(html, jsonLd(dl.kawy, dl.ciasta));
+  // menu: PL zawsze z bazy; EN tylko gdy mamy tłumaczenie (inaczej zostaje statyczne angielskie)
+  const menuDoWstawienia = (lang === 'pl' || dl.tlumaczone) ? dl.menu : null;
+  if (menuDoWstawienia && menuDoWstawienia.length) {
+    html = podmienMenu(html, renderMenu(menuDoWstawienia));
+    html = podmienMenuLd(html, menuLd(menuDoWstawienia));
   }
   writeFileSync(t.file, html);
   const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';
-  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${info}${DEMO ? ' (demo)' : ''}`);
+  const tl = (lang === 'en' && dl.tlumaczone) ? ' + EN tłumaczone' : '';
+  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${info}${tl}${DEMO ? ' (demo)' : ''}`);
 }
 
 // Czy treść ważna dla GEO (KAWY lub MENU) zmieniła się względem żywej strony?
