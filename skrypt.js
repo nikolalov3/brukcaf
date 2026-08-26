@@ -421,24 +421,30 @@
   window.addEventListener('resize', oznacz);
 })();
 
-/* Wypieki jako story w telefonowym oknie: klik w kafel otwiera zdjęcia danego
-   ciasta jako slajdy (paski postępu, auto 4 s, tap lewo/prawo). Po ostatnim
-   zdjęciu przechodzi do kolejnego ciasta (jak Instagram). */
+/* Wypieki jako jedno story (jak Instagram): wszystkie zdjęcia wszystkich ciast
+   to jeden ciąg slajdów. U góry policzone są WSZYSTKIE slajdy naraz; tap w bok
+   / auto 4 s przechodzi po całości; klik w kafel startuje od danego ciasta. */
 (function () {
   var kafle = Array.prototype.slice.call(document.querySelectorAll('.mlyn-strip.ciasta .ciasto-kafel.klik'));
   if (!kafle.length) return;
 
-  var ciasta = kafle.map(function (k) {
+  // spłaszczamy do listy slajdów; startCiasta[idx] = pierwszy slajd danego kafla
+  var slajdy = [], startCiasta = [];
+  kafle.forEach(function (k) {
     var fotki = [];
     try { fotki = JSON.parse(k.getAttribute('data-fotki') || '[]'); } catch (e) { fotki = []; }
+    if (!fotki.length) fotki = [''];
     var zn = k.querySelector('.stan-znak');
-    return {
-      fotki: fotki,
+    var wsp = {
       nazwa: (k.querySelector('.ciasto-nz') || {}).textContent || '',
       status: zn ? zn.textContent : '',
       statusKl: zn ? zn.className.replace('stan-znak', '').trim() : '',
       notka: (k.querySelector('.ciasto-notka') || {}).textContent || ''
     };
+    startCiasta.push(slajdy.length);
+    fotki.forEach(function (f) {
+      slajdy.push({ foto: f, nazwa: wsp.nazwa, status: wsp.status, statusKl: wsp.statusKl, notka: wsp.notka });
+    });
   });
 
   var CZAS = 4000;
@@ -464,48 +470,44 @@
   var nz = box.querySelector('.stories-nz');
   var znak = box.querySelector('.stan-znak');
   var notka = box.querySelector('.stories-notka');
-  var iC = 0, iF = 0, timer = null;
+  var i = 0, timer = null;
 
-  function rysujPaski(n, akt) {
+  // paski budujemy raz — jeden na slajd; potem tylko przełączamy klasy
+  (function zbudujPaski() {
     var h = '';
-    for (var k = 0; k < n; k++) {
-      var kl = k < akt ? 'zrobiony' : (k === akt ? 'trwa' : '');
-      h += '<div class="stories-pasek ' + kl + '"><i></i></div>';
-    }
+    for (var k = 0; k < slajdy.length; k++) h += '<div class="stories-pasek"><i></i></div>';
     paski.innerHTML = h;
-  }
+  })();
+  var pasekEl = Array.prototype.slice.call(paski.children);
 
-  function pokaz(ic, if_) {
-    if (ic < 0) { ic = 0; if_ = 0; }
-    while (ic < ciasta.length && if_ >= ciasta[ic].fotki.length) { ic++; if_ = 0; }
-    if (ic >= ciasta.length) { zamknij(); return; }
-    if (if_ < 0) {
-      if (ic === 0) if_ = 0;
-      else { ic--; if_ = ciasta[ic].fotki.length - 1; }
-    }
-    var c = ciasta[ic];
-    iC = ic; iF = if_;
-    scena.style.backgroundImage = c.fotki[iF] ? 'url("' + c.fotki[iF] + '")' : '';
-    nz.textContent = c.nazwa;
-    znak.textContent = c.status;
-    znak.className = 'stan-znak ' + c.statusKl;
-    znak.style.display = c.status ? '' : 'none';
-    notka.textContent = c.notka;
-    rysujPaski(c.fotki.length, iF);
+  function pokaz(idx) {
+    if (idx < 0) idx = 0;
+    if (idx >= slajdy.length) { zamknij(); return; }
+    i = idx;
+    var s = slajdy[i];
+    scena.style.backgroundImage = s.foto ? 'url("' + s.foto + '")' : '';
+    nz.textContent = s.nazwa;
+    znak.textContent = s.status;
+    znak.className = 'stan-znak ' + s.statusKl;
+    znak.style.display = s.status ? '' : 'none';
+    notka.textContent = s.notka;
+    pasekEl.forEach(function (p, k) {
+      p.className = 'stories-pasek ' + (k < i ? 'zrobiony' : (k === i ? 'trwa' : ''));
+    });
     clearTimeout(timer);
-    timer = setTimeout(function () { pokaz(iC, iF + 1); }, CZAS);
+    timer = setTimeout(function () { pokaz(i + 1); }, CZAS);
   }
 
-  function otworz(ic) { box.classList.add('otwarte'); document.body.style.overflow = 'hidden'; pokaz(ic, 0); }
+  function otworz(idx) { box.classList.add('otwarte'); document.body.style.overflow = 'hidden'; pokaz(idx); }
   function zamknij() { clearTimeout(timer); box.classList.remove('otwarte'); document.body.style.overflow = ''; }
 
   kafle.forEach(function (k, idx) {
-    k.addEventListener('click', function () { otworz(idx); });
-    k.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); otworz(idx); } });
+    k.addEventListener('click', function () { otworz(startCiasta[idx]); });
+    k.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); otworz(startCiasta[idx]); } });
   });
   box.querySelector('.stories-zamknij').addEventListener('click', zamknij);
-  box.querySelector('[data-next]').addEventListener('click', function () { pokaz(iC, iF + 1); });
-  box.querySelector('[data-prev]').addEventListener('click', function () { pokaz(iC, iF - 1); });
+  box.querySelector('[data-next]').addEventListener('click', function () { pokaz(i + 1); });
+  box.querySelector('[data-prev]').addEventListener('click', function () { pokaz(i - 1); });
   box.addEventListener('click', function (e) { if (e.target === box) zamknij(); });
 
   // ── ściąganie palcem w dół zamyka story (z płynną animacją) ──
@@ -535,7 +537,7 @@
     } else {                                         // za mało → wróć na miejsce i wznów
       okno.style.transform = '';
       box.style.background = '';
-      timer = setTimeout(function () { pokaz(iC, iF + 1); }, CZAS);
+      timer = setTimeout(function () { pokaz(i + 1); }, CZAS);
     }
   }
   okno.addEventListener('touchend', koniecCiagniecia, { passive: true });
@@ -543,8 +545,8 @@
   document.addEventListener('keydown', function (e) {
     if (!box.classList.contains('otwarte')) return;
     if (e.key === 'Escape') zamknij();
-    else if (e.key === 'ArrowRight') pokaz(iC, iF + 1);
-    else if (e.key === 'ArrowLeft') pokaz(iC, iF - 1);
+    else if (e.key === 'ArrowRight') pokaz(i + 1);
+    else if (e.key === 'ArrowLeft') pokaz(i - 1);
   });
 })();
 
