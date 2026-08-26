@@ -487,16 +487,17 @@ h2{
 .mlyn-label{color:var(--bordo);opacity:.9}
 #mlyn .naglowek .nr{color:var(--bordo)}
 
-/* przełącznik Kawa | Herbata — w miejscu etykiety, pokazywany dopiero gdy są herbaty */
-.mlyn-przelacz{display:inline-flex;gap:2px;align-self:flex-start;
-  border:1px solid var(--wlos);background:var(--wlos)}
-.mlyn-tab{appearance:none;border:0;background:var(--tlo);cursor:pointer;
-  padding:8px 15px;color:var(--cichy);
+/* przełącznik Kawa / Herbata — osobne kafelki z odstępem, pokazywany dopiero gdy są herbaty */
+.mlyn-przelacz{display:inline-flex;gap:10px;align-self:flex-start}
+.mlyn-tab{appearance:none;border:1px solid var(--wlos);background:var(--tlo);cursor:pointer;
+  padding:8px 16px;color:var(--cichy);
   font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
-  transition:color .15s ease,background .15s ease}
-.mlyn-tab:hover{color:var(--atrament)}
-.mlyn-tab.aktywny{background:var(--bordo);color:#f4efe9}
+  transition:color .15s ease,background .15s ease,border-color .15s ease}
+.mlyn-tab:hover{color:var(--atrament);border-color:var(--cichy)}
+.mlyn-tab.aktywny{background:var(--bordo);border-color:var(--bordo);color:#f4efe9}
 @media(min-width:760px){.mlyn-tab{padding:8px 18px}}
+/* atrybut hidden musi wygrać z .mlyn-strip{display:flex} */
+.mlyn-strip[hidden]{display:none}
 
 /* poziomo przesuwany pasek kart (kawy / wypieki) */
 .mlyn-strip{list-style:none;display:flex;gap:1px;overflow-x:auto;
