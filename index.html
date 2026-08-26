@@ -371,8 +371,12 @@
   <div class="naglowek etykieta"><span class="nr">03</span><span>Dziś w młynku</span></div>
   <div class="mlyn">
 
-    <div class="mlyn-grupa">
-      <span class="etykieta cichy mlyn-label">Kawa</span>
+    <div class="mlyn-grupa mlyn-napoje">
+      <div class="mlyn-przelacz" role="tablist" aria-label="Kawa albo herbata" hidden>
+        <button type="button" class="mlyn-tab aktywny" data-cel="kawy" role="tab" aria-selected="true">Kawa</button>
+        <button type="button" class="mlyn-tab" data-cel="herbaty" role="tab" aria-selected="false">Herbata</button>
+      </div>
+      <span class="etykieta cichy mlyn-label" data-tylko-kawa>Kawa</span>
       <ul class="mlyn-strip" data-kawy>
         <li class="mlyn-karta">
           <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1786965457484-zrzut-ekranu-2026-08-17-o-13-16-39-removebg-preview.png')"></span>
@@ -404,6 +408,7 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
           </span>
         </li>
       </ul>
+      <ul class="mlyn-strip mlyn-herbaty" data-herbaty hidden></ul>
     </div>
 
     <div class="mlyn-grupa">

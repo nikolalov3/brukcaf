@@ -411,6 +411,11 @@ document.addEventListener('paste', (e) => {
 //  KAWY — „Dziś w młynku"
 // ══════════════════════════════════════════════════════════════
 let kawy = [], edytowanaKawa = null, kawaFoto = '', kawaFoto2 = '';
+let filtrRodzaj = 'kawa', edytowanyRodzaj = 'kawa';
+const rodzajOf = (k) => (k.kind === 'herbata' ? 'herbata' : 'kawa');
+const etyk = (r, wielka) => (r === 'herbata' ? (wielka ? 'Herbata' : 'herbatę') : (wielka ? 'Kawa' : 'kawę'));
+// tylko pozycje aktualnie wybranego rodzaju (kawa/herbata), w kolejności sort
+const widoczneKawy = () => kawy.filter((k) => rodzajOf(k) === filtrRodzaj);
 
 async function wczytajKawy() {
   const { data, error } = await sb.from('coffees')
@@ -421,16 +426,21 @@ async function wczytajKawy() {
 
 function renderKawy() {
   const box = $('kawy-lista');
-  if (!kawy.length) { box.innerHTML = '<div class="pusto">Brak kaw. Kliknij „Dodaj kawę”.</div>'; return; }
+  $('btn-nowa-kawa').textContent = '+ Dodaj ' + etyk(filtrRodzaj, false);
+  const lista = widoczneKawy();
+  if (!lista.length) {
+    box.innerHTML = `<div class="pusto">Brak — kliknij „Dodaj ${etyk(filtrRodzaj, false)}”.</div>`;
+    return;
+  }
   box.innerHTML = '';
-  kawy.forEach((k, i) => {
+  lista.forEach((k, i) => {
     const poza = i >= LIMIT_KAWY;
     const el = document.createElement('div');
     el.className = 'wpis' + (k.available ? '' : ' niedostepna') + (poza ? ' poza-strona' : '');
     el.innerHTML = `
       <div class="kolejnosc">
         <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
-        <button class="strzal" data-dol title="W dół" ${i === kawy.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
+        <button class="strzal" data-dol title="W dół" ${i === lista.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
       </div>
       <img class="mini" src="${k.photo_url || ''}" alt="" ${k.photo_url ? '' : 'style="visibility:hidden"'}>
       <div class="tresc">
@@ -458,19 +468,42 @@ function renderKawy() {
   });
 }
 
-// zamiana miejscami z sąsiadem i zapis nowej kolejności (sort = pozycja na liście)
+// zamiana miejscami z sąsiadem W OBRĘBIE rodzaju i zapis nowej kolejności.
+// sort renumerowany tylko w tym rodzaju; build i tak filtruje po kind, więc
+// powtórki wartości sort między kawą a herbatą nie mają znaczenia.
 async function przesunKawe(i, kierunek) {
+  const lista = widoczneKawy();
   const j = i + kierunek;
-  if (j < 0 || j >= kawy.length) return;
-  [kawy[i], kawy[j]] = [kawy[j], kawy[i]];
-  renderKawy(); // natychmiastowy ruch w UI
-  await Promise.all(kawy.map((k, idx) => sb.from('coffees').update({ sort: idx }).eq('id', k.id)));
+  if (j < 0 || j >= lista.length) return;
+  [lista[i], lista[j]] = [lista[j], lista[i]];
+  // odbij nową kolejność w globalnej tablicy (dla natychmiastowego renderu)
+  kawy = kawy.filter((k) => rodzajOf(k) !== filtrRodzaj).concat(lista);
+  renderKawy();
+  await Promise.all(lista.map((k, idx) => sb.from('coffees').update({ sort: idx }).eq('id', k.id)));
   await wczytajKawy();
 }
 
 $('btn-nowa-kawa').addEventListener('click', () => otworzKawe(null));
 $('btn-kawa-wroc').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
 $('btn-kawa-anuluj').addEventListener('click', () => { $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false; });
+
+// segment rodzaju w EDYTORZE (Kawa / Herbata)
+function ustawRodzajEdytora(r) {
+  edytowanyRodzaj = r;
+  $('kawa-rodzaj').querySelectorAll('.filtr-tab').forEach((b) =>
+    b.classList.toggle('aktywny', b.dataset.rodzaj === r));
+}
+$('kawa-rodzaj').querySelectorAll('.filtr-tab').forEach((b) =>
+  b.addEventListener('click', () => ustawRodzajEdytora(b.dataset.rodzaj)));
+
+// FILTR listy (Kawy / Herbaty)
+$('kawy-filtr').querySelectorAll('.filtr-tab').forEach((b) =>
+  b.addEventListener('click', () => {
+    filtrRodzaj = b.dataset.rodzaj;
+    $('kawy-filtr').querySelectorAll('.filtr-tab').forEach((x) =>
+      x.classList.toggle('aktywny', x === b));
+    renderKawy();
+  }));
 
 function ustawKawaFoto(url) {
   kawaFoto = url || '';
@@ -491,13 +524,15 @@ async function otworzKawe(id) {
   pokazInfo($('kawa-info'), '', '');
   $('btn-kawa-usun').hidden = !id;
   if (!id) {
-    $('kawa-tytul').textContent = 'Nowa kawa';
+    ustawRodzajEdytora(filtrRodzaj);
+    $('kawa-tytul').textContent = 'Nowa ' + etyk(filtrRodzaj, true).toLowerCase();
     ['kawa-nazwa','kawa-metoda','kawa-pochodzenie','kawa-obrobka','kawa-opis','kawa-link'].forEach((f) => $(f).value = '');
     $('kawa-dostepna').checked = true; ustawKawaFoto(''); ustawKawaFoto2('');
   } else {
     const { data, error } = await sb.from('coffees').select('*').eq('id', id).single();
-    if (error || !data) { pokazInfo($('kawa-info'), 'Nie udało się wczytać kawy.', 'zle'); return; }
-    $('kawa-tytul').textContent = 'Edycja kawy';
+    if (error || !data) { pokazInfo($('kawa-info'), 'Nie udało się wczytać pozycji.', 'zle'); return; }
+    ustawRodzajEdytora(rodzajOf(data));
+    $('kawa-tytul').textContent = 'Edycja: ' + etyk(rodzajOf(data), true).toLowerCase();
     $('kawa-nazwa').value = data.name || '';
     $('kawa-metoda').value = data.method || '';
     $('kawa-pochodzenie').value = data.origin || '';
@@ -515,6 +550,7 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
   if (!nazwa) { pokazInfo($('kawa-info'), 'Nazwa jest wymagana.', 'zle'); return; }
   const rekord = {
     name: nazwa,
+    kind: edytowanyRodzaj,
     method: $('kawa-metoda').value.trim() || null,
     origin: $('kawa-pochodzenie').value.trim() || null,
     obrobka: $('kawa-obrobka').value.trim() || null,
@@ -524,13 +560,21 @@ $('btn-kawa-zapisz').addEventListener('click', async () => {
     photo_url: kawaFoto || null,
     photo_url2: kawaFoto2 || null
   };
-  if (!edytowanaKawa) rekord.sort = kawy.length ? Math.max(...kawy.map((k) => k.sort ?? 0)) + 1 : 0;
+  if (!edytowanaKawa) {
+    // nowa pozycja na koniec swojego rodzaju
+    const tegoRodzaju = kawy.filter((k) => rodzajOf(k) === edytowanyRodzaj);
+    rekord.sort = tegoRodzaju.length ? Math.max(...tegoRodzaju.map((k) => k.sort ?? 0)) + 1 : 0;
+  }
   const btn = $('btn-kawa-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
   const odp = edytowanaKawa
     ? await sb.from('coffees').update(rekord).eq('id', edytowanaKawa)
     : await sb.from('coffees').insert(rekord);
   btn.disabled = false; btn.textContent = 'Zapisz';
   if (odp.error) { pokazInfo($('kawa-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  // pokaż listę tego rodzaju, który przed chwilą zapisaliśmy
+  filtrRodzaj = edytowanyRodzaj;
+  $('kawy-filtr').querySelectorAll('.filtr-tab').forEach((x) =>
+    x.classList.toggle('aktywny', x.dataset.rodzaj === filtrRodzaj));
   await wczytajKawy();
   $('widok-kawy-edytor').hidden = true; $('widok-kawy').hidden = false;
   pokazInfo($('kawy-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');

@@ -164,9 +164,13 @@
       <h2>Dziś w młynku</h2>
       <button class="btn" id="btn-nowa-kawa">+ Dodaj kawę</button>
     </div>
+    <div class="rodzaj-filtr" id="kawy-filtr">
+      <button class="filtr-tab aktywny" data-rodzaj="kawa" type="button">Kawy</button>
+      <button class="filtr-tab" data-rodzaj="herbata" type="button">Herbaty</button>
+    </div>
     <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
-      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 6</b> kaw — reszta jest wyszarzona,
-      przesuń ją wyżej, żeby weszła.</p>
+      Kolejność ustawiasz strzałkami. Na stronie widać <b>pierwsze 6</b> pozycji z tej zakładki — reszta jest
+      wyszarzona, przesuń ją wyżej, żeby weszła. Herbaty pojawią się na stronie jako osobny przełącznik.</p>
     <div class="info" id="kawy-info" hidden></div>
     <div id="kawy-lista"></div>
     <div class="publikuj">
@@ -210,6 +214,13 @@
       </div>
     </div>
 
+    <div class="pole">
+      <label class="etykieta cichy">Rodzaj</label>
+      <div class="rodzaj-filtr" id="kawa-rodzaj">
+        <button class="filtr-tab aktywny" data-rodzaj="kawa" type="button">Kawa</button>
+        <button class="filtr-tab" data-rodzaj="herbata" type="button">Herbata</button>
+      </div>
+    </div>
     <div class="dwie">
       <div class="pole">
         <label class="etykieta cichy" for="kawa-nazwa">Nazwa</label>
@@ -217,7 +228,7 @@
       </div>
       <div class="pole">
         <label class="etykieta cichy" for="kawa-metoda">Metoda parzenia</label>
-        <input type="text" id="kawa-metoda" placeholder="np. espresso / V60">
+        <input type="text" id="kawa-metoda" placeholder="np. espresso / V60 · herbata: 80°C / 3 min">
       </div>
     </div>
     <div class="dwie">

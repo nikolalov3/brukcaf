@@ -112,6 +112,8 @@ create policy "zalogowany usuwa zdjęcia bloga"
 create table if not exists public.coffees (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,                 -- np. "HAYB Yellow"
+  kind        text not null default 'kawa'   -- 'kawa' albo 'herbata' (ta sama karta, osobna sekcja)
+              check (kind in ('kawa', 'herbata')),
   origin      text,                          -- pochodzenie / palarnia
   method      text,                          -- metoda parzenia: espresso / V60 / itd.
   obrobka     text,                          -- metoda obróbki ziaren: myta / naturalna / honey
@@ -126,7 +128,11 @@ create table if not exists public.coffees (
   updated_at  timestamptz not null default now()
 );
 
+-- dla istniejącej bazy: dołóż kolumnę rodzaju (kawa/herbata)
+alter table public.coffees add column if not exists kind text not null default 'kawa';
+
 create index if not exists coffees_widoczne_idx on public.coffees (available, sort);
+create index if not exists coffees_rodzaj_idx on public.coffees (kind, sort);
 
 drop trigger if exists coffees_updated_at on public.coffees;
 create trigger coffees_updated_at

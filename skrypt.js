@@ -514,3 +514,32 @@
     else if (e.key === 'ArrowLeft') pokaz(iC, iF - 1);
   });
 })();
+
+/* Młynek: przełącznik Kawa / Herbata.
+   Herbata pojawia się dopiero, gdy Filip doda herbaty w panelu — wtedy napis
+   "Kawa" zamienia się w segment Kawa|Herbata i przełącza widoczny pasek. */
+(function () {
+  const grupa = document.querySelector('.mlyn-napoje');
+  if (!grupa) return;
+  const kawy = grupa.querySelector('[data-kawy]');
+  const herb = grupa.querySelector('[data-herbaty]');
+  const przel = grupa.querySelector('.mlyn-przelacz');
+  const label = grupa.querySelector('[data-tylko-kawa]');
+  const maHerbaty = herb && herb.querySelector('.mlyn-karta');
+  if (!maHerbaty) { if (herb) herb.hidden = true; return; }  // brak herbat → jak dotąd
+
+  if (label) label.hidden = true;
+  if (przel) przel.hidden = false;
+  const taby = [...przel.querySelectorAll('.mlyn-tab')];
+  function pokaz(cel) {
+    kawy.hidden = cel !== 'kawy';
+    herb.hidden = cel !== 'herbaty';
+    taby.forEach((t) => {
+      const on = t.dataset.cel === cel;
+      t.classList.toggle('aktywny', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+  taby.forEach((t) => t.addEventListener('click', () => pokaz(t.dataset.cel)));
+  pokaz('kawy');
+})();

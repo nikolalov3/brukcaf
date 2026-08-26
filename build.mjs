@@ -94,7 +94,7 @@ function pustaKarta(txt) {
 }
 
 // ── dane strukturalne (schema.org Menu) ─────────────────────────
-function jsonLd(kawy, ciasta) {
+function jsonLd(kawy, herbaty, ciasta) {
   const pozycja = (x) => ({
     '@type': 'MenuItem',
     name: x.name,
@@ -103,6 +103,7 @@ function jsonLd(kawy, ciasta) {
   });
   const sekcje = [];
   if (kawy.length) sekcje.push({ '@type': 'MenuSection', name: 'Kawa', hasMenuItem: kawy.map(pozycja) });
+  if (herbaty.length) sekcje.push({ '@type': 'MenuSection', name: 'Herbata', hasMenuItem: herbaty.map(pozycja) });
   if (ciasta.length) sekcje.push({ '@type': 'MenuSection', name: 'Wypieki', hasMenuItem: ciasta.map(pozycja) });
   if (!sekcje.length) return '';
   const data = {
@@ -117,7 +118,7 @@ function jsonLd(kawy, ciasta) {
 
 // ── wstrzykiwanie do HTML ───────────────────────────────────────
 function podmienListe(html, attr, inner) {
-  const re = new RegExp(`(<ul class="mlyn-strip[^"]*" ${attr}>)[\\s\\S]*?(</ul>)`);
+  const re = new RegExp(`(<ul class="mlyn-strip[^"]*" ${attr}[^>]*>)[\\s\\S]*?(</ul>)`);
   if (!re.test(html)) { console.error(`✗ Nie znalazłem <ul ${attr}>`); process.exit(1); }
   return html.replace(re, `$1\n${inner}\n      $2`);
 }
@@ -232,6 +233,8 @@ async function pobierz() {
         { name: 'HAYB Yellow', method: 'Espresso', obrobka: 'naturalna', origin: 'Brazylia + Gwatemala · palarnia HAYB', note: 'Ciemny blend stu procent arabiki. Czekolada, orzechy, pełne ciało.', link_url: 'https://hayb.pl/produkt/yellow/' },
         { name: 'Etiopia Guji', method: 'Przelew V60', obrobka: 'myta', origin: 'palarnia HAYB', note: 'Owoce pestkowe, herbaciana lekkość, klarowna słodycz.' },
         { name: 'Kolumbia Huila', method: 'Przelew V60', obrobka: 'honey', origin: 'palarnia Coffee Proficiency', note: 'Czekolada, karmel, orzech laskowy.' },
+        { name: 'Sencha', kind: 'herbata', method: '70°C · 2 min', origin: 'Japonia', note: 'Trawiasta, morska świeżość, delikatna słodycz.' },
+        { name: 'Earl Grey', kind: 'herbata', method: '95°C · 4 min', origin: 'czarna, bergamotka', note: 'Klasyk z nutą cytrusowego olejku bergamotki.' },
       ],
       ciasta: [
         { name: 'Sernik baskijski', status: 'available', note: '', photo_url: '/img/ciasto.jpg', photo_url2: '/img/ciastka.jpg', photo_url3: '/img/espresso.jpg' },
@@ -271,38 +274,47 @@ async function pobierz() {
 // Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
 // Te limity MUSZĄ być zgodne z admin/admin.js (LIMIT_KAWY / LIMIT_CIASTA).
 const LIMIT_KAWY = 6;
+const LIMIT_HERBATY = 6;
 const LIMIT_CIASTA = 6;
+const jestHerbata = (k) => (k.kind || 'kawa') === 'herbata';
 
 // ── główny przebieg ─────────────────────────────────────────────
 const dane = await pobierz();
 if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
-const kawy = dane.kawy.slice(0, LIMIT_KAWY);
+// Ta sama tabela coffees: rodzaj rozdziela kawy od herbat (kolejność wg sort z zapytania).
+const kawy = dane.kawy.filter((k) => !jestHerbata(k)).slice(0, LIMIT_KAWY);
+const herbaty = dane.kawy.filter(jestHerbata).slice(0, LIMIT_HERBATY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 const menu = dane.menu;  // null gdy brak tabeli → zostaje statyczne menu
 
 // tłumaczenia PL→EN (pusta mapa gdy brak DEEPL_KEY albo błąd → EN zostaje jak było)
 const mapa = DEMO ? new Map() : await mapaTlumaczen(dane);
 const tr = (s) => (s && mapa.get(s)) || s;
+const przekladKawy = (k) => ({ ...k, note: tr(k.note), origin: tr(k.origin), method: tr(k.method), obrobka: tr(k.obrobka) });
 function daneDlaJezyka(lang) {
-  if (lang !== 'en' || !mapa.size) return { kawy, ciasta, menu, tlumaczone: false };
+  if (lang !== 'en' || !mapa.size) return { kawy, herbaty, ciasta, menu, tlumaczone: false };
   return {
-    kawy: kawy.map((k) => ({ ...k, note: tr(k.note), origin: tr(k.origin), method: tr(k.method), obrobka: tr(k.obrobka) })),
+    kawy: kawy.map(przekladKawy),
+    herbaty: herbaty.map(przekladKawy),
     ciasta: ciasta.map((c) => ({ ...c, name: tr(c.name), note: tr(c.note) })),
     menu: menu ? menu.map((m) => ({ ...m, sekcja: tr(m.sekcja), nazwa: tr(m.nazwa), sklad: tr(m.sklad) })) : menu,
     tlumaczone: true,
   };
 }
 
-let plKawyHtml = '', plMenuHtml = null;  // kawy i menu z PL — do porównania z żywą stroną
+let plKawyHtml = '', plHerbatyHtml = '', plMenuHtml = null;  // kawy/herbaty/menu z PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
   const dl = daneDlaJezyka(lang);
   let html = readFileSync(t.file, 'utf8');
   const kInner = dl.kawy.length ? dl.kawy.map((k) => kartaKawy(k, t)).join('\n') : pustaKarta(t.pustoKawy);
+  // herbaty: gdy pusto — wstrzykujemy pustą listę (grupa chowa się po stronie JS)
+  const hInner = dl.herbaty.length ? dl.herbaty.map((k) => kartaKawy(k, t)).join('\n') : '';
   const cInner = dl.ciasta.length ? dl.ciasta.map((c) => kartaCiasta(c, t)).join('\n') : pustaKarta(t.pustoCiasta);
-  if (lang === 'pl') { plKawyHtml = kInner; plMenuHtml = (menu && menu.length) ? renderMenu(menu) : null; }
+  if (lang === 'pl') { plKawyHtml = kInner; plHerbatyHtml = hInner; plMenuHtml = (menu && menu.length) ? renderMenu(menu) : null; }
   html = podmienListe(html, 'data-kawy', kInner);
+  html = podmienListe(html, 'data-herbaty', hInner);
   html = podmienListe(html, 'data-ciasta', cInner);
-  html = podmienLd(html, jsonLd(dl.kawy, dl.ciasta));
+  html = podmienLd(html, jsonLd(dl.kawy, dl.herbaty, dl.ciasta));
   // menu: PL zawsze z bazy; EN tylko gdy mamy tłumaczenie (inaczej zostaje statyczne angielskie)
   const menuDoWstawienia = (lang === 'pl' || dl.tlumaczone) ? dl.menu : null;
   if (menuDoWstawienia && menuDoWstawienia.length) {
@@ -312,12 +324,13 @@ for (const [lang, t] of Object.entries(L)) {
   writeFileSync(t.file, html);
   const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';
   const tl = (lang === 'en' && dl.tlumaczone) ? ' + EN tłumaczone' : '';
-  console.log(`✓ ${t.file}: ${kawy.length}/${dane.kawy.length} kaw, ${ciasta.length}/${dane.ciasta.length} ciast${info}${tl}${DEMO ? ' (demo)' : ''}`);
+  const hinfo = herbaty.length ? `, ${herbaty.length} herbat` : '';
+  console.log(`✓ ${t.file}: ${kawy.length} kaw${hinfo}, ${ciasta.length}/${dane.ciasta.length} ciast${info}${tl}${DEMO ? ' (demo)' : ''}`);
 }
 
 // Czy treść ważna dla GEO (KAWY lub MENU) zmieniła się względem żywej strony?
 // Jeśli zmieniły się tylko ciasta, nie ma sensu pingować wyszukiwarek.
-async function trescBezZmian(nowyKInner, noweMenu) {
+async function trescBezZmian(nowyKInner, nowyHInner, noweMenu) {
   try {
     const r = await fetch('https://bruk.cafe/');
     if (!r.ok) return false;                 // nie wiemy → dla bezpieczeństwa pinguj
@@ -325,6 +338,8 @@ async function trescBezZmian(nowyKInner, noweMenu) {
     const mk = live.match(/<ul class="mlyn-strip" data-kawy>([\s\S]*?)<\/ul>/);
     if (!mk) return false;
     if (mk[1].trim() !== nowyKInner.trim()) return false;   // kawy się zmieniły
+    const mh = live.match(/<ul class="mlyn-strip[^"]*" data-herbaty[^>]*>([\s\S]*?)<\/ul>/);
+    if ((mh ? mh[1].trim() : '') !== nowyHInner.trim()) return false;  // herbaty się zmieniły
     if (noweMenu != null) {                                 // menu z bazy — porównaj
       const mm = live.match(/<!-- MENU -->([\s\S]*?)<!-- \/MENU -->/);
       if (!mm) return false;
@@ -340,8 +355,8 @@ async function trescBezZmian(nowyKInner, noweMenu) {
 // Klucz jest jawny z założenia (hostowany w publicznym pliku KLUCZ.txt).
 const INDEXNOW_KEY = 'dcdea3335dc57ab36cf2c27e6166e0e7';
 if (!DEMO) {
-  if (await trescBezZmian(plKawyHtml, plMenuHtml)) {
-    console.log('IndexNow: kawy i menu bez zmian (zmiana tylko ciast?) — pomijam ping');
+  if (await trescBezZmian(plKawyHtml, plHerbatyHtml, plMenuHtml)) {
+    console.log('IndexNow: kawy, herbaty i menu bez zmian (zmiana tylko ciast?) — pomijam ping');
   } else try {
     const r = await fetch('https://api.indexnow.org/indexnow', {
       method: 'POST',
