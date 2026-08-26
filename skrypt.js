@@ -507,6 +507,39 @@
   box.querySelector('[data-next]').addEventListener('click', function () { pokaz(iC, iF + 1); });
   box.querySelector('[data-prev]').addEventListener('click', function () { pokaz(iC, iF - 1); });
   box.addEventListener('click', function (e) { if (e.target === box) zamknij(); });
+
+  // ── ściąganie palcem w dół zamyka story (z płynną animacją) ──
+  var okno = box.querySelector('.stories-okno');
+  var ty0 = 0, dy = 0, ciagnie = false;
+  okno.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) return;
+    ty0 = e.touches[0].clientY; dy = 0; ciagnie = true;
+    okno.style.transition = 'none';
+    clearTimeout(timer);
+  }, { passive: true });
+  okno.addEventListener('touchmove', function (e) {
+    if (!ciagnie) return;
+    dy = e.touches[0].clientY - ty0;
+    if (dy < 0) dy = 0;
+    okno.style.transform = 'translateY(' + dy + 'px) scale(' + (1 - Math.min(dy / 2200, 0.05)) + ')';
+    box.style.background = 'rgba(12,10,9,' + Math.max(0.86 - dy / 600, 0.12) + ')';
+  }, { passive: true });
+  function koniecCiagniecia() {
+    if (!ciagnie) return;
+    ciagnie = false;
+    okno.style.transition = '';
+    if (dy > 90) {                                   // wystarczająco daleko → zamknij
+      okno.style.transform = 'translateY(115%)';
+      box.style.background = 'rgba(12,10,9,0)';
+      setTimeout(function () { zamknij(); okno.style.transform = ''; box.style.background = ''; }, 300);
+    } else {                                         // za mało → wróć na miejsce i wznów
+      okno.style.transform = '';
+      box.style.background = '';
+      timer = setTimeout(function () { pokaz(iC, iF + 1); }, CZAS);
+    }
+  }
+  okno.addEventListener('touchend', koniecCiagniecia, { passive: true });
+  okno.addEventListener('touchcancel', koniecCiagniecia, { passive: true });
   document.addEventListener('keydown', function (e) {
     if (!box.classList.contains('otwarte')) return;
     if (e.key === 'Escape') zamknij();

@@ -503,22 +503,32 @@ h2{
 /* atrybut hidden musi wygrać z .mlyn-strip{display:flex} */
 .mlyn-strip[hidden]{display:none}
 
-/* przełączenie Kawa/Herbata: karty wjeżdżają z dołu, schodkowo */
-@keyframes kartaWjazd{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-.mlyn-strip.wjazd .mlyn-karta{animation:kartaWjazd .5s cubic-bezier(.2,.7,.2,1) both}
+/* przełączenie Kawa/Herbata: karty wpływają z dołu — wolno, z blur+scale (premium) */
+@keyframes kartaWjazd{
+  0%{opacity:0;transform:translateY(34px) scale(.955);filter:blur(7px)}
+  60%{opacity:1}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+.mlyn-strip.wjazd .mlyn-karta{animation:kartaWjazd .72s cubic-bezier(.16,1,.3,1) both;will-change:transform,opacity,filter}
 .mlyn-strip.wjazd .mlyn-karta:nth-child(1){animation-delay:0ms}
-.mlyn-strip.wjazd .mlyn-karta:nth-child(2){animation-delay:55ms}
-.mlyn-strip.wjazd .mlyn-karta:nth-child(3){animation-delay:110ms}
-.mlyn-strip.wjazd .mlyn-karta:nth-child(4){animation-delay:165ms}
-.mlyn-strip.wjazd .mlyn-karta:nth-child(5){animation-delay:220ms}
-.mlyn-strip.wjazd .mlyn-karta:nth-child(6){animation-delay:275ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(2){animation-delay:85ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(3){animation-delay:170ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(4){animation-delay:255ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(5){animation-delay:340ms}
+.mlyn-strip.wjazd .mlyn-karta:nth-child(6){animation-delay:425ms}
 @media(prefers-reduced-motion:reduce){.mlyn-strip.wjazd .mlyn-karta{animation:none}}
 
 /* poziomo przesuwany pasek kart (kawy / wypieki) */
 .mlyn-strip{list-style:none;display:flex;gap:1px;overflow-x:auto;
   background:var(--wlos);border:1px solid var(--wlos);
   scroll-snap-type:x proximity;scrollbar-width:thin;
-  scrollbar-color:var(--cichy) transparent}
+  scrollbar-color:var(--cichy) transparent;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+/* mobile: bez twardego snapowania — płynny, bezwładny ślizg zamiast przeskoków */
+@media(max-width:759px){
+  .mlyn-strip{scroll-snap-type:none}
+  .mlyn-strip .mlyn-karta{scroll-snap-align:none}
+}
 .mlyn-strip::-webkit-scrollbar{height:8px}
 .mlyn-strip::-webkit-scrollbar-thumb{background:var(--wlos)}
 .mlyn-strip::-webkit-scrollbar-thumb:hover{background:var(--cichy)}
@@ -611,9 +621,18 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
 .ciasto-notka{font:500 11px/1.35 var(--mono);color:rgba(255,255,255,.92);
   text-shadow:0 1px 10px rgba(0,0,0,.55)}
 @media(min-width:760px){.mlyn-strip.ciasta .mlyn-karta{flex-basis:clamp(220px,24%,250px)}}
-/* kafel klikalny (bez ramki) — otwiera story */
+/* kafel klikalny — otwiera story; kółko jak w instagramie sugeruje „naciśnij” */
 .mlyn-strip.ciasta .ciasto-kafel.klik{cursor:pointer;transition:transform .15s ease}
 .mlyn-strip.ciasta .ciasto-kafel.klik:hover,.mlyn-strip.ciasta .ciasto-kafel.klik:focus-visible{transform:translateY(-2px);outline:none}
+/* kółko tylko na PIERWSZYM kaflu — jako zachęta „naciśnij, jest story” */
+.mlyn-strip.ciasta .ciasto-kafel.klik:first-child::after{
+  content:"";position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);
+  width:74%;aspect-ratio:1;border-radius:50%;padding:3px;pointer-events:none;z-index:0;
+  background:linear-gradient(135deg,#f0c25a,#d98443,#b24a4a,#7a2740);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.92;transition:transform .2s ease,opacity .2s ease}
+.mlyn-strip.ciasta .ciasto-kafel.klik:first-child:hover::after{transform:translate(-50%,-50%) scale(1.03);opacity:1}
 
 /* ── story ciast: telefonowe okno (desktop mały, mobile pełny) ─── */
 .stories{position:fixed;inset:0;z-index:100;display:none;
@@ -622,7 +641,11 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
 .stories.otwarte{display:flex}
 .stories-okno{position:relative;width:min(400px,100%);aspect-ratio:9/16;max-height:92vh;
   border-radius:22px;overflow:hidden;background:#241f1b;
-  box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  transition:transform .32s cubic-bezier(.2,.7,.2,1);touch-action:pan-y;will-change:transform}
+/* uchwyt do ściągania w dół */
+.stories-okno::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
+  z-index:5;width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.5);pointer-events:none}
 .stories-paski{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;gap:5px;padding:12px 12px 0}
 .stories-pasek{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}
 .stories-pasek i{display:block;height:100%;width:0;background:#fff}
@@ -639,7 +662,7 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
 .stories .stan-znak{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(0,0,0,.4);
   font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:6px 11px}
 .stories-notka{font:500 12px/1.4 var(--mono);color:rgba(255,255,255,.92)}
-.stories-zamknij{position:absolute;top:12px;right:10px;z-index:4;width:38px;height:38px;
+.stories-zamknij{position:absolute;top:30px;right:12px;z-index:6;width:38px;height:38px;
   border:0;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;font-size:20px;line-height:1}
 .stories-nawig{position:absolute;inset:0;z-index:1;display:flex}
 .stories-nawig span{flex:1;cursor:pointer}
