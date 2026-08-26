@@ -631,7 +631,7 @@ a.karta-link{color:inherit;text-decoration:none;cursor:pointer;transition:color 
 }
 /* kółko jak w instagramie tylko na PIERWSZYM kaflu — jaśniejszy różowy z fade */
 .mlyn-strip.ciasta .ciasto-kafel.klik:first-child::after{
-  content:"";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+  content:"";position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);
   width:82%;aspect-ratio:1;border-radius:50%;padding:4.5px;pointer-events:none;z-index:0;
   background:conic-gradient(from 200deg,#ffe1ec,#ffb3d0,#ffc48a,#ff9e7a,#ffb3d0,#f58fbe,#ffe1ec);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
