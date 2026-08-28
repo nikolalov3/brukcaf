@@ -295,18 +295,19 @@ $('btn-usun').addEventListener('click', async () => {
 // ══════════════════════════════════════════════════════════════
 //  ZAKŁADKI
 // ══════════════════════════════════════════════════════════════
-let kawyZaladowane = false, stanZaladowany = false, menuZaladowane = false;
+let kawyZaladowane = false, stanZaladowany = false, menuZaladowane = false, sklepZaladowany = false;
 
 function pokazZakladke(nazwa) {
   document.querySelectorAll('.zakl').forEach((b) =>
     b.classList.toggle('aktywna', b.dataset.tab === nazwa));
-  ['grupa-wpisy', 'grupa-kawy', 'grupa-stan', 'grupa-menu'].forEach((kl) =>
+  ['grupa-wpisy', 'grupa-kawy', 'grupa-stan', 'grupa-menu', 'grupa-sklep'].forEach((kl) =>
     document.querySelectorAll('.' + kl).forEach((el) => (el.hidden = true)));
 
   if (nazwa === 'wpisy') $('widok-lista').hidden = false;
   if (nazwa === 'kawy')  { $('widok-kawy').hidden = false; if (!kawyZaladowane) wczytajKawy(); }
   if (nazwa === 'stan')  { $('widok-stan').hidden = false; if (!stanZaladowany) wczytajStan(); }
   if (nazwa === 'menu')  { $('widok-menu').hidden = false; if (!menuZaladowane) wczytajMenu(); }
+  if (nazwa === 'sklep') { $('widok-sklep').hidden = false; if (!sklepZaladowany) wczytajSklep(); }
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.zakl').forEach((b) =>
@@ -891,4 +892,128 @@ $('btn-poz-usun').addEventListener('click', async () => {
   await wczytajMenu();
   $('widok-menu-edytor').hidden = true; $('widok-menu').hidden = false;
   pokazInfo($('menu-info'), 'Usunięto.', 'ok');
+});
+
+// ══════════════════════════════════════════════════════════════
+//  SKLEP — produkty do kupienia na miejscu
+// ══════════════════════════════════════════════════════════════
+let produkty = [], edytowanyProd = null, prodFoto = '';
+
+async function wczytajSklep() {
+  const { data, error } = await sb.from('shop_items')
+    .select('*').order('sort', { ascending: true }).order('created_at', { ascending: false });
+  if (error) { pokazInfo($('sklep-info'), 'Nie udało się wczytać sklepu.', 'zle'); return; }
+  produkty = data || []; sklepZaladowany = true; renderProdukty();
+}
+
+function renderProdukty() {
+  const box = $('sklep-lista');
+  if (!produkty.length) { box.innerHTML = '<div class="pusto">Brak produktów. Kliknij „Dodaj produkt”.</div>'; return; }
+  box.innerHTML = '';
+  produkty.forEach((p, i) => {
+    const nd = p.available === false;
+    const el = document.createElement('div');
+    el.className = 'wpis' + (nd ? ' niedostepna' : '');
+    el.innerHTML = `
+      <div class="kolejnosc">
+        <button class="strzal" data-gora title="W górę" ${i === 0 ? 'disabled' : ''} aria-label="W górę">↑</button>
+        <button class="strzal" data-dol title="W dół" ${i === produkty.length - 1 ? 'disabled' : ''} aria-label="W dół">↓</button>
+      </div>
+      <img class="mini" src="${p.photo_url || ''}" alt="" ${p.photo_url ? '' : 'style="visibility:hidden"'}>
+      <div class="tresc">
+        <div class="tyt"></div>
+        <div class="meta">
+          <span class="znak ${nd ? '' : 'pub'}">${nd ? 'Niedostępny' : 'Na miejscu'}</span>
+          <span class="menu-cena">${p.price || ''}</span>
+        </div>
+      </div>
+      <div class="akcje">
+        <button class="btn pusty mały" data-dost>${nd ? 'Wystaw' : 'Zdejmij'}</button>
+        <button class="btn pusty mały" data-edit>Edytuj</button>
+      </div>`;
+    el.querySelector('.tyt').textContent = p.name;
+    el.querySelector('[data-edit]').addEventListener('click', () => otworzProdukt(p.id));
+    el.querySelector('[data-gora]').addEventListener('click', () => przesunProdukt(i, -1));
+    el.querySelector('[data-dol]').addEventListener('click', () => przesunProdukt(i, 1));
+    el.querySelector('[data-dost]').addEventListener('click', async () => {
+      await sb.from('shop_items').update({ available: nd }).eq('id', p.id);
+      await wczytajSklep();
+    });
+    box.appendChild(el);
+  });
+}
+
+async function przesunProdukt(i, kierunek) {
+  const j = i + kierunek;
+  if (j < 0 || j >= produkty.length) return;
+  [produkty[i], produkty[j]] = [produkty[j], produkty[i]];
+  renderProdukty();
+  await Promise.all(produkty.map((p, idx) => sb.from('shop_items').update({ sort: idx }).eq('id', p.id)));
+  await wczytajSklep();
+}
+
+$('btn-nowy-prod').addEventListener('click', () => otworzProdukt(null));
+$('btn-prod-wroc').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
+$('btn-prod-anuluj').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
+
+function ustawProdFoto(url) {
+  prodFoto = url || '';
+  const img = $('prod-foto-podglad');
+  if (prodFoto) { img.src = prodFoto; img.hidden = false; $('btn-prod-foto-usun').hidden = false; }
+  else { img.hidden = true; $('btn-prod-foto-usun').hidden = true; }
+}
+podepnijFoto({ strefaId: 'prod-strefa', inputId: 'prod-foto', btnId: 'btn-prod-foto',
+  usunId: 'btn-prod-foto-usun', infoId: 'prod-info', widokId: 'widok-sklep-edytor', ustaw: ustawProdFoto });
+
+async function otworzProdukt(id) {
+  edytowanyProd = id;
+  pokazInfo($('prod-info'), '', '');
+  $('btn-prod-usun').hidden = !id;
+  if (!id) {
+    $('prod-tytul').textContent = 'Nowy produkt';
+    ['prod-nazwa', 'prod-cena', 'prod-opis'].forEach((f) => $(f).value = '');
+    $('prod-dostepny').checked = true; ustawProdFoto('');
+  } else {
+    const { data, error } = await sb.from('shop_items').select('*').eq('id', id).single();
+    if (error || !data) { pokazInfo($('prod-info'), 'Nie udało się wczytać produktu.', 'zle'); return; }
+    $('prod-tytul').textContent = 'Edycja produktu';
+    $('prod-nazwa').value = data.name || '';
+    $('prod-cena').value = data.price || '';
+    $('prod-opis').value = data.opis || '';
+    $('prod-dostepny').checked = data.available !== false;
+    ustawProdFoto(data.photo_url || '');
+  }
+  $('widok-sklep').hidden = true; $('widok-sklep-edytor').hidden = false; window.scrollTo(0, 0);
+}
+
+$('btn-prod-zapisz').addEventListener('click', async () => {
+  const nazwa = $('prod-nazwa').value.trim();
+  if (!nazwa) { pokazInfo($('prod-info'), 'Nazwa jest wymagana.', 'zle'); return; }
+  const rekord = {
+    name: nazwa,
+    price: $('prod-cena').value.trim() || null,
+    opis: $('prod-opis').value.trim() || null,
+    available: $('prod-dostepny').checked,
+    photo_url: prodFoto || null,
+  };
+  if (!edytowanyProd) rekord.sort = produkty.length ? Math.max(...produkty.map((p) => p.sort ?? 0)) + 1 : 0;
+  const btn = $('btn-prod-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';
+  const odp = edytowanyProd
+    ? await sb.from('shop_items').update(rekord).eq('id', edytowanyProd)
+    : await sb.from('shop_items').insert(rekord);
+  btn.disabled = false; btn.textContent = 'Zapisz';
+  if (odp.error) { pokazInfo($('prod-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  await wczytajSklep();
+  $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false;
+  pokazInfo($('sklep-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
+});
+
+$('btn-prod-usun').addEventListener('click', async () => {
+  if (!edytowanyProd) return;
+  if (!confirm('Usunąć ten produkt?')) return;
+  const { error } = await sb.from('shop_items').delete().eq('id', edytowanyProd);
+  if (error) { pokazInfo($('prod-info'), 'Nie udało się usunąć.', 'zle'); return; }
+  await wczytajSklep();
+  $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false;
+  pokazInfo($('sklep-info'), 'Usunięto.', 'ok');
 });

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BRUK CAFE — Specialty Coffee in Kleparz, near Kraków Main Station</title>
-<meta name="description" content="BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1 — a 5-minute walk from Kraków Main Station and the Old Town. Specialty coffee, espresso, V60, matcha, breakfast, Wi-Fi.">
+<title>BRUK CAFE. Specialty coffee in Kleparz, near Kraków Main Station</title>
+<meta name="description" content="BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1, a 5-minute walk from Kraków Main Station and the Old Town. Specialty coffee, espresso, V60, matcha, breakfast, Wi-Fi.">
 <link rel="canonical" href="https://bruk.cafe/visit/">
 <link rel="alternate" hreflang="pl" href="https://bruk.cafe/">
 <link rel="alternate" hreflang="en" href="https://bruk.cafe/en/">
@@ -24,7 +24,7 @@
   "priceRange": "$$",
   "currenciesAccepted": "PLN",
   "paymentAccepted": "Cash, card, BLIK",
-  "description": "BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1 — a few minutes' walk from Kraków Main Station, Galeria Krakowska and the Old Town. We serve specialty coffee, espresso and filter methods such as V60, matcha, breakfast and light food in a relaxed space with Wi-Fi and power outlets.",
+  "description": "BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1, a few minutes' walk from Kraków Main Station, Galeria Krakowska and the Old Town. We serve specialty coffee, espresso and filter methods such as V60, matcha, breakfast and light food. We have Wi-Fi and power outlets at the tables.",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Krótka 1",
@@ -147,14 +147,13 @@
     <nav class="stos">
       <button class="lnk" id="btn-wifi" type="button" data-haslo="SvZ$rkhcBAE3">
         <span class="tresc">
-          <span class="co">Wi-Fi — tap to copy</span>
+          <span class="co">Wi-Fi · tap to copy</span>
           <span class="sub">PLAY_Swiatlowod_7CB0 · SvZ$rkhcBAE3</span>
         </span>
         <span class="glif" aria-hidden="true">⧉</span>
       </button>
 
-      <!-- Review: Google only for now. href to be swapped for the direct "write a review" link. -->
-      <a class="lnk akcent" href="https://maps.google.com/?cid=11920639657712110502" target="_blank" rel="noopener">
+      <a class="lnk akcent" href="https://g.page/r/CaZLXUWcnm6lEAE/review" target="_blank" rel="noopener">
         <span class="tresc">
           <span class="co">Leave a review on Google</span>
           <span class="sub">★★★★★ · takes a minute</span>
@@ -184,12 +183,12 @@
     </nav>
 
     <section class="tresc-geo">
-      <h1>BRUK CAFE — <i>specialty coffee</i> in Kleparz, Kraków</h1>
-      <p class="wstep">BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1 — a few minutes' walk from Kraków Main Station and the Old Town. We serve specialty coffee, espresso and filter methods such as V60, matcha, breakfast and simple food in a relaxed space with Wi-Fi and power outlets.</p>
+      <h1>BRUK CAFE. <i>Specialty coffee in Kleparz, Kraków</i></h1>
+      <p class="wstep">BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1, a few minutes' walk from Kraków Main Station and the Old Town. We serve specialty coffee, espresso and filter methods such as V60, matcha, breakfast and simple food. We have Wi-Fi and power outlets at the tables.</p>
 
       <div class="blok">
         <h2>Coffee near Kraków Main Station</h2>
-        <p>BRUK CAFE is about a 5-minute walk from Kraków Główny and Galeria Krakowska — a convenient stop for specialty coffee and breakfast before exploring the city.</p>
+        <p>BRUK CAFE is about a 5-minute walk from Kraków Główny and Galeria Krakowska. A good stop for specialty coffee and breakfast before you head into the city.</p>
       </div>
 
       <div class="blok">
@@ -199,7 +198,7 @@
 
       <div class="blok">
         <h2>Near the Old Town, away from the crowds</h2>
-        <p>BRUK sits just outside the busiest part of the Old Town — a convenient place for coffee, breakfast or a short break while exploring central Kraków.</p>
+        <p>BRUK sits just outside the busiest part of the Old Town, so it's an easy place for coffee, breakfast or a short break while you explore central Kraków.</p>
       </div>
 
       <div class="blok">
@@ -250,14 +249,14 @@
           wifi.classList.add('ok');
           var co = wifi.querySelector('.co'); var prev = co.textContent;
           co.textContent = 'Password copied ✓'; pokazToast('Password copied');
-          setTimeout(function () { wifi.classList.remove('ok'); co.textContent = 'Wi-Fi — tap to copy'; }, 2000);
+          setTimeout(function () { wifi.classList.remove('ok'); co.textContent = 'Wi-Fi · tap to copy'; }, 2000);
         });
       });
       var share = document.getElementById('btn-share');
       share.addEventListener('click', function (e) {
         if (navigator.share) {
           e.preventDefault();
-          navigator.share({ title: 'BRUK CAFE', text: 'BRUK CAFE — specialty coffee in Kleparz, Kraków, Krótka 1.', url: share.href }).catch(function () {});
+          navigator.share({ title: 'BRUK CAFE', text: 'BRUK CAFE, specialty coffee in Kleparz, Kraków, Krótka 1.', url: share.href }).catch(function () {});
         } else if (navigator.clipboard) {
           e.preventDefault();
           kopiuj(share.href, function () { pokazToast('Link copied'); });

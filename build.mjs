@@ -21,12 +21,14 @@ const L = {
     pustoKawy: 'Zapytaj baristę, co dziś mielimy — świeże ziarno czeka.',
     pustoCiasta: 'Dziś bez wypieków. Zajrzyj jutro.',
     status: { available: 'dostępne', low: 'ostatnie sztuki', sold_out: 'wyprzedane' },
+    sklep: { namiejscu: 'Na miejscu', brak: 'Chwilowo brak' },
   },
   en: {
     file: 'en/index.html', intensity: 'Intensity',
     pustoKawy: 'Ask the barista what we are grinding today.',
     pustoCiasta: 'No bakes today. Come back tomorrow.',
     status: { available: 'available', low: 'last few', sold_out: 'sold out' },
+    sklep: { namiejscu: 'In-store', brak: 'Sold out' },
   },
 };
 
@@ -183,6 +185,55 @@ function podmienMenuLd(html, ld) {
   return html.replace(re, `<!-- MENU-LD -->\n${ld}\n<!-- /MENU-LD -->`);
 }
 
+// ── SKLEP (produkty do kupienia na miejscu) ─────────────────────
+function renderSklep(items, t) {
+  return items.map((p) => {
+    const nd = p.available === false;
+    const cena = p.price ? `<span class="sklep-cena">${esc(p.price)}</span>` : '';
+    const opis = p.opis ? `\n        <span class="sklep-opis">${esc(p.opis)}</span>` : '';
+    const znak = nd
+      ? `<span class="sklep-znak niedostepne">${esc(t.sklep.brak)}</span>`
+      : `<span class="sklep-znak dostepne">${esc(t.sklep.namiejscu)}</span>`;
+    return `    <li class="sklep-karta${nd ? ' niedostepny' : ''}">
+      <span class="sklep-foto" aria-hidden="true"${fotoStyle(p.photo_url)}></span>
+      <span class="sklep-tresc">
+        <span class="sklep-glowa"><span class="sklep-nazwa">${esc(p.name)}</span>${cena}</span>${opis}
+        ${znak}
+      </span>
+    </li>`;
+  }).join('\n');
+}
+
+// JSON-LD: każdy produkt jako Product z ofertą; sprzedaż wyłącznie na miejscu
+function sklepLd(items) {
+  const dostepne = items.filter((p) => p.available !== false);
+  if (!dostepne.length) return '';
+  const data = dostepne.map((p) => ({
+    '@context': 'https://schema.org', '@type': 'Product',
+    name: p.name,
+    ...(p.opis ? { description: p.opis } : {}),
+    ...(p.photo_url ? { image: p.photo_url } : {}),
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStoreOnly',
+      availableAtOrFrom: { '@id': 'https://bruk.cafe/#lokal' },
+      ...(p.price ? { price: String(p.price).replace(/[^\d.,]/g, '').replace(',', '.'), priceCurrency: 'PLN' } : {}),
+    },
+  }));
+  return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2).replaceAll('</', '<\\/')}\n</script>`;
+}
+
+function podmienSklep(html, inner) {
+  const re = /<!-- SKLEP -->[\s\S]*?<!-- \/SKLEP -->/;
+  if (!re.test(html)) return html;
+  return html.replace(re, `<!-- SKLEP -->\n${inner}\n  <!-- /SKLEP -->`);
+}
+function podmienSklepLd(html, ld) {
+  const re = /<!-- SKLEP-LD -->[\s\S]*?<!-- \/SKLEP-LD -->/;
+  if (!re.test(html)) return html;
+  return html.replace(re, `<!-- SKLEP-LD -->\n${ld}\n<!-- /SKLEP-LD -->`);
+}
+
 // ── automatyczne tłumaczenie PL→EN (DeepL) ──────────────────────
 // Klucz z env DEEPL_KEY (nie w repo!). Wolumen menu+kaw jest mały, więc
 // tłumaczymy przy każdym buildzie. Brak klucza / błąd = EN zostaje jak było.
@@ -212,6 +263,7 @@ async function mapaTlumaczen(dane) {
   (dane.kawy || []).forEach((k) => { dodaj(k.note); dodaj(k.origin); dodaj(k.method); dodaj(k.obrobka); });
   (dane.ciasta || []).forEach((c) => { dodaj(c.name); dodaj(c.note); });
   (dane.menu || []).forEach((m) => { dodaj(m.sekcja); dodaj(m.nazwa); dodaj(m.sklad); });
+  (dane.sklep || []).forEach((p) => { dodaj(p.name); dodaj(p.opis); });
   const lista = [...zbior];
   if (!lista.length) return new Map();
   const en = await tlumaczBatch(lista);
@@ -243,6 +295,11 @@ async function pobierz() {
         { sekcja: 'Herbata i matcha', nazwa: 'Matcha latte', cena: '21 zł', sort: 10 },
         { sekcja: 'Śniadania', nazwa: 'Pęczak z hummusem', cena: '39 zł', dieta: 'vegan', sklad: 'Kasza pęczak, hummus, marchew, harissa.', sort: 10 },
       ],
+      sklep: [
+        { name: 'Matcha ceremonialna 30 g', price: '65 zł', opis: 'Japońska matcha w puszce. Ta sama, którą pijesz u nas.', available: true, photo_url: '/img/espresso.jpg' },
+        { name: 'Kawa ziarnista 250 g', price: '54 zł', opis: 'Świeżo wypalona specialty do zaparzenia w domu.', available: true, photo_url: '/img/ciastka.jpg' },
+        { name: 'Kubek Bruk', price: '49 zł', opis: 'Ceramiczny, robiony ręcznie.', available: false, photo_url: '/img/ciasto.jpg' },
+      ],
     };
   }
   const URL = process.env.SUPABASE_URL;
@@ -264,7 +321,13 @@ async function pobierz() {
   if (!mr.error) menu = mr.data || [];
   else console.log('menu_items niedostępne — zostaje statyczne menu (' + mr.error.message + ')');
 
-  return { kawy: kawy || [], ciasta: ciasta || [], menu };
+  // Sklep osobno: brak tabeli shop_items NIE może wywalić buildu (zostaje statyczny sklep).
+  let sklep = null;
+  const sr = await sb.from('shop_items').select('*').order('sort').order('created_at');
+  if (!sr.error) sklep = sr.data || [];
+  else console.log('shop_items niedostępne — zostaje statyczny sklep (' + sr.error.message + ')');
+
+  return { kawy: kawy || [], ciasta: ciasta || [], menu, sklep };
 }
 
 // Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
@@ -282,18 +345,20 @@ const kawy = dane.kawy.filter((k) => !jestHerbata(k)).slice(0, LIMIT_KAWY);
 const herbaty = dane.kawy.filter(jestHerbata).slice(0, LIMIT_HERBATY);
 const ciasta = dane.ciasta.slice(0, LIMIT_CIASTA);
 const menu = dane.menu;  // null gdy brak tabeli → zostaje statyczne menu
+const sklep = dane.sklep;  // null gdy brak tabeli → zostaje statyczny sklep
 
 // tłumaczenia PL→EN (pusta mapa gdy brak DEEPL_KEY albo błąd → EN zostaje jak było)
 const mapa = DEMO ? new Map() : await mapaTlumaczen(dane);
 const tr = (s) => (s && mapa.get(s)) || s;
 const przekladKawy = (k) => ({ ...k, note: tr(k.note), origin: tr(k.origin), method: tr(k.method), obrobka: tr(k.obrobka) });
 function daneDlaJezyka(lang) {
-  if (lang !== 'en' || !mapa.size) return { kawy, herbaty, ciasta, menu, tlumaczone: false };
+  if (lang !== 'en' || !mapa.size) return { kawy, herbaty, ciasta, menu, sklep, tlumaczone: false };
   return {
     kawy: kawy.map(przekladKawy),
     herbaty: herbaty.map(przekladKawy),
     ciasta: ciasta.map((c) => ({ ...c, name: tr(c.name), note: tr(c.note) })),
     menu: menu ? menu.map((m) => ({ ...m, sekcja: tr(m.sekcja), nazwa: tr(m.nazwa), sklad: tr(m.sklad) })) : menu,
+    sklep: sklep ? sklep.map((p) => ({ ...p, name: tr(p.name), opis: tr(p.opis) })) : sklep,
     tlumaczone: true,
   };
 }
@@ -316,6 +381,12 @@ for (const [lang, t] of Object.entries(L)) {
   if (menuDoWstawienia && menuDoWstawienia.length) {
     html = podmienMenu(html, renderMenu(menuDoWstawienia));
     html = podmienMenuLd(html, menuLd(menuDoWstawienia));
+  }
+  // sklep: PL zawsze z bazy; EN tylko z tłumaczeniem (inaczej zostaje statyczny angielski)
+  const sklepDoWstawienia = (lang === 'pl' || dl.tlumaczone) ? dl.sklep : null;
+  if (sklepDoWstawienia && sklepDoWstawienia.length) {
+    html = podmienSklep(html, renderSklep(sklepDoWstawienia, t));
+    html = podmienSklepLd(html, sklepLd(sklepDoWstawienia));
   }
   writeFileSync(t.file, html);
   const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';

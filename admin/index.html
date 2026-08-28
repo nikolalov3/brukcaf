@@ -50,6 +50,7 @@
     <button type="button" class="zakl" data-tab="kawy">Dziś w młynku</button>
     <button type="button" class="zakl" data-tab="stan">Stan (ciasta)</button>
     <button type="button" class="zakl" data-tab="menu">Menu</button>
+    <button type="button" class="zakl" data-tab="sklep">Sklep</button>
   </nav>
 
   <!-- lista wpisów -->
@@ -410,6 +411,65 @@
       <button class="btn" id="btn-poz-zapisz">Zapisz</button>
       <button class="btn pusty" id="btn-poz-anuluj">Anuluj</button>
       <button class="btn groźny mały" id="btn-poz-usun" hidden style="margin-left:auto">Usuń pozycję</button>
+    </div>
+  </main>
+
+  <!-- ═══ SKLEP — produkty do kupienia na miejscu ═══ -->
+  <main class="ramka grupa-sklep" id="widok-sklep" hidden>
+    <div class="gora">
+      <h2>Sklep</h2>
+      <button class="btn" id="btn-nowy-prod">+ Dodaj produkt</button>
+    </div>
+    <p class="cichy" style="margin:-8px 0 20px;font-size:13px">
+      Produkty do kupienia na miejscu (matcha, kawa ziarnista, akcesoria…). Strzałki układają kolejność.
+      Odznacz „dostępny", gdy się skończy. Po zmianach kliknij „Aktualizuj stronę".</p>
+    <div class="info" id="sklep-info" hidden></div>
+    <div id="sklep-lista"></div>
+    <div class="publikuj">
+      <button class="btn" data-rebuild>Aktualizuj stronę</button>
+      <p class="cichy">Publikuje wszystkie zmiany — na stronie za ~minutę.</p>
+    </div>
+  </main>
+
+  <main class="ramka grupa-sklep" id="widok-sklep-edytor" hidden>
+    <div class="gora">
+      <h2 id="prod-tytul">Nowy produkt</h2>
+      <button class="btn pusty mały" id="btn-prod-wroc">← Wróć</button>
+    </div>
+    <div class="info" id="prod-info" hidden></div>
+
+    <div class="pole">
+      <label class="etykieta cichy">Zdjęcie produktu</label>
+      <div class="okladka" id="prod-strefa">
+        <img id="prod-foto-podglad" alt="" hidden>
+        <div class="okladka-akcje">
+          <input type="file" id="prod-foto" accept="image/*" hidden>
+          <button class="btn pusty mały" type="button" id="btn-prod-foto">Wybierz</button>
+          <button class="btn pusty mały" type="button" id="btn-prod-foto-usun" hidden>Usuń</button>
+          <span class="okladka-hint">przeciągnij / wklej (⌘V)</span>
+        </div>
+      </div>
+    </div>
+    <div class="dwie">
+      <div class="pole">
+        <label class="etykieta cichy" for="prod-nazwa">Nazwa</label>
+        <input type="text" id="prod-nazwa" placeholder="np. Matcha ceremonialna 30 g">
+      </div>
+      <div class="pole">
+        <label class="etykieta cichy" for="prod-cena">Cena</label>
+        <input type="text" id="prod-cena" placeholder="np. 65 zł">
+      </div>
+    </div>
+    <div class="pole">
+      <label class="etykieta cichy" for="prod-opis">Opis (opcjonalnie)</label>
+      <textarea id="prod-opis" rows="2" placeholder="np. Japońska matcha w puszce. Ta sama, którą pijesz u nas."></textarea>
+    </div>
+    <label class="przelacz"><input type="checkbox" id="prod-dostepny" checked> Dostępny na miejscu</label>
+
+    <div class="stopka-edytora">
+      <button class="btn" id="btn-prod-zapisz">Zapisz</button>
+      <button class="btn pusty" id="btn-prod-anuluj">Anuluj</button>
+      <button class="btn groźny mały" id="btn-prod-usun" hidden style="margin-left:auto">Usuń produkt</button>
     </div>
   </main>
 </div>

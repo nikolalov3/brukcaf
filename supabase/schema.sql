@@ -219,3 +219,33 @@ create policy "publiczny odczyt menu"
 drop policy if exists "zalogowany zarządza menu" on public.menu_items;
 create policy "zalogowany zarządza menu"
   on public.menu_items for all to authenticated using (true) with check (true);
+
+-- ── SKLEP (produkty do kupienia na miejscu) ─────────────────────
+create table if not exists public.shop_items (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,                 -- np. "Matcha ceremonialna 30 g"
+  price       text,                          -- "45 zł" (tekst, jak w menu)
+  opis        text,                          -- krótki opis produktu
+  photo_url   text,                          -- zdjęcie produktu
+  available   boolean not null default true, -- czy dostępny na miejscu
+  sort        int  not null default 0,       -- kolejność wyświetlania
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+create index if not exists shop_kolejnosc_idx on public.shop_items (sort);
+
+drop trigger if exists shop_updated_at on public.shop_items;
+create trigger shop_updated_at
+  before update on public.shop_items
+  for each row execute function public.dotknij_updated_at();
+
+alter table public.shop_items enable row level security;
+
+drop policy if exists "publiczny odczyt sklepu" on public.shop_items;
+create policy "publiczny odczyt sklepu"
+  on public.shop_items for select to anon, authenticated using (true);
+
+drop policy if exists "zalogowany zarządza sklepem" on public.shop_items;
+create policy "zalogowany zarządza sklepem"
+  on public.shop_items for all to authenticated using (true) with check (true);
