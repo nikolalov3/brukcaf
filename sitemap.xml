@@ -13,4 +13,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://bruk.cafe/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://bruk.cafe/"/>
   </url>
+  <url>
+    <loc>https://bruk.cafe/visit/</loc>
+  </url>
 </urlset>

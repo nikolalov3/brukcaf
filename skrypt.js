@@ -421,6 +421,19 @@
   window.addEventListener('resize', oznacz);
 })();
 
+/* Deep-link z kotwicą (#karta, #mlyn…): po pełnym załadowaniu zdjęcia zmieniają
+   wysokości i natywny skok trafia w złe miejsce. Ponawiamy skok po 'load'. */
+(function () {
+  var id = (location.hash || '').slice(1);
+  if (!id) return;
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView();
+    }, 80);
+  });
+})();
+
 /* Młynek: przełącznik Kawa / Herbata.
    Herbata pojawia się dopiero, gdy Filip doda herbaty w panelu — wtedy napis
    "Kawa" zamienia się w segment Kawa|Herbata i przełącza widoczny pasek. */

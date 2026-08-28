@@ -145,6 +145,8 @@ html:not(.js) .zmiennik .marka{display:none}
   color:var(--cichy);
 }
 .hero .podpis b{display:block;color:var(--atrament);margin-bottom:5px}
+/* przycisk „Prowadź mnie" w podpisie tylko na mobile (na desktopie jest w stopce) */
+.hero .podpis .podpis-prowadz{display:none}
 
 @keyframes wejscie{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
@@ -337,6 +339,10 @@ h2{
   }
   /* etykieta trzyma się jednej linii, opis łamie się do prawej krawędzi */
   .hero .podpis b{margin:0;text-align:left;white-space:nowrap}
+  /* mobile: adres na sam dół, a pod nim „Prowadź mnie" przy prawej krawędzi */
+  .hero .podpis .adres{order:4}
+  .hero .podpis .podpis-prowadz{display:flex;justify-content:flex-end;order:5;padding-block:15px;border-bottom:0}
+  .hero .podpis .podpis-prowadz .prowadz{margin-top:0}
 
   /* fakty: bez ramki, same włoskowate linie — mniej pudełek, więcej spokoju */
   .fakty{border:0;background:none;gap:0}
