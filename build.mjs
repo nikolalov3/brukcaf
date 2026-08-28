@@ -75,11 +75,7 @@ function kartaCiasta(c, t) {
   const st = t.status[c.status] || t.status.available;
   const cls = c.status === 'low' ? 'malo' : c.status === 'sold_out' ? 'wyprzedane' : 'dostepne';
   const notka = c.note ? `\n            <span class="ciasto-notka">${esc(c.note)}</span>` : '';
-  const fotki = [c.photo_url, c.photo_url2, c.photo_url3, c.photo_url4].filter(Boolean);
-  const klik = fotki.length
-    ? ` class="mlyn-karta ciasto-kafel klik" data-fotki="${esc(JSON.stringify(fotki))}" tabindex="0" role="button" aria-label="${esc(c.name)} — otwórz zdjęcia"`
-    : ` class="mlyn-karta ciasto-kafel"`;
-  return `        <li${klik}${fotoStyle(c.photo_url)}>
+  return `        <li class="mlyn-karta ciasto-kafel"${fotoStyle(c.photo_url)}>
           <span class="ciasto-tresc">
             <span class="ciasto-nz">${esc(c.name)}</span>
             <span class="stan-znak ${cls}">${esc(st)}</span>${notka}
