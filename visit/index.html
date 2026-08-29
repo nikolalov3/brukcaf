@@ -155,7 +155,7 @@
     <nav class="stos">
       <button class="lnk" id="btn-wifi" type="button" data-haslo="SvZ$rkhcBAE3">
         <span class="tresc">
-          <span class="co">Wi-Fi · tap to copy</span>
+          <span class="co">Wi-Fi · tap to copy password</span>
           <span class="sub">PLAY_Swiatlowod_7CB0 · SvZ$rkhcBAE3</span>
         </span>
         <span class="glif" aria-hidden="true">⧉</span>
@@ -274,7 +274,7 @@
           wifi.classList.add('ok');
           var co = wifi.querySelector('.co'); var prev = co.textContent;
           co.textContent = 'Password copied ✓'; pokazToast('Password copied');
-          setTimeout(function () { wifi.classList.remove('ok'); co.textContent = 'Wi-Fi · tap to copy'; }, 2000);
+          setTimeout(function () { wifi.classList.remove('ok'); co.textContent = 'Wi-Fi · tap to copy password'; }, 2000);
         });
       });
       var share = document.getElementById('btn-share');
