@@ -190,15 +190,15 @@ function renderSklep(items, t) {
   return items.map((p) => {
     const nd = p.available === false;
     const cena = p.price ? `<span class="sklep-cena">${esc(p.price)}</span>` : '';
-    const opis = p.opis ? `\n        <span class="sklep-opis">${esc(p.opis)}</span>` : '';
-    const znak = nd
-      ? `<span class="sklep-znak niedostepne">${esc(t.sklep.brak)}</span>`
-      : `<span class="sklep-znak dostepne">${esc(t.sklep.namiejscu)}</span>`;
-    return `    <li class="sklep-karta${nd ? ' niedostepny' : ''}">
-      <span class="sklep-foto" aria-hidden="true"${fotoStyle(p.photo_url)}></span>
-      <span class="sklep-tresc">
-        <span class="sklep-glowa"><span class="sklep-nazwa">${esc(p.name)}</span>${cena}</span>${opis}
-        ${znak}
+    // opis smakowy pojawia się jako warstwa na zdjęciu (hover na desktopie, tap na mobile)
+    const warstwa = p.opis
+      ? `<span class="sklep-opis-warstwa"><span class="sklep-opis">${esc(p.opis)}</span></span>` : '';
+    const klik = p.opis ? ' klik' : '';
+    const tab = p.opis ? ' tabindex="0"' : '';
+    return `    <li class="sklep-karta${nd ? ' niedostepny' : ''}${klik}"${tab}>
+      <span class="sklep-foto"${fotoStyle(p.photo_url)}>${warstwa}</span>
+      <span class="sklep-stopka">
+        <span class="sklep-nazwa">${esc(p.name)}</span>${cena}
       </span>
     </li>`;
   }).join('\n');

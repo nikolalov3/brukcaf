@@ -112,6 +112,14 @@
   .lnk.ok{background:var(--bordo-2);border-color:var(--bordo-2);color:var(--biel)}
   .lnk.ok .co,.lnk.ok .glif{color:var(--biel)}
 
+  /* Tripadvisor — zielony kafel z sówką */
+  .lnk.tripadvisor{background:#34e0a1;border-color:#34e0a1;color:#0a2e22}
+  .lnk.tripadvisor .co{color:#0a2e22}
+  .lnk.tripadvisor .sub{color:rgba(10,46,34,.72)}
+  .lnk.tripadvisor .glif{color:rgba(10,46,34,.75)}
+  .ta-owl{flex:none;display:flex;align-items:center;justify-content:center}
+  .ta-owl svg{width:36px;height:24px;display:block}
+
   /* GEO content */
   .tresc-geo{display:flex;flex-direction:column;gap:22px;padding-top:6px;border-top:1px solid var(--wlos)}
   .tresc-geo h1{font-size:clamp(23px,6vw,29px);line-height:1.14;letter-spacing:-.02em;font-weight:700;max-width:20ch}
@@ -159,6 +167,23 @@
           <span class="sub">★★★★★ · takes a minute</span>
         </span>
         <span class="glif" aria-hidden="true">→</span>
+      </a>
+
+      <a class="lnk tripadvisor" href="https://www.tripadvisor.com/Restaurant_Review-g274772-d34602934-Reviews-Bruk_Cafe-Krakow_Lesser_Poland_Province_Southern_Poland.html" target="_blank" rel="noopener">
+        <span class="ta-owl" aria-hidden="true">
+          <svg viewBox="0 0 40 27" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11.5" cy="13.5" r="9.5" fill="#fff"/>
+            <circle cx="28.5" cy="13.5" r="9.5" fill="#fff"/>
+            <circle cx="11.5" cy="13.5" r="3.9" fill="#0a2e22"/>
+            <circle cx="28.5" cy="13.5" r="3.9" fill="#0a2e22"/>
+            <path d="M20 19.5l-3.4 4.4h6.8z" fill="#0a2e22"/>
+          </svg>
+        </span>
+        <span class="tresc">
+          <span class="co">Review us on Tripadvisor</span>
+          <span class="sub">it helps other travellers find us</span>
+        </span>
+        <span class="glif" aria-hidden="true">↗</span>
       </a>
 
       <a class="lnk" href="/en/#karta">

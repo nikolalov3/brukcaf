@@ -41,6 +41,7 @@
   "alternateName": ["Cafe Bruk", "Bruk"],
   "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania podawane codziennie od 9:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane.",
   "url": "https://bruk.cafe/",
+  "email": "lfckontakt@gmail.com",
   "priceRange": "$$",
   "currenciesAccepted": "PLN",
   "paymentAccepted": "Gotówka, karta płatnicza, BLIK",
@@ -206,18 +207,64 @@
       "hasMenuItem": [
         {
           "@type": "MenuItem",
+          "name": "Yellow Espresso DARK Blend",
+          "description": "SUSZONE OWOCE, CZEKLOADA, MIGDAŁY"
+        },
+        {
+          "@type": "MenuItem",
           "name": "COSTA RICA HELLEN MORA",
-          "description": "Kawa ziarnista jakości specialty pochodząca z Kostaryki, wypalona w warszawskiej palarni HAYB. Palona jasno, idealna do ekspresu przelewowego, dripa, Chemexa, AeroPressa, French Pressa, oraz innych alternatywnych metod parzenia. W smaku pojawiają się nuty takie jak figi, porzeczki czerwone i czekolada mleczna."
+          "description": "FIGI, CZARNA PORZECZKA, CZEKOLADA MLECZNA"
         },
         {
           "@type": "MenuItem",
           "name": "COLUMBIA LA CABANA",
-          "description": "LaCava Colombia La Cabaña to jasno palona arabika specialty Single Origin z regionu Bruselas w departamencie Huila, jednym z najbardziej renomowanych obszarów uprawy kawy w Kolumbii. Ziarna pochodzą ze zbioru 2025, z farmy La Cabaña, gdzie odmiana Chiroso uprawiana jest na wysokości 1600–1700 m n.p.m.. Klasyczna obróbka washed podkreśla czystość filiżanki, elegancję i przejrzysty charakter tej kawy. W ocenie jakości SCA kawa uzyskała 87 punktów.\n\nColombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo klarownych kaw przelewowych, w których liczy się balans i finezja aromatu."
+          "description": "OWOCE TROPIKALNE, CYTRUSY, ZIELONA HERBATA"
         },
         {
           "@type": "MenuItem",
           "name": "CHILLWAVE STRAWBERRY BLEND",
-          "description": "Kawa ziarnista jakości specialty pochodząca z Kolumbii, wypalona w warszawskiej palarni HAYB. Palona jasno, idealna do ekspresu przelewowego, dripa, Chemexa, AeroPressa, French Pressa, oraz innych alternatywnych metod parzenia. W smaku pojawiają się nuty takie jak truskawka, pomarańcza i toffi."
+          "description": "TRUSKAWKA, POMARAŃCZA, TOFFI"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Indonezja Team Pegasing",
+          "description": "WINO PORTO, AGREST, CZARNA PORZECZKA"
+        }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Herbata",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "EARL GREY",
+          "description": "BERGAMOTKA, PIEPRZ CZARNY, CYNAMON"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "OSMANTHUS GOLDEN TIPS",
+          "description": "OSMANTUS, BRZOSKWINIA, MIÓD"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "JASMINE GREEN",
+          "description": "JAŚMIN"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "YA BAO WILDBUDS",
+          "description": "BRZOSKWINIA, ŻYWICA, SOSNA"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "MAGNOLIA OOLONG",
+          "description": "MAGNOLIA, RUMIANEK, PYŁEK PSZCZELI"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "MILK OOLONG",
+          "description": "MORELA, MLEKO, TOFFI"
         }
       ]
     },
@@ -227,8 +274,23 @@
       "hasMenuItem": [
         {
           "@type": "MenuItem",
-          "name": "Tarta",
-          "description": "ostatnie 2 kawałki"
+          "name": "BROWNIE TIRAMISU"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "SERNIK BASKIJSKI"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "CYTRYNOWE"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "TARTA MALINOWA Z BEZĄ"
+        },
+        {
+          "@type": "MenuItem",
+          "name": "CIASTKA ORZECH LASKOWY-GORZKA CZEKOLADA"
         }
       ]
     }
@@ -237,9 +299,374 @@
 </script>
 <!-- /MLYN-LD -->
 <!-- Menu z bazy — generuje build.mjs (nie edytować ręcznie) -->
-<!-- MENU-LD --><!-- /MENU-LD -->
+<!-- MENU-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Menu",
+  "@id": "https://bruk.cafe/#menu",
+  "name": "Menu Bruk Cafe",
+  "inLanguage": [
+    "pl-PL",
+    "en"
+  ],
+  "hasMenuSection": [
+    {
+      "@type": "MenuSection",
+      "name": "Kawa",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Doppio",
+          "offers": {
+            "@type": "Offer",
+            "price": "12",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Americano",
+          "offers": {
+            "@type": "Offer",
+            "price": "14",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Flat white",
+          "offers": {
+            "@type": "Offer",
+            "price": "17",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Cappuccino",
+          "offers": {
+            "@type": "Offer",
+            "price": "16",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Latte",
+          "offers": {
+            "@type": "Offer",
+            "price": "19",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Orange espresso",
+          "offers": {
+            "@type": "Offer",
+            "price": "23",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Tonic espresso",
+          "offers": {
+            "@type": "Offer",
+            "price": "23",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Drip V60",
+          "offers": {
+            "@type": "Offer",
+            "price": "24",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "+ mleko roślinne / syrop",
+          "offers": {
+            "@type": "Offer",
+            "price": "2",
+            "priceCurrency": "PLN"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Herbata i matcha",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Matcha",
+          "offers": {
+            "@type": "Offer",
+            "price": "18",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Matcha latte",
+          "offers": {
+            "@type": "Offer",
+            "price": "21",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Matcha bananowa",
+          "offers": {
+            "@type": "Offer",
+            "price": "24",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Matcha orange",
+          "offers": {
+            "@type": "Offer",
+            "price": "24",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Herbata",
+          "offers": {
+            "@type": "Offer",
+            "price": "17",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Zioła",
+          "offers": {
+            "@type": "Offer",
+            "price": "17",
+            "priceCurrency": "PLN"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Oferta sezonowa",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Cold brew (kawa)",
+          "offers": {
+            "@type": "Offer",
+            "price": "22",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Cold brew (herbata)",
+          "offers": {
+            "@type": "Offer",
+            "price": "16",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Matcha yuzu tonic",
+          "offers": {
+            "@type": "Offer",
+            "price": "24",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Matcha sakura tonic",
+          "offers": {
+            "@type": "Offer",
+            "price": "24",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Lemoniada",
+          "description": "Czarna porzeczka i róża.",
+          "offers": {
+            "@type": "Offer",
+            "price": "18",
+            "priceCurrency": "PLN"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Śniadania · AM's 9–13, zamów przy barze",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Pęczak z hummusem",
+          "description": "Kasza pęczak, winegret, cytrynowy hummus, marchew karmelizowana, harissa, orzechy laskowe, świeże zioła.",
+          "suitableForDiet": "https://schema.org/VeganDiet",
+          "offers": {
+            "@type": "Offer",
+            "price": "39",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Tost z szynką",
+          "description": "Chleb pszenny, prosciutto cotto, salami piccante, gouda, ser bursztyn, dressing pomidorowy, jajo sadzone, domowy ketchup.",
+          "offers": {
+            "@type": "Offer",
+            "price": "39",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Tosty z pomidorem",
+          "description": "Chleb pszenny, pasta z suszonych pomidorów, pieczony pomidor, mozzarella, grana padano, domowy ketchup.",
+          "suitableForDiet": "https://schema.org/VegetarianDiet",
+          "offers": {
+            "@type": "Offer",
+            "price": "36",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Carpaccio z pomidorów",
+          "description": "Polskie pomidory, ser bundz, świeże zioła, oliwa, żywy ocet wiśniowy, pieczywo żytnie.",
+          "suitableForDiet": "https://schema.org/VegetarianDiet",
+          "offers": {
+            "@type": "Offer",
+            "price": "36",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Frankfurterki z sałatką ziemniaczaną i jaja sadzone",
+          "description": "Frankfurterki wieprzowe, sałatka ziemniaczana, jaja sadzone x2, pieczywo.",
+          "offers": {
+            "@type": "Offer",
+            "price": "42",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Kanapka z twarożkiem",
+          "description": "Chleb żytni, pasta twarogowa z ogórkiem kiszonym, jajo na miękko, świeże zioła, pikantna oliwa.",
+          "suitableForDiet": "https://schema.org/VegetarianDiet",
+          "offers": {
+            "@type": "Offer",
+            "price": "34",
+            "priceCurrency": "PLN"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "Inne",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Świeży sok pomarańczowy",
+          "offers": {
+            "@type": "Offer",
+            "price": "20",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Świeży sok pomidorowy",
+          "description": "Sok pomidorowy, oliwa z oliwek, sól, pieprz, bazylia.",
+          "offers": {
+            "@type": "Offer",
+            "price": "18",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Kefir",
+          "description": "Kefir, ogórek, koperek, mięta, pieprz, sól.",
+          "offers": {
+            "@type": "Offer",
+            "price": "18",
+            "priceCurrency": "PLN"
+          }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Woda",
+          "offers": {
+            "@type": "Offer",
+            "price": "8",
+            "priceCurrency": "PLN"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!-- /MENU-LD -->
 <!-- Sklep z bazy — generuje build.mjs (nie edytować ręcznie) -->
-<!-- SKLEP-LD --><!-- /SKLEP-LD -->
+<!-- SKLEP-LD -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Matcha ceremonialna 30 g",
+    "description": "Japońska matcha w puszce. Ta sama, którą pijesz u nas.",
+    "image": "/img/espresso.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStoreOnly",
+      "availableAtOrFrom": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "price": "65",
+      "priceCurrency": "PLN"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Kawa ziarnista 250 g",
+    "description": "Świeżo wypalona specialty do zaparzenia w domu.",
+    "image": "/img/ciastka.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStoreOnly",
+      "availableAtOrFrom": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "price": "54",
+      "priceCurrency": "PLN"
+    }
+  }
+]
+</script>
+<!-- /SKLEP-LD -->
 </head>
 <body>
 
@@ -382,12 +809,21 @@
       <span class="etykieta cichy mlyn-label" data-tylko-kawa>Kawa</span>
       <ul class="mlyn-strip" data-kawy>
         <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787136674880-zrzut-ekranu-2026-08-19-o-12-50-45-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz nz-sredni">Yellow Espresso DARK Blend</span>
+            <span class="karta-poch">Brazylia Cerrado, Minas Gerais, Gwatemala Huehuetenango</span></span>
+            <span class="karta-op">SUSZONE OWOCE, CZEKLOADA, MIGDAŁY</span>
+            <span class="karta-chipy"><span class="karta-chip">ESPRESSO</span><span class="karta-chip">BLEND</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
           <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1786965457484-zrzut-ekranu-2026-08-17-o-13-16-39-removebg-preview.png')"></span>
           <span class="karta-tresc">
             <span class="karta-glowa"><span class="karta-nz nz-sredni">COSTA RICA HELLEN MORA</span>
             <span class="karta-poch">COSTA RICA TARRAZU</span></span>
-            <span class="karta-op">Kawa ziarnista jakości specialty pochodząca z Kostaryki, wypalona w warszawskiej palarni HAYB. Palona jasno, idealna do ekspresu przelewowego, dripa, Chemexa, AeroPressa, French Pressa, oraz innych alternatywnych metod parzenia. W smaku pojawiają się nuty takie jak figi, porzeczki czerwone i czekolada mleczna.</span>
-            <span class="karta-chipy"><span class="karta-chip">V60</span></span>
+            <span class="karta-op">FIGI, CZARNA PORZECZKA, CZEKOLADA MLECZNA</span>
+            <span class="karta-chipy"><span class="karta-chip">ALTERNATYWY</span><span class="karta-chip">NATURAL</span></span>
           </span>
         </li>
         <li class="mlyn-karta">
@@ -395,9 +831,7 @@
           <span class="karta-tresc">
             <span class="karta-glowa"><span class="karta-nz nz-sredni">COLUMBIA LA CABANA</span>
             <span class="karta-poch">CALUMBIA BRUSELAS HUILA</span></span>
-            <span class="karta-op">LaCava Colombia La Cabaña to jasno palona arabika specialty Single Origin z regionu Bruselas w departamencie Huila, jednym z najbardziej renomowanych obszarów uprawy kawy w Kolumbii. Ziarna pochodzą ze zbioru 2025, z farmy La Cabaña, gdzie odmiana Chiroso uprawiana jest na wysokości 1600–1700 m n.p.m.. Klasyczna obróbka washed podkreśla czystość filiżanki, elegancję i przejrzysty charakter tej kawy. W ocenie jakości SCA kawa uzyskała 87 punktów.
-
-Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo klarownych kaw przelewowych, w których liczy się balans i finezja aromatu.</span>
+            <span class="karta-op">OWOCE TROPIKALNE, CYTRUSY, ZIELONA HERBATA</span>
             <span class="karta-chipy"><span class="karta-chip">ALTERNATYWY</span><span class="karta-chip">WASHED</span></span>
           </span>
         </li>
@@ -406,23 +840,103 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
           <span class="karta-tresc">
             <span class="karta-glowa"><span class="karta-nz nz-sredni">CHILLWAVE STRAWBERRY BLEND</span>
             <span class="karta-poch">COLUMBIA</span></span>
-            <span class="karta-op">Kawa ziarnista jakości specialty pochodząca z Kolumbii, wypalona w warszawskiej palarni HAYB. Palona jasno, idealna do ekspresu przelewowego, dripa, Chemexa, AeroPressa, French Pressa, oraz innych alternatywnych metod parzenia. W smaku pojawiają się nuty takie jak truskawka, pomarańcza i toffi.</span>
+            <span class="karta-op">TRUSKAWKA, POMARAŃCZA, TOFFI</span>
             <span class="karta-chipy"><span class="karta-chip">ALTERNATYWY</span><span class="karta-chip">COFERMENT</span></span>
           </span>
         </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787135623160-zrzut-ekranu-2026-08-19-o-12-33-06-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz nz-sredni">Indonezja Team Pegasing</span>
+            <span class="karta-poch">Pantan Musara</span></span>
+            <span class="karta-op">WINO PORTO, AGREST, CZARNA PORZECZKA</span>
+            <span class="karta-chipy"><span class="karta-chip">ALTERNATYWY</span><span class="karta-chip">NATURAL</span></span>
+          </span>
+        </li>
       </ul>
-      <ul class="mlyn-strip mlyn-herbaty" data-herbaty hidden></ul>
+      <ul class="mlyn-strip mlyn-herbaty" data-herbaty hidden>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823971385-zrzut-ekranu-2026-08-27-o-11-01-56-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz">EARL GREY</span></span>
+            <span class="karta-op">BERGAMOTKA, PIEPRZ CZARNY, CYNAMON</span>
+            <span class="karta-chipy"><span class="karta-chip">CZARNA</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823626283-zrzut-ekranu-2026-08-27-o-11-03-59-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz nz-sredni">OSMANTHUS GOLDEN TIPS</span></span>
+            <span class="karta-op">OSMANTUS, BRZOSKWINIA, MIÓD</span>
+            <span class="karta-chipy"><span class="karta-chip">CZARNA</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823675446-zrzut-ekranu-2026-08-27-o-11-03-37-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz">JASMINE GREEN</span></span>
+            <span class="karta-op">JAŚMIN</span>
+            <span class="karta-chipy"><span class="karta-chip">ZIELONA</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823731821-zrzut-ekranu-2026-08-27-o-11-04-04-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz">YA BAO WILDBUDS</span></span>
+            <span class="karta-op">BRZOSKWINIA, ŻYWICA, SOSNA</span>
+            <span class="karta-chipy"><span class="karta-chip">BIAŁA</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823808274-zrzut-ekranu-2026-08-27-o-11-03-49-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz">MAGNOLIA OOLONG</span></span>
+            <span class="karta-op">MAGNOLIA, RUMIANEK, PYŁEK PSZCZELI</span>
+            <span class="karta-chipy"><span class="karta-chip">OOLONG</span></span>
+          </span>
+        </li>
+        <li class="mlyn-karta">
+          <span class="karta-foto" data-foto aria-hidden="true" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787823860909-zrzut-ekranu-2026-08-27-o-11-03-54-removebg-preview.png')"></span>
+          <span class="karta-tresc">
+            <span class="karta-glowa"><span class="karta-nz">MILK OOLONG</span></span>
+            <span class="karta-op">MORELA, MLEKO, TOFFI</span>
+            <span class="karta-chipy"><span class="karta-chip">OOLONG</span></span>
+          </span>
+        </li>
+      </ul>
     </div>
 
     <div class="mlyn-grupa">
       <span class="etykieta cichy mlyn-label">Wypieki</span>
       <ul class="mlyn-strip ciasta" data-ciasta>
-        <li class="mlyn-karta">
-          <span class="karta-foto" data-foto aria-hidden="true"></span>
-          <span class="karta-tresc">
-            <span class="karta-nz">Tarta</span>
-            <span class="stan-znak malo">ostatnie sztuki</span>
-            <span class="karta-notka">ostatnie 2 kawałki</span>
+        <li class="mlyn-karta ciasto-kafel" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787211588150-dsc062716.jpg')">
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">BROWNIE TIRAMISU</span>
+            <span class="stan-znak dostepne">dostępne</span>
+          </span>
+        </li>
+        <li class="mlyn-karta ciasto-kafel" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787211659824-aa2ee3fb-59fc-442c-abb5-7be98a4814cf.jpeg')">
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">SERNIK BASKIJSKI</span>
+            <span class="stan-znak dostepne">dostępne</span>
+          </span>
+        </li>
+        <li class="mlyn-karta ciasto-kafel" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787211681202-img-9046.jpeg')">
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">CYTRYNOWE</span>
+            <span class="stan-znak dostepne">dostępne</span>
+          </span>
+        </li>
+        <li class="mlyn-karta ciasto-kafel" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787211739340-05b14a97-3815-4b2c-9a94-23a2d9fd7efc.jpeg')">
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">TARTA MALINOWA Z BEZĄ</span>
+            <span class="stan-znak dostepne">dostępne</span>
+          </span>
+        </li>
+        <li class="mlyn-karta ciasto-kafel" style="background-image:url('https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/1787211781274-523f9ac4-15c7-4264-950d-ad6a15e6987e.jpeg')">
+          <span class="ciasto-tresc">
+            <span class="ciasto-nz">CIASTKA ORZECH LASKOWY-GORZKA CZEKOLADA</span>
+            <span class="stan-znak dostepne">dostępne</span>
           </span>
         </li>
       </ul>
@@ -436,7 +950,6 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
 
   <div class="karta">
   <!-- MENU -->
-
     <div class="grupa zjawia">
       <h3 class="etykieta">Kawa</h3>
       <div class="pozycja"><div class="glowa"><span class="nazwa">Doppio</span><span class="kropki"></span><span class="cena">12 zł</span></div></div>
@@ -473,8 +986,7 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
     </div>
 
     <div class="grupa zjawia">
-      <h3 class="etykieta">Śniadania · AM's 9–13, zamów przy barze</h3>
-
+      <h3 class="etykieta">Śniadania · AM&#39;s 9–13, zamów przy barze</h3>
       <div class="pozycja">
         <div class="glowa"><span class="nazwa">Pęczak z hummusem</span><span class="znacznik">vegan</span><span class="kropki"></span><span class="cena">39 zł</span></div>
         <p class="sklad">Kasza pęczak, winegret, cytrynowy hummus, marchew karmelizowana, harissa, orzechy laskowe, świeże zioła.</p>
@@ -499,8 +1011,6 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
         <div class="glowa"><span class="nazwa">Kanapka z twarożkiem</span><span class="znacznik">wege</span><span class="kropki"></span><span class="cena">34 zł</span></div>
         <p class="sklad">Chleb żytni, pasta twarogowa z ogórkiem kiszonym, jajo na miękko, świeże zioła, pikantna oliwa.</p>
       </div>
-
-      <p class="nota etykieta">Lista alergenów dostępna w lokalu u obsługi na życzenie.</p>
     </div>
 
     <div class="grupa zjawia">
@@ -516,32 +1026,15 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
       </div>
       <div class="pozycja"><div class="glowa"><span class="nazwa">Woda</span><span class="kropki"></span><span class="cena">8 zł</span></div></div>
     </div>
-
   <!-- /MENU -->
   </div>
 </section>
 
 <section class="sekcja ramka" id="sklep">
   <div class="naglowek etykieta"><span class="nr">05</span><span>Sklep</span></div>
-  <p class="sklep-nota etykieta">Do kupienia na miejscu w kawiarni.</p>
+  <p class="sklep-nota etykieta">Kawę ziarnistą specialty, matchę ceremonialną i akcesoria kupisz na miejscu w Bruk Cafe, Krótka 1, na Kleparzu.</p>
   <ul class="sklep-siatka" data-sklep>
   <!-- SKLEP -->
-    <li class="sklep-karta">
-      <span class="sklep-foto" aria-hidden="true"></span>
-      <span class="sklep-tresc">
-        <span class="sklep-glowa"><span class="sklep-nazwa">Matcha ceremonialna</span><span class="sklep-cena">65 zł</span></span>
-        <span class="sklep-opis">Japońska matcha w puszce 30 g. Ta sama, którą pijesz u nas.</span>
-        <span class="sklep-znak dostepne">Na miejscu</span>
-      </span>
-    </li>
-    <li class="sklep-karta">
-      <span class="sklep-foto" aria-hidden="true"></span>
-      <span class="sklep-tresc">
-        <span class="sklep-glowa"><span class="sklep-nazwa">Kawa ziarnista 250 g</span><span class="sklep-cena">54 zł</span></span>
-        <span class="sklep-opis">Świeżo wypalona specialty do zaparzenia w domu.</span>
-        <span class="sklep-znak dostepne">Na miejscu</span>
-      </span>
-    </li>
   <!-- /SKLEP -->
   </ul>
 </section>
@@ -601,7 +1094,8 @@ Colombia La Cabaña to propozycja dla miłośników jasnych, świeżych i bardzo
     <div>
       <b>Znajdź nas</b>
       <p><a href="https://www.instagram.com/brukcafe/" target="_blank" rel="noopener">Instagram @brukcafe</a><br>
-         <a href="https://www.facebook.com/p/BRUK-CAFE-61583492194061/" target="_blank" rel="noopener">Facebook</a></p>
+         <a href="https://www.facebook.com/p/BRUK-CAFE-61583492194061/" target="_blank" rel="noopener">Facebook</a><br>
+         <a href="mailto:lfckontakt@gmail.com">lfckontakt@gmail.com</a></p>
     </div>
     <div>
       <b>Język</b>

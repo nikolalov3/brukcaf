@@ -280,22 +280,32 @@ h2{
 .nota{margin-top:20px;color:var(--cichy);opacity:.75}
 
 /* ── Sklep (produkty do kupienia na miejscu) ───────────── */
+/* bez produktów cała sekcja znika (Filip jeszcze nic nie dodał) */
+#sklep:not(:has(.sklep-karta)){display:none}
 .sklep-nota{color:var(--cichy);margin:-6px 0 24px}
-.sklep-siatka{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:1px;
-  background:var(--wlos);border:1px solid var(--wlos)}
-.sklep-karta{display:flex;flex-direction:column;background:var(--tlo)}
-.sklep-karta.niedostepny{opacity:.55}
-.sklep-foto{aspect-ratio:4/3;display:block;background:var(--tlo-2) center/cover no-repeat}
-.sklep-tresc{display:flex;flex-direction:column;gap:9px;padding:17px 19px}
-.sklep-glowa{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
-.sklep-nazwa{font-weight:600;letter-spacing:-.01em;line-height:1.25}
-.sklep-cena{font:600 14px/1 var(--mono);white-space:nowrap}
-.sklep-opis{color:var(--cichy);font-size:13.5px;line-height:1.55}
-.sklep-znak{align-self:flex-start;margin-top:2px;
-  font:500 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
-  border:1px solid var(--wlos);padding:4px 7px;color:var(--cichy)}
-.sklep-znak.dostepne{border-color:rgba(61,107,74,.5);color:#3d6b4a}
-.sklep-znak.niedostepne{border-color:rgba(154,44,44,.5);color:#9a2c2c}
+/* 2 kolumny, rzędy automatycznie; całość zamknięta w boxie ze scrollem pionowym */
+.sklep-siatka{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
+  background:var(--wlos);border:1px solid var(--wlos);
+  max-height:clamp(440px,72vh,680px);overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--cichy) transparent}
+.sklep-siatka::-webkit-scrollbar{width:8px}
+.sklep-siatka::-webkit-scrollbar-thumb{background:var(--wlos)}
+.sklep-siatka::-webkit-scrollbar-thumb:hover{background:var(--cichy)}
+/* karta: duże zdjęcie (dominujące ~3/4), na dole nazwa + cena */
+.sklep-karta{position:relative;display:flex;flex-direction:column;background:var(--tlo);overflow:hidden}
+.sklep-karta.klik{cursor:pointer}
+.sklep-karta.niedostepny{opacity:.5}
+.sklep-foto{position:relative;aspect-ratio:1/1;background:var(--tlo-2) center/cover no-repeat}
+/* opis smakowy — warstwa na zdjęciu, hover (desktop) / tap (mobile) */
+.sklep-opis-warstwa{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:20px;background:rgba(19,19,19,.82);
+  opacity:0;transition:opacity .3s ease}
+.sklep-opis{color:#ece9e3;font-size:14px;line-height:1.55}
+@media(hover:hover){.sklep-karta:hover .sklep-opis-warstwa{opacity:1}}
+.sklep-karta.pokaz-opis .sklep-opis-warstwa{opacity:1}
+.sklep-stopka{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:13px 16px}
+.sklep-nazwa{font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.sklep-cena{font:600 13px/1 var(--mono);white-space:nowrap;color:var(--cichy)}
 
 /* ── stopka ────────────────────────────────────────────── */
 .stopka{padding-block:clamp(40px,6vw,72px) clamp(48px,7vw,84px)}
@@ -325,7 +335,6 @@ h2{
     --bok:24px;
     --pion:clamp(64px,17vw,88px);
   }
-  .sklep-siatka{grid-template-columns:1fr}
 
   /* ruch: dłuższy, delikatniejszy, z mniejszym przesunięciem */
   .js .zjawia{transform:translateY(12px);transition:opacity 1.05s ease,transform 1.05s cubic-bezier(.16,.84,.28,1)}
@@ -361,7 +370,9 @@ h2{
   /* mobile: adres na sam dół, a pod nim „Prowadź mnie" przy prawej krawędzi */
   .hero .podpis .adres{order:4}
   .hero .podpis .podpis-prowadz{display:flex;justify-content:flex-end;order:5;padding-block:15px;border-bottom:0}
-  .hero .podpis .podpis-prowadz .prowadz{margin-top:0}
+  .hero .podpis .podpis-prowadz .prowadz{margin-top:0;font-size:14px;padding:5px 10px;gap:6px;
+    color:#33302b;border-color:rgba(19,19,19,.42)}
+  .hero .podpis .podpis-prowadz .prowadz::before{font-size:13px}
 
   /* fakty: bez ramki, same włoskowate linie — mniej pudełek, więcej spokoju */
   .fakty{border:0;background:none;gap:0}

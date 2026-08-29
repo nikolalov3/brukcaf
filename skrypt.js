@@ -468,3 +468,18 @@
   taby.forEach((t) => t.addEventListener('click', () => pokaz(t.dataset.cel, true)));
   pokaz('kawy', false);
 })();
+
+/* Sklep: na urządzeniach dotykowych tap w kartę pokazuje/chowa opis smakowy
+   (na desktopie robi to hover). */
+(function () {
+  if (window.matchMedia && window.matchMedia('(hover: hover)').matches) return;
+  document.querySelectorAll('.sklep-karta.klik').forEach(function (k) {
+    k.addEventListener('click', function () { k.classList.toggle('pokaz-opis'); });
+  });
+})();
+
+/* Sklep bez produktów: chowamy całą sekcję (zapas dla przeglądarek bez :has) */
+(function () {
+  var sek = document.getElementById('sklep');
+  if (sek && !sek.querySelector('.sklep-karta')) sek.hidden = true;
+})();
