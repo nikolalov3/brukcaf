@@ -595,7 +595,7 @@ $('btn-kawa-usun').addEventListener('click', async () => {
 //  STAN — live (ciasta)
 // ══════════════════════════════════════════════════════════════
 let stany = [], edytowanyStan = null;
-const stanFotki = ['', '', '', ''];  // 1 główne + 3 do story
+let stanFoto = '';  // jedno zdjęcie ciasta (story wycofane)
 const NAZWY_STATUS = { available: 'Dostępne', low: 'Zostało niewiele', sold_out: 'Wyprzedane' };
 const NAST_STATUS = { available: 'low', low: 'sold_out', sold_out: 'available' };
 
@@ -654,12 +654,11 @@ $('btn-nowy-stan').addEventListener('click', () => otworzStan(null));
 $('btn-stan-wroc').addEventListener('click', () => { $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false; });
 $('btn-stan-anuluj').addEventListener('click', () => { $('widok-stan-edytor').hidden = true; $('widok-stan').hidden = false; });
 
-function ustawStanFotoN(nr, url) {  // nr: 1..4
-  stanFotki[nr - 1] = url || '';
-  const suf = nr === 1 ? '' : nr;
-  const img = $('stan-foto' + suf + '-podglad');
-  if (url) { img.src = url; img.hidden = false; $('btn-stan-foto' + suf + '-usun').hidden = false; }
-  else { img.hidden = true; $('btn-stan-foto' + suf + '-usun').hidden = true; }
+function ustawStanFoto(url) {
+  stanFoto = url || '';
+  const img = $('stan-foto-podglad');
+  if (url) { img.src = url; img.hidden = false; $('btn-stan-foto-usun').hidden = false; }
+  else { img.hidden = true; $('btn-stan-foto-usun').hidden = true; }
 }
 // uploadery zdjęć ciasta podpinane niżej przez podepnijFoto()
 
@@ -672,14 +671,9 @@ podepnijFoto({ strefaId: 'kawa-strefa', inputId: 'kawa-foto', btnId: 'btn-kawa-f
 podepnijFoto({ strefaId: 'kawa-strefa2', inputId: 'kawa-foto2', btnId: 'btn-kawa-foto2',
   usunId: 'btn-kawa-foto2-usun', infoId: 'kawa-info', widokId: 'widok-kawy-edytor',
   ustaw: ustawKawaFoto2, przetworz: normalizujKawe });
-[1, 2, 3, 4].forEach((nr) => {
-  const suf = nr === 1 ? '' : nr;
-  podepnijFoto({
-    strefaId: 'stan-strefa' + suf, inputId: 'stan-foto' + suf, btnId: 'btn-stan-foto' + suf,
-    usunId: 'btn-stan-foto' + suf + '-usun', infoId: 'stan-poz-info', widokId: 'widok-stan-edytor',
-    ustaw: (u) => ustawStanFotoN(nr, u),
-  });
-});
+podepnijFoto({ strefaId: 'stan-strefa', inputId: 'stan-foto', btnId: 'btn-stan-foto',
+  usunId: 'btn-stan-foto-usun', infoId: 'stan-poz-info', widokId: 'widok-stan-edytor',
+  ustaw: ustawStanFoto });
 
 async function otworzStan(id) {
   edytowanyStan = id;
@@ -688,7 +682,7 @@ async function otworzStan(id) {
   if (!id) {
     $('stan-tytul').textContent = 'Nowa pozycja';
     $('stan-nazwa').value = ''; $('stan-note').value = ''; $('stan-status').value = 'available';
-    [1, 2, 3, 4].forEach((n) => ustawStanFotoN(n, ''));
+    ustawStanFoto('');
   } else {
     const { data, error } = await sb.from('stock_items').select('*').eq('id', id).single();
     if (error || !data) { pokazInfo($('stan-poz-info'), 'Nie udało się wczytać pozycji.', 'zle'); return; }
@@ -696,10 +690,7 @@ async function otworzStan(id) {
     $('stan-nazwa').value = data.name || '';
     $('stan-note').value = data.note || '';
     $('stan-status').value = data.status || 'available';
-    ustawStanFotoN(1, data.photo_url || '');
-    ustawStanFotoN(2, data.photo_url2 || '');
-    ustawStanFotoN(3, data.photo_url3 || '');
-    ustawStanFotoN(4, data.photo_url4 || '');
+    ustawStanFoto(data.photo_url || '');
   }
   $('widok-stan').hidden = true; $('widok-stan-edytor').hidden = false; window.scrollTo(0, 0);
 }
@@ -711,10 +702,7 @@ $('btn-stan-zapisz').addEventListener('click', async () => {
     name: nazwa,
     status: $('stan-status').value,
     note: $('stan-note').value.trim() || null,
-    photo_url: stanFotki[0] || null,
-    photo_url2: stanFotki[1] || null,
-    photo_url3: stanFotki[2] || null,
-    photo_url4: stanFotki[3] || null,
+    photo_url: stanFoto || null,
   };
   if (!edytowanyStan) rekord.sort = stany.length ? Math.max(...stany.map((s) => s.sort ?? 0)) + 1 : 0;
   const btn = $('btn-stan-zapisz'); btn.disabled = true; btn.textContent = 'Zapisywanie…';

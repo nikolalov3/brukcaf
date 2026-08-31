@@ -163,10 +163,7 @@ create table if not exists public.stock_items (
   status      text not null default 'available'
               check (status in ('available', 'low', 'sold_out')),
   note        text,
-  photo_url   text,                          -- zdjęcie 1 (na kafel)
-  photo_url2  text,                          -- zdjęcia 2-4 pokazują się w story
-  photo_url3  text,
-  photo_url4  text,
+  photo_url   text,                          -- zdjęcie ciasta (na kafel)
   sort        int  not null default 0,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
