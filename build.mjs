@@ -204,34 +204,13 @@ function renderSklep(items, t) {
   }).join('\n');
 }
 
-// JSON-LD: każdy produkt jako Product z ofertą; sprzedaż wyłącznie na miejscu
-function sklepLd(items) {
-  const dostepne = items.filter((p) => p.available !== false);
-  if (!dostepne.length) return '';
-  const data = dostepne.map((p) => ({
-    '@context': 'https://schema.org', '@type': 'Product',
-    name: p.name,
-    ...(p.opis ? { description: p.opis } : {}),
-    ...(p.photo_url ? { image: p.photo_url } : {}),
-    offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStoreOnly',
-      availableAtOrFrom: { '@id': 'https://bruk.cafe/#lokal' },
-      ...(p.price ? { price: String(p.price).replace(/[^\d.,]/g, '').replace(',', '.'), priceCurrency: 'PLN' } : {}),
-    },
-  }));
-  return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2).replaceAll('</', '<\\/')}\n</script>`;
-}
-
+// Uwaga: świadomie BEZ Product/Offer JSON-LD dla sklepu. Bruk to kawiarnia,
+// nie sklep wysyłkowy — Google wymagał pól e-commerce (oceny, GTIN, wysyłka,
+// zwroty), których nie mamy. Sklep niesie sama widoczna sekcja + CafeOrCoffeeShop.
 function podmienSklep(html, inner) {
   const re = /<!-- SKLEP -->[\s\S]*?<!-- \/SKLEP -->/;
   if (!re.test(html)) return html;
   return html.replace(re, `<!-- SKLEP -->\n${inner}\n  <!-- /SKLEP -->`);
-}
-function podmienSklepLd(html, ld) {
-  const re = /<!-- SKLEP-LD -->[\s\S]*?<!-- \/SKLEP-LD -->/;
-  if (!re.test(html)) return html;
-  return html.replace(re, `<!-- SKLEP-LD -->\n${ld}\n<!-- /SKLEP-LD -->`);
 }
 
 // ── automatyczne tłumaczenie PL→EN (DeepL) ──────────────────────
@@ -383,10 +362,12 @@ for (const [lang, t] of Object.entries(L)) {
     html = podmienMenuLd(html, menuLd(menuDoWstawienia));
   }
   // sklep: PL zawsze z bazy; EN tylko z tłumaczeniem (inaczej zostaje statyczny angielski)
+  // Uwaga: NIE emitujemy Product/Offer JSON-LD — Bruk to kawiarnia, nie sklep
+  // wysyłkowy; Google domagał się pól e-commerce (oceny, GTIN, wysyłka, zwroty),
+  // których nie mamy i nie wolno ich udawać. Zostaje sama widoczna sekcja.
   const sklepDoWstawienia = (lang === 'pl' || dl.tlumaczone) ? dl.sklep : null;
   if (sklepDoWstawienia && sklepDoWstawienia.length) {
     html = podmienSklep(html, renderSklep(sklepDoWstawienia, t));
-    html = podmienSklepLd(html, sklepLd(sklepDoWstawienia));
   }
   writeFileSync(t.file, html);
   const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';

@@ -180,6 +180,7 @@ h2{
   font-weight:700;max-width:17ch;
 }
 .wiodacy{font-size:clamp(16px,1.7vw,19px);line-height:1.65;color:var(--cichy);max-width:52ch;margin-top:22px}
+.podtytul-tresc{font-size:clamp(18px,2.2vw,22px);letter-spacing:-.01em;font-weight:600;color:var(--atrament);margin-top:28px;max-width:34ch}
 
 /* trzy fakty */
 .fakty{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--wlos);
