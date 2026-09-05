@@ -284,14 +284,15 @@ h2{
 /* bez produktów cała sekcja znika (Filip jeszcze nic nie dodał) */
 #sklep:not(:has(.sklep-karta)){display:none}
 .sklep-nota{color:var(--cichy);margin:-6px 0 24px}
-/* 2 kolumny, rzędy automatycznie; całość zamknięta w boxie ze scrollem pionowym */
-.sklep-siatka{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
+/* 4 kolumny (jak karty „Dziś w młynku"), rzędy automatycznie; scroll pionowy */
+.sklep-siatka{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
   background:var(--wlos);border:1px solid var(--wlos);
   max-height:clamp(440px,72vh,680px);overflow-y:auto;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--cichy) transparent}
 .sklep-siatka::-webkit-scrollbar{width:8px}
 .sklep-siatka::-webkit-scrollbar-thumb{background:var(--wlos)}
 .sklep-siatka::-webkit-scrollbar-thumb:hover{background:var(--cichy)}
+@media(max-width:620px){.sklep-siatka{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* karta: duże zdjęcie (dominujące ~3/4), na dole nazwa + cena */
 .sklep-karta{position:relative;display:flex;flex-direction:column;background:var(--tlo);overflow:hidden}
 .sklep-karta.klik{cursor:pointer}
