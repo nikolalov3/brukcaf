@@ -582,7 +582,7 @@ h2{
 /* zdjęcie kawy (opakowanie PNG) pokazujemy w całości, wyśrodkowane */
 .mlyn-strip:not(.ciasta) .karta-foto{background-size:contain}
 /* drugie zdjęcie — warstwa na wierzchu; desktop: hover, mobile: cykl (klasa .pokaz2) */
-.karta-foto2{position:absolute;inset:0;background:center/contain no-repeat;
+.karta-foto2{position:absolute;inset:0;background:center/cover no-repeat;
   opacity:0;transition:opacity .5s ease}
 @media(hover:hover){.mlyn-karta:hover .karta-foto2{opacity:1}}
 .mlyn-karta.pokaz2 .karta-foto2{opacity:1}
