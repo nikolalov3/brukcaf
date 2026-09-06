@@ -424,32 +424,6 @@ async function normalizujProdukt(plik) {
   return new File([blob], (plik.name || 'produkt').replace(/\.[^.]+$/, '') + '.png', { type: 'image/png' });
 }
 
-// wyrównanie WSZYSTKICH istniejących zdjęć produktów (pobiera, normalizuje, podmienia)
-async function wyrownajIstniejace() {
-  const btn = $('btn-wyrownaj');
-  if (!confirm('Wyrównać wszystkie zdjęcia produktów do jednego rozmiaru? Podmieni istniejące.')) return;
-  btn.disabled = true; btn.textContent = 'Wyrównuję…';
-  const { data, error } = await sb.from('shop_items').select('id, photo_url');
-  if (error) { btn.disabled = false; btn.textContent = 'Wyrównaj zdjęcia'; pokazInfo($('sklep-info'), 'Nie udało się wczytać produktów.', 'zle'); return; }
-  const zPhoto = (data || []).filter((p) => p.photo_url);
-  let ok = 0, blad = 0;
-  for (const p of zPhoto) {
-    try {
-      const resp = await fetch(p.photo_url + (p.photo_url.includes('?') ? '&' : '?') + 'n=' + Date.now());
-      const wejscie = new File([await resp.blob()], 'zrodlo', { type: resp.headers.get('content-type') || 'image/jpeg' });
-      const file = await normalizujProdukt(wejscie);   // ładuje z File → bez CORS-taint
-      const url = await wgrajZdjecie(file);
-      if (url) { await sb.from('shop_items').update({ photo_url: url }).eq('id', p.id); ok++; }
-      else blad++;
-    } catch (e) { blad++; }
-  }
-  btn.disabled = false; btn.textContent = 'Wyrównaj zdjęcia';
-  await wczytajSklep();
-  pokazInfo($('sklep-info'),
-    `Wyrównano ${ok} z ${zPhoto.length}${blad ? ` (${blad} nie wyszło)` : ''}. Kliknij „Aktualizuj stronę”.`,
-    blad ? 'zle' : 'ok');
-}
-
 // ── wspólny uploader zdjęć: klik, przeciągnięcie pliku, wklejenie zrzutu ──
 const fotoUploadery = {};  // przechowuje { wgraj, widokId } do routingu wklejania
 function podepnijFoto({ strefaId, inputId, btnId, usunId, infoId, widokId, ustaw, przetworz }) {
@@ -1021,7 +995,6 @@ async function przesunProdukt(i, kierunek) {
 }
 
 $('btn-nowy-prod').addEventListener('click', () => otworzProdukt(null));
-$('btn-wyrownaj').addEventListener('click', wyrownajIstniejace);
 $('btn-prod-wroc').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 $('btn-prod-anuluj').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 
