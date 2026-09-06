@@ -379,36 +379,41 @@ async function _produktBlob(img) {
   const src = document.createElement('canvas'); src.width = W; src.height = H;
   const sc = src.getContext('2d'); sc.drawImage(img, 0, 0);
   const d = sc.getImageData(0, 0, W, H).data;
-  const kol = (x, y) => { const i = (y * W + x) * 4; return [d[i], d[i + 1], d[i + 2]]; };
-  // kolor tła = średnia z czterech rogów
-  const rogi = [kol(0, 0), kol(W - 1, 0), kol(0, H - 1), kol(W - 1, H - 1)];
-  const bg = [0, 1, 2].map((c) => Math.round(rogi.reduce((s, r) => s + r[c], 0) / 4));
-  // Białe opakowanie na białym tle nie daje sygnału na białych brzegach, więc
-  // NIE szukamy pełnej ramki. Wykrywamy tylko GÓRĘ i DÓŁ produktu (rzutowanie na
-  // wiersze — wiersz jest „treścią”, gdy dość pikseli różni się od tła; odporne na
-  // szum JPEG), zostawiamy pełną szerokość (żeby nie obciąć białych boków) i
-  // skalujemy PO WYSOKOŚCI. Dzięki temu wszystkie produkty mają tę samą wysokość.
-  const TOL = 16;
-  const rowCount = new Int32Array(H);
-  for (let y = 0; y < H; y++) {
-    let c = 0; const off = y * W * 4;
-    for (let x = 0; x < W; x++) {
-      const i = off + x * 4;
-      if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > TOL) c++;
+  // Ile przezroczystości? (co ~7. piksel dla szybkości)
+  let przezr = 0, probek = 0;
+  for (let i = 3; i < d.length; i += 4 * 7) { probek++; if (d[i] < 20) przezr++; }
+  const maTlo = probek && przezr / probek > 0.06;   // sensowna przezroczystość = removebg
+
+  let minX = W, minY = H, maxX = -1, maxY = -1;
+  if (maTlo) {
+    // Przezroczyste tło (removebg): produkt = piksele nieprzezroczyste → pełny bbox
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (d[(y * W + x) * 4 + 3] > 24) { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
     }
-    rowCount[y] = c;
+  } else {
+    // Białe na białym: brak sygnału na brzegach, więc wykrywamy tylko GÓRĘ i DÓŁ
+    // (rzutowanie wierszy vs kolor tła z rogów), zostawiamy pełną szerokość.
+    const kol = (x, y) => { const i = (y * W + x) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+    const rogi = [kol(0, 0), kol(W - 1, 0), kol(0, H - 1), kol(W - 1, H - 1)];
+    const bg = [0, 1, 2].map((c) => Math.round(rogi.reduce((s, r) => s + r[c], 0) / 4));
+    const TOL = 16, prog = Math.max(4, Math.round(W * 0.012));
+    const rowc = (y) => { let c = 0; const o = y * W * 4;
+      for (let x = 0; x < W; x++) { const i = o + x * 4;
+        if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > TOL) c++; } return c; };
+    let a = 0; while (a < H - 1 && rowc(a) < prog) a++;
+    let b = H - 1; while (b > a && rowc(b) < prog) b--;
+    minX = 0; maxX = W - 1; minY = a; maxY = b;
   }
-  const prog = Math.max(4, Math.round(W * 0.012));
-  let minY = 0; while (minY < H - 1 && rowCount[minY] < prog) minY++;
-  let maxY = H - 1; while (maxY > minY && rowCount[maxY] < prog) maxY--;
-  if (maxY - minY < H * 0.15) { minY = 0; maxY = H - 1; }   // nie wyszło → cała wysokość
-  const bh = maxY - minY + 1, bw = W;
-  const T = 900, WYPELNIENIE = 0.9;
+  if (maxX < minX || maxY < minY || (maxY - minY) < H * 0.15) { minX = 0; minY = 0; maxX = W - 1; maxY = H - 1; }
+  const bw = maxX - minX + 1, bh = maxY - minY + 1;
+
+  // Skalujemy PO WYSOKOŚCI (dominująca dla torebek) → wszystkie tej samej wysokości.
+  const T = 900, WYS = 0.9;
   const out = document.createElement('canvas'); out.width = T; out.height = T;
   const oc = out.getContext('2d');
-  const skala = Math.min((T * WYPELNIENIE) / bh, T / bw);
+  const skala = Math.min((T * WYS) / bh, (T * 0.96) / bw);
   const dw = bw * skala, dh = bh * skala;
-  oc.drawImage(src, 0, minY, bw, bh, (T - dw) / 2, (T - dh) / 2, dw, dh);
+  oc.drawImage(src, minX, minY, bw, bh, (T - dw) / 2, (T - dh) / 2, dw, dh);
   return new Promise((r) => out.toBlob(r, 'image/png'));
 }
 
