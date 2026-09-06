@@ -370,6 +370,41 @@ async function normalizujKawe(plik) {
   return new File([blob], (plik.name || 'kawa').replace(/\.[^.]+$/, '') + '.png', { type: 'image/png' });
 }
 
+// Normalizacja zdjęcia PRODUKTU (sklep): przycina tło (kolor pobrany z rogów),
+// wyśrodkowuje i skaluje do stałego wypełnienia na kwadracie — dzięki temu
+// wszystkie produkty wychodzą w TYM SAMYM rozmiarze niezależnie od kadru pliku.
+async function normalizujProdukt(plik) {
+  const img = await wczytajObraz(plik);
+  const W = img.naturalWidth, H = img.naturalHeight;
+  const src = document.createElement('canvas'); src.width = W; src.height = H;
+  const sc = src.getContext('2d'); sc.drawImage(img, 0, 0);
+  const d = sc.getImageData(0, 0, W, H).data;
+  const kol = (x, y) => { const i = (y * W + x) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+  // kolor tła = średnia z czterech rogów
+  const rogi = [kol(0, 0), kol(W - 1, 0), kol(0, H - 1), kol(W - 1, H - 1)];
+  const bg = [0, 1, 2].map((c) => Math.round(rogi.reduce((s, r) => s + r[c], 0) / 4));
+  const TOL = 34;
+  const rozne = (x, y) => { const i = (y * W + x) * 4;
+    return Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > TOL; };
+  let minX = W, minY = H, maxX = -1, maxY = -1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (rozne(x, y)) { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; }
+  }
+  // fallback: nic sensownego nie wyszło (np. białe na białym) — bierzemy całość
+  if (maxX < minX || maxY < minY || (maxX - minX) < W * 0.2 || (maxY - minY) < H * 0.2) {
+    minX = 0; minY = 0; maxX = W - 1; maxY = H - 1;
+  }
+  const bw = maxX - minX + 1, bh = maxY - minY + 1;
+  const T = 900, WYPELNIENIE = 0.82;
+  const out = document.createElement('canvas'); out.width = T; out.height = T;
+  const oc = out.getContext('2d');
+  const skala = Math.min((T * WYPELNIENIE) / bw, (T * WYPELNIENIE) / bh);
+  const dw = bw * skala, dh = bh * skala;
+  oc.drawImage(src, minX, minY, bw, bh, (T - dw) / 2, (T - dh) / 2, dw, dh);
+  const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+  return new File([blob], (plik.name || 'produkt').replace(/\.[^.]+$/, '') + '.png', { type: 'image/png' });
+}
+
 // ── wspólny uploader zdjęć: klik, przeciągnięcie pliku, wklejenie zrzutu ──
 const fotoUploadery = {};  // przechowuje { wgraj, widokId } do routingu wklejania
 function podepnijFoto({ strefaId, inputId, btnId, usunId, infoId, widokId, ustaw, przetworz }) {
@@ -951,7 +986,8 @@ function ustawProdFoto(url) {
   else { img.hidden = true; $('btn-prod-foto-usun').hidden = true; }
 }
 podepnijFoto({ strefaId: 'prod-strefa', inputId: 'prod-foto', btnId: 'btn-prod-foto',
-  usunId: 'btn-prod-foto-usun', infoId: 'prod-info', widokId: 'widok-sklep-edytor', ustaw: ustawProdFoto });
+  usunId: 'btn-prod-foto-usun', infoId: 'prod-info', widokId: 'widok-sklep-edytor',
+  ustaw: ustawProdFoto, przetworz: normalizujProdukt });
 
 async function otworzProdukt(id) {
   edytowanyProd = id;
