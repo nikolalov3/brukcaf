@@ -995,6 +995,42 @@ async function przesunProdukt(i, kierunek) {
 }
 
 $('btn-nowy-prod').addEventListener('click', () => otworzProdukt(null));
+
+// Jednorazowe przywrócenie oryginalnych zdjęć LaCavy (odzyskanych z magazynu),
+// znormalizowanych alpha-aware do jednej wysokości. Dopasowanie po nazwie produktu.
+const _BUCKET = 'https://xkgkbluvuasrwjmqvrwd.supabase.co/storage/v1/object/public/blog/';
+const ORYGINALY = [
+  { klucz: 'caba', url: _BUCKET + '1788523515719-zrzut-ekranu-2026-09-4-o-14-04-27-removebg-preview.png' }, // Colombia La Cabaña
+  { klucz: 'gakuyu', url: _BUCKET + '1788523676551-zrzut-ekranu-2026-09-4-o-14-07-33-removebg-preview.png' }, // Kenya Gakuyu-ini
+  { klucz: 'kelloo', url: _BUCKET + '1788523775151-zrzut-ekranu-2026-09-4-o-14-09-10-removebg-preview.png' }, // Ethiopia Kelloo Siko
+  { klucz: 'vargas', url: _BUCKET + '1788523907988-zrzut-ekranu-2026-09-4-o-14-11-25-removebg-preview.png' }, // Colombia Alexander Vargas
+  { klucz: 'sonora', url: _BUCKET + '1788523978326-zrzut-ekranu-2026-09-4-o-14-12-27-removebg-preview.png' }, // Costa Rica Hacienda Sonora
+];
+async function przywrocOryginaly() {
+  const btn = $('btn-przywroc');
+  if (!confirm('Przywrócić oryginalne zdjęcia i wyrównać je? Podmieni obecne.')) return;
+  btn.disabled = true; btn.textContent = 'Przywracam…';
+  const { data, error } = await sb.from('shop_items').select('id, name');
+  if (error) { btn.disabled = false; btn.textContent = 'Przywróć oryginały'; pokazInfo($('sklep-info'), 'Nie udało się wczytać produktów.', 'zle'); return; }
+  let ok = 0, blad = 0;
+  for (const p of (data || [])) {
+    const n = (p.name || '').toLowerCase();
+    const orig = ORYGINALY.find((o) => n.includes(o.klucz));
+    if (!orig) continue;
+    try {
+      const resp = await fetch(orig.url + '?n=' + Date.now());
+      const wejscie = new File([await resp.blob()], 'orig.png', { type: 'image/png' });
+      const file = await normalizujProdukt(wejscie);
+      const url = await wgrajZdjecie(file);
+      if (url) { await sb.from('shop_items').update({ photo_url: url }).eq('id', p.id); ok++; }
+      else blad++;
+    } catch (e) { blad++; }
+  }
+  btn.disabled = false; btn.textContent = 'Przywróć oryginały';
+  await wczytajSklep();
+  pokazInfo($('sklep-info'), `Przywrócono ${ok}${blad ? ` (${blad} nie wyszło)` : ''}. Kliknij „Aktualizuj stronę”.`, blad ? 'zle' : 'ok');
+}
+$('btn-przywroc').addEventListener('click', przywrocOryginaly);
 $('btn-prod-wroc').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 $('btn-prod-anuluj').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 
