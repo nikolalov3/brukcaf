@@ -373,8 +373,8 @@ async function normalizujKawe(plik) {
 // Normalizacja zdjęcia PRODUKTU (sklep): przycina tło (kolor pobrany z rogów),
 // wyśrodkowuje i skaluje do stałego wypełnienia na kwadracie — dzięki temu
 // wszystkie produkty wychodzą w TYM SAMYM rozmiarze niezależnie od kadru pliku.
-async function normalizujProdukt(plik) {
-  const img = await wczytajObraz(plik);
+// rdzeń: z obrazka (plik albo URL) robi znormalizowany kwadratowy PNG (Blob)
+async function _produktBlob(img) {
   const W = img.naturalWidth, H = img.naturalHeight;
   const src = document.createElement('canvas'); src.width = W; src.height = H;
   const sc = src.getContext('2d'); sc.drawImage(img, 0, 0);
@@ -401,8 +401,40 @@ async function normalizujProdukt(plik) {
   const skala = Math.min((T * WYPELNIENIE) / bw, (T * WYPELNIENIE) / bh);
   const dw = bw * skala, dh = bh * skala;
   oc.drawImage(src, minX, minY, bw, bh, (T - dw) / 2, (T - dh) / 2, dw, dh);
-  const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+  return new Promise((r) => out.toBlob(r, 'image/png'));
+}
+
+// wrapper dla uploadera (przyjmuje File)
+async function normalizujProdukt(plik) {
+  const img = await wczytajObraz(plik);
+  const blob = await _produktBlob(img);
   return new File([blob], (plik.name || 'produkt').replace(/\.[^.]+$/, '') + '.png', { type: 'image/png' });
+}
+
+// wyrównanie WSZYSTKICH istniejących zdjęć produktów (pobiera, normalizuje, podmienia)
+async function wyrownajIstniejace() {
+  const btn = $('btn-wyrownaj');
+  if (!confirm('Wyrównać wszystkie zdjęcia produktów do jednego rozmiaru? Podmieni istniejące.')) return;
+  btn.disabled = true; btn.textContent = 'Wyrównuję…';
+  const { data, error } = await sb.from('shop_items').select('id, photo_url');
+  if (error) { btn.disabled = false; btn.textContent = 'Wyrównaj zdjęcia'; pokazInfo($('sklep-info'), 'Nie udało się wczytać produktów.', 'zle'); return; }
+  const zPhoto = (data || []).filter((p) => p.photo_url);
+  let ok = 0, blad = 0;
+  for (const p of zPhoto) {
+    try {
+      const resp = await fetch(p.photo_url + (p.photo_url.includes('?') ? '&' : '?') + 'n=' + Date.now());
+      const wejscie = new File([await resp.blob()], 'zrodlo', { type: resp.headers.get('content-type') || 'image/jpeg' });
+      const file = await normalizujProdukt(wejscie);   // ładuje z File → bez CORS-taint
+      const url = await wgrajZdjecie(file);
+      if (url) { await sb.from('shop_items').update({ photo_url: url }).eq('id', p.id); ok++; }
+      else blad++;
+    } catch (e) { blad++; }
+  }
+  btn.disabled = false; btn.textContent = 'Wyrównaj zdjęcia';
+  await wczytajSklep();
+  pokazInfo($('sklep-info'),
+    `Wyrównano ${ok} z ${zPhoto.length}${blad ? ` (${blad} nie wyszło)` : ''}. Kliknij „Aktualizuj stronę”.`,
+    blad ? 'zle' : 'ok');
 }
 
 // ── wspólny uploader zdjęć: klik, przeciągnięcie pliku, wklejenie zrzutu ──
@@ -976,6 +1008,7 @@ async function przesunProdukt(i, kierunek) {
 }
 
 $('btn-nowy-prod').addEventListener('click', () => otworzProdukt(null));
+$('btn-wyrownaj').addEventListener('click', wyrownajIstniejace);
 $('btn-prod-wroc').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 $('btn-prod-anuluj').addEventListener('click', () => { $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false; });
 
