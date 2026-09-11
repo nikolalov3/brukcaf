@@ -195,3 +195,26 @@ a{color:inherit}
 .zdj-siatka{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
 .zdj-siatka .okladka{margin-top:0}
 .zdj-siatka .okladka img{width:96px;height:96px}
+
+/* ── koperta wiadomości w nagłówku ─────────────────────── */
+.koperta{position:relative;display:inline-grid;place-items:center;width:36px;height:32px;
+  padding:0;border:1px solid var(--wlos);background:var(--karta);cursor:pointer}
+.koperta:hover{border-color:var(--atrament)}
+.koperta svg{width:19px;height:19px;fill:none;stroke:var(--atrament);stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.koperta-licznik{position:absolute;top:-7px;right:-7px;min-width:17px;height:17px;padding:0 4px;
+  display:grid;place-items:center;background:var(--blad);color:#fff;border-radius:9px;
+  font:600 10px/1 var(--mono)}
+
+/* ── modal listy wiadomości ────────────────────────────── */
+.wiad-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 20px;background:rgba(19,19,19,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);overflow:auto}
+.wiad-okno{width:min(620px,100%);background:var(--tlo);border:1px solid var(--wlos);
+  padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+.wiad-gora{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.wiad-gora h2{font-size:22px;letter-spacing:-.02em}
+.wiad-poz{padding:15px 0;border-bottom:1px solid var(--wlos)}
+.wiad-poz:last-child{border-bottom:0}
+.wiad-poz .tresc-w{white-space:pre-wrap;line-height:1.55;font-size:15px}
+.wiad-poz .stopa{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.wiad-poz .data{color:var(--cichy);font:500 11px/1 var(--mono);letter-spacing:.04em}

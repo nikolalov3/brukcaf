@@ -143,6 +143,26 @@
     font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
     opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease}
   .toast.pokaz{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* okienko anonimowej wiadomości */
+  .msg-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+    padding:20px;background:rgba(8,7,6,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .msg-okno{position:relative;width:100%;max-width:440px;background:var(--czern-2);
+    border:1px solid var(--wlos);border-radius:2px;padding:26px 22px}
+  .msg-x{position:absolute;top:8px;right:10px;border:0;background:none;color:var(--biel-cichy);
+    font-size:26px;line-height:1;cursor:pointer}
+  .msg-okno h2{font-size:20px;font-weight:700;letter-spacing:-.01em;margin-bottom:8px}
+  .msg-opis{color:var(--biel-cichy);font-size:13.5px;line-height:1.55;margin-bottom:16px}
+  .msg-okno textarea{width:100%;resize:vertical;min-height:120px;padding:13px 14px;
+    background:var(--czern);color:var(--biel);border:1px solid var(--wlos);border-radius:2px;
+    font-family:var(--grotesk);font-size:15px;line-height:1.5;outline:none}
+  .msg-okno textarea:focus{border-color:var(--biel-cichy)}
+  .msg-send{margin-top:14px;width:100%;border:0;background:var(--biel);color:var(--czern);
+    padding:15px;cursor:pointer;font:600 13px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+    transition:opacity .2s ease}
+  .msg-send:active{opacity:.85}
+  .msg-send[disabled]{opacity:.5;cursor:default}
+  .msg-ok{margin-top:14px;text-align:center;color:#34e0a1;font:500 13px/1.5 var(--mono)}
 </style>
 <!-- Umami — prywatny licznik wejść (bez ciasteczek), statystyki per adres w jednym panelu -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
@@ -207,6 +227,11 @@
         <span class="tresc"><span class="co">Send to a friend</span><span class="sub">share the pin</span></span>
         <span class="glif" aria-hidden="true">↗</span>
       </a>
+
+      <button class="lnk" id="btn-msg" type="button">
+        <span class="tresc"><span class="co">Leave an anonymous message</span><span class="sub">feedback, an idea, a thank you</span></span>
+        <span class="glif" aria-hidden="true">✉</span>
+      </button>
     </nav>
 
     <section class="tresc-geo">
@@ -255,6 +280,17 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <div class="msg-modal" id="msg-modal" hidden>
+    <div class="msg-okno">
+      <button class="msg-x" id="msg-x" type="button" aria-label="Close">&times;</button>
+      <h2>Anonymous message</h2>
+      <p class="msg-opis">Say anything — feedback, an idea, or a thank you. We won't know who sent it.</p>
+      <textarea id="msg-text" rows="5" maxlength="2000" placeholder="Write your message…"></textarea>
+      <button class="msg-send" id="msg-send" type="button">Send</button>
+      <div class="msg-ok" id="msg-ok" hidden>Thank you. Your message has been sent.</div>
+    </div>
+  </div>
+
   <script>
     (function () {
       var toast = document.getElementById('toast'), tmr;
@@ -287,6 +323,36 @@
         } else if (navigator.clipboard) {
           e.preventDefault();
           kopiuj(share.href, function () { pokazToast('Link copied'); });
+        }
+      });
+
+      // Anonimowa wiadomość → Supabase REST (klucz anon z /api/config)
+      var modal = document.getElementById('msg-modal');
+      var btnMsg = document.getElementById('btn-msg');
+      var ta = document.getElementById('msg-text');
+      var send = document.getElementById('msg-send');
+      var ok = document.getElementById('msg-ok');
+      function otworz() { ok.hidden = true; ta.hidden = false; send.hidden = false; ta.value = ''; send.disabled = false; send.textContent = 'Send'; modal.hidden = false; setTimeout(function () { ta.focus(); }, 50); }
+      function zamknij() { modal.hidden = true; }
+      btnMsg.addEventListener('click', otworz);
+      document.getElementById('msg-x').addEventListener('click', zamknij);
+      modal.addEventListener('click', function (e) { if (e.target === modal) zamknij(); });
+      send.addEventListener('click', async function () {
+        var body = ta.value.trim();
+        if (!body) { ta.focus(); return; }
+        send.disabled = true; send.textContent = 'Sending…';
+        try {
+          var cfg = await fetch('/api/config').then(function (r) { return r.json(); });
+          var resp = await fetch(cfg.url + '/rest/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: cfg.anonKey, Authorization: 'Bearer ' + cfg.anonKey, Prefer: 'return=minimal' },
+            body: JSON.stringify({ body: body })
+          });
+          if (!resp.ok) throw new Error('http ' + resp.status);
+          ta.hidden = true; send.hidden = true; ok.hidden = false;
+          setTimeout(zamknij, 1900);
+        } catch (e) {
+          send.disabled = false; send.textContent = 'Try again';
         }
       });
     })();

@@ -105,6 +105,7 @@ async function wejdz() {
   $('aplikacja').hidden = false;
   $('kto').textContent = data.user.email;
   await wczytajListe();
+  odswiezLicznikWiadomosci();
 }
 
 // ── lista wpisów ────────────────────────────────────────────
@@ -1096,3 +1097,63 @@ $('btn-prod-usun').addEventListener('click', async () => {
   $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false;
   pokazInfo($('sklep-info'), 'Usunięto.', 'ok');
 });
+
+// ══════════════════════════════════════════════════════════════
+//  WIADOMOŚCI (anonimowe, z /visit)
+// ══════════════════════════════════════════════════════════════
+async function odswiezLicznikWiadomosci() {
+  const bad = $('wiad-licznik');
+  const { count, error } = await sb.from('messages')
+    .select('id', { count: 'exact', head: true }).eq('read', false);
+  if (error) { bad.hidden = true; return; }
+  if (count > 0) { bad.textContent = count > 99 ? '99+' : String(count); bad.hidden = false; }
+  else bad.hidden = true;
+}
+
+function fmtData(iso) {
+  try { return new Date(iso).toLocaleString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  catch { return iso; }
+}
+
+function renderWiadomosci(lista) {
+  const box = $('wiadomosci-lista');
+  if (!lista.length) { box.innerHTML = '<div class="pusto">Brak wiadomości.</div>'; return; }
+  box.innerHTML = '';
+  lista.forEach((w) => {
+    const el = document.createElement('div');
+    el.className = 'wiad-poz';
+    el.innerHTML = `
+      <div class="tresc-w"></div>
+      <div class="stopa">
+        <span class="data">${fmtData(w.created_at)}</span>
+        <button class="btn pusty mały groźny" data-usun>Usuń</button>
+      </div>`;
+    el.querySelector('.tresc-w').textContent = w.body;
+    el.querySelector('[data-usun]').addEventListener('click', async () => {
+      if (!confirm('Usunąć tę wiadomość?')) return;
+      const { error } = await sb.from('messages').delete().eq('id', w.id);
+      if (error) { pokazInfo($('wiad-info'), 'Nie udało się usunąć.', 'zle'); return; }
+      el.remove();
+      if (!$('wiadomosci-lista').children.length) renderWiadomosci([]);
+    });
+    box.appendChild(el);
+  });
+}
+
+async function otworzWiadomosci() {
+  pokazInfo($('wiad-info'), '', '');
+  $('wiadomosci-lista').innerHTML = '<div class="pusto">Wczytuję…</div>';
+  $('wiadomosci-modal').hidden = false;
+  const { data, error } = await sb.from('messages').select('*').order('created_at', { ascending: false });
+  if (error) { pokazInfo($('wiad-info'), 'Nie udało się wczytać wiadomości.', 'zle'); $('wiadomosci-lista').innerHTML = ''; return; }
+  renderWiadomosci(data || []);
+  // oznacz nieprzeczytane jako przeczytane i zgaś licznik
+  if ((data || []).some((w) => !w.read)) {
+    await sb.from('messages').update({ read: true }).eq('read', false);
+  }
+  odswiezLicznikWiadomosci();
+}
+
+$('btn-wiadomosci').addEventListener('click', otworzWiadomosci);
+$('btn-wiad-zamknij').addEventListener('click', () => { $('wiadomosci-modal').hidden = true; });
+$('wiadomosci-modal').addEventListener('click', (e) => { if (e.target === $('wiadomosci-modal')) $('wiadomosci-modal').hidden = true; });

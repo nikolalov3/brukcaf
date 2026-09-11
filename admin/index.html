@@ -38,8 +38,12 @@
       <a class="marka-panel" href="/admin/" aria-label="Bruk Cafe — panel">
         <img src="/img/logo.png" alt="Bruk Cafe"><span>panel</span>
       </a>
-      <div style="display:flex;align-items:center;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
         <span class="kto" id="kto"></span>
+        <button class="koperta" id="btn-wiadomosci" type="button" title="Wiadomości" aria-label="Wiadomości">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>
+          <span class="koperta-licznik" id="wiad-licznik" hidden>0</span>
+        </button>
         <button class="btn pusty mały" id="btn-wyloguj">Wyloguj</button>
       </div>
     </div>
@@ -446,6 +450,17 @@
       <button class="btn groźny mały" id="btn-prod-usun" hidden style="margin-left:auto">Usuń produkt</button>
     </div>
   </main>
+</div>
+
+<div class="wiad-modal" id="wiadomosci-modal" hidden>
+  <div class="wiad-okno">
+    <div class="wiad-gora">
+      <h2>Wiadomości</h2>
+      <button class="btn pusty mały" id="btn-wiad-zamknij" type="button">Zamknij</button>
+    </div>
+    <div class="info" id="wiad-info" hidden></div>
+    <div id="wiadomosci-lista"></div>
+  </div>
 </div>
 
 <script type="module" src="/admin/admin.js"></script>

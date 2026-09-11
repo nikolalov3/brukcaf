@@ -246,3 +246,27 @@ create policy "publiczny odczyt sklepu"
 drop policy if exists "zalogowany zarządza sklepem" on public.shop_items;
 create policy "zalogowany zarządza sklepem"
   on public.shop_items for all to authenticated using (true) with check (true);
+
+-- ── WIADOMOŚCI (anonimowe, zostawiane na /visit) ────────────────
+create table if not exists public.messages (
+  id          uuid primary key default gen_random_uuid(),
+  body        text not null check (char_length(body) between 1 and 2000),
+  read        boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+create index if not exists messages_idx on public.messages (read, created_at desc);
+
+alter table public.messages enable row level security;
+
+-- każdy (także niezalogowany gość) może zostawić wiadomość
+drop policy if exists "kazdy dodaje wiadomosc" on public.messages;
+create policy "kazdy dodaje wiadomosc" on public.messages
+  for insert to anon, authenticated with check (char_length(body) between 1 and 2000);
+
+-- czytać, oznaczać i usuwać może tylko zalogowany (Filip)
+drop policy if exists "zalogowany czyta wiadomosci" on public.messages;
+create policy "zalogowany czyta wiadomosci" on public.messages for select to authenticated using (true);
+drop policy if exists "zalogowany zmienia wiadomosci" on public.messages;
+create policy "zalogowany zmienia wiadomosci" on public.messages for update to authenticated using (true) with check (true);
+drop policy if exists "zalogowany usuwa wiadomosci" on public.messages;
+create policy "zalogowany usuwa wiadomosci" on public.messages for delete to authenticated using (true);
