@@ -10,7 +10,7 @@
 //   node build.mjs --demo    — renderuje przykładowe dane (podgląd bez bazy)
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 const DEMO = process.argv.includes('--demo');
 
@@ -319,6 +319,35 @@ const jestHerbata = (k) => (k.kind || 'kawa') === 'herbata';
 // ── główny przebieg ─────────────────────────────────────────────
 const dane = await pobierz();
 if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
+
+// ── Lokalizacja zdjęć: pobierz z Supabase Storage RAZ przy buildzie i serwuj
+// z Vercela (/img/db/). Odwiedzający nie uderzają w Storage → transfer Supabase
+// spada praktycznie do zera (limit egress dotyczy właśnie tego). Błąd pobrania =
+// zostaje oryginalny URL (miękka degradacja). Nazwy plików są unikalne (timestamp).
+async function lokalizujZdjecia(d) {
+  const cache = new Map();
+  let pobrane = 0;
+  const loc = async (url) => {
+    if (!url || !url.includes('.supabase.co/storage/')) return url;
+    if (cache.has(url)) return cache.get(url);
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('http ' + r.status);
+      const buf = Buffer.from(await r.arrayBuffer());
+      const nazwa = url.split('/').pop().split('?')[0];
+      mkdirSync('img/db', { recursive: true });
+      writeFileSync('img/db/' + nazwa, buf);
+      const p = '/img/db/' + nazwa;
+      cache.set(url, p); pobrane++;
+      return p;
+    } catch { cache.set(url, url); return url; }
+  };
+  for (const k of d.kawy || []) { k.photo_url = await loc(k.photo_url); k.photo_url2 = await loc(k.photo_url2); }
+  for (const c of d.ciasta || []) { c.photo_url = await loc(c.photo_url); }
+  for (const p of d.sklep || []) { p.photo_url = await loc(p.photo_url); }
+  console.log(`Zdjęcia zlokalizowane do /img/db/: ${pobrane}`);
+}
+if (!DEMO) await lokalizujZdjecia(dane);
 // Ta sama tabela coffees: rodzaj rozdziela kawy od herbat (kolejność wg sort z zapytania).
 const kawy = dane.kawy.filter((k) => !jestHerbata(k)).slice(0, LIMIT_KAWY);
 const herbaty = dane.kawy.filter(jestHerbata).slice(0, LIMIT_HERBATY);
