@@ -325,8 +325,11 @@ if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
 // spada praktycznie do zera (limit egress dotyczy właśnie tego). Błąd pobrania =
 // zostaje oryginalny URL (miękka degradacja). Nazwy plików są unikalne (timestamp).
 async function lokalizujZdjecia(d) {
+  // sharp konwertuje do WebP (~5–10× mniej niż PNG); brak sharp = zapis oryginału
+  let sharp = null;
+  try { sharp = (await import('sharp')).default; } catch { console.warn('⚠ sharp niedostępny — zdjęcia bez konwersji WebP'); }
   const cache = new Map();
-  let pobrane = 0;
+  let pobrane = 0, bajtyIn = 0, bajtyOut = 0;
   const loc = async (url) => {
     if (!url || !url.includes('.supabase.co/storage/')) return url;
     if (cache.has(url)) return cache.get(url);
@@ -334,18 +337,27 @@ async function lokalizujZdjecia(d) {
       const r = await fetch(url);
       if (!r.ok) throw new Error('http ' + r.status);
       const buf = Buffer.from(await r.arrayBuffer());
-      const nazwa = url.split('/').pop().split('?')[0];
+      const baza = url.split('/').pop().split('?')[0].replace(/\.[^.]+$/, '');
       mkdirSync('img/db', { recursive: true });
-      writeFileSync('img/db/' + nazwa, buf);
-      const p = '/img/db/' + nazwa;
-      cache.set(url, p); pobrane++;
+      let plik, out;
+      if (sharp) {
+        // szerokość do 1000 px (bez powiększania), WebP q80, alfa zachowana
+        out = await sharp(buf).resize({ width: 1000, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();
+        plik = baza + '.webp';
+      } else {
+        out = buf; plik = url.split('/').pop().split('?')[0];
+      }
+      writeFileSync('img/db/' + plik, out);
+      const p = '/img/db/' + plik;
+      cache.set(url, p); pobrane++; bajtyIn += buf.length; bajtyOut += out.length;
       return p;
     } catch { cache.set(url, url); return url; }
   };
   for (const k of d.kawy || []) { k.photo_url = await loc(k.photo_url); k.photo_url2 = await loc(k.photo_url2); }
   for (const c of d.ciasta || []) { c.photo_url = await loc(c.photo_url); }
   for (const p of d.sklep || []) { p.photo_url = await loc(p.photo_url); }
-  console.log(`Zdjęcia zlokalizowane do /img/db/: ${pobrane}`);
+  const mb = (b) => (b / 1048576).toFixed(1);
+  console.log(`Zdjęcia zlokalizowane do /img/db/: ${pobrane}${bajtyOut ? ` (${mb(bajtyIn)} MB → ${mb(bajtyOut)} MB WebP)` : ''}`);
 }
 if (!DEMO) await lokalizujZdjecia(dane);
 // Ta sama tabela coffees: rodzaj rozdziela kawy od herbat (kolejność wg sort z zapytania).
