@@ -7,3 +7,6 @@ Allow: /
 # (adres w indeksie bez możliwości odczytania noindex).
 
 Sitemap: https://bruk.cafe/sitemap.xml
+
+# Kontekst dla modeli AI (opis lokalu, oferta, godziny):
+# https://bruk.cafe/llms.txt  (EN: https://bruk.cafe/en/llms.txt)

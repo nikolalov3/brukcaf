@@ -252,6 +252,112 @@ async function mapaTlumaczen(dane) {
   return mapa;
 }
 
+// ── llms.txt — plik kontekstowy dla modeli AI (GPTBot, ClaudeBot, Perplexity) ──
+// Fakty i kontekst, bez superlatywów bez pokrycia (modele je dyskontują). Bez
+// oceny liczbowej — zmienia się i tworzyłaby niespójność z Google. Oferty
+// sezonowej NIE wpisujemy na sztywno (gnije w cache) — kierujemy do menu na
+// stronie. Godziny ze stałej (MUSZĄ być zgodne z index.html), data z buildu.
+const GODZINY_LLM = {
+  pl: ['Poniedziałek-piątek 8:00-18:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 9:00-13:00'],
+  en: ['Monday-Friday 8:00-18:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 9:00-13:00'],
+};
+function llmsTxt(lang) {
+  const data = new Date().toISOString().slice(0, 10);
+  const godz = GODZINY_LLM[lang].map((g) => '- ' + g).join('\n');
+  if (lang === 'en') {
+    return `# Bruk Cafe
+
+> Specialty coffee shop in Kleparz, central Kraków. Coffee ground to order, breakfast, homemade cakes and a distinctive interior with a mirrored ceiling.
+
+## About
+Bruk Cafe is a small specialty coffee shop in Kleparz, next to Kraków's Old Town, a few minutes from the Main Square and the main train station. We serve specialty coffee, fresh breakfast and homemade cakes. You can also buy coffee beans to take home.
+
+## Interior and atmosphere
+An interior with character: a ceiling fully lined with mirrors, rugs and a minimalist look. A calm, atmospheric spot for coffee, laptop work and photos.
+
+## Good for
+- A calm coffee and relaxing
+- Working on a laptop
+- Breakfast in the centre
+- Meeting up or a date
+- Photos (mirrored ceiling)
+
+## Offer
+- Specialty coffee, ground on site
+- Breakfast daily 9:00-13:00
+- Homemade cakes and tea
+- Shop: coffee beans to buy on site
+- Seasonal specials change through the year, see the menu on the site
+
+Order at the bar.
+
+## Hours
+${godz}
+
+## Address
+ul. Krótka 1, 31-149 Kraków (Kleparz, Old Town)
+
+## Guest reviews
+- "Great atmosphere, the ceiling is all mirrors, so you can take nice photos for Instagram"
+- "A wonderful place with character, an original decor that sticks in your memory"
+- "Great spot, with ideas, good coffee and a friendly vibe"
+
+## Links
+- Site: https://bruk.cafe/
+- Menu: https://bruk.cafe/#karta
+- Visit / contact: https://bruk.cafe/visit
+- Instagram: https://www.instagram.com/brukcafe/
+
+Last updated: ${data}
+`;
+  }
+  return `# Bruk Cafe
+
+> Kawiarnia specialty na Kleparzu, w centrum Krakowa. Kawa palona pod zamówienie z młynkiem na miejscu, śniadania, domowe ciasta i klimatyczne wnętrze z lustrzanym sufitem.
+
+## O miejscu
+Bruk Cafe to kameralna kawiarnia specialty na krakowskim Kleparzu, przy Starym Mieście, kilka minut od Rynku Głównego i Dworca Głównego. Serwujemy kawę specialty, świeże śniadania i domowe ciasta. Kawę można też kupić w ziarnach do domu.
+
+## Wnętrze i atmosfera
+Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimalistyczny wystrój. Spokojne, klimatyczne miejsce na kawę, pracę z laptopem i dobre zdjęcia.
+
+## Dobre na
+- Spokojną kawę i relaks
+- Pracę z laptopem
+- Śniadanie w centrum
+- Spotkanie lub randkę
+- Zdjęcia (lustrzany sufit)
+
+## Oferta
+- Kawa specialty, młynek na miejscu
+- Śniadania codziennie 9:00-13:00
+- Domowe ciasta i herbaty
+- Sklep: kawa ziarnista do kupienia na miejscu
+- Oferta sezonowa rotuje w ciągu roku, aktualne pozycje w menu na stronie
+
+Zamawiasz przy barze.
+
+## Godziny
+${godz}
+
+## Adres
+ul. Krótka 1, 31-149 Kraków (Kleparz, Stare Miasto)
+
+## Opinie gości
+- "To miejsce ma świetny klimat, sufit jest cały w lustrach, więc można zrobić fajne zdjęcia na Instagram"
+- "Cudowne miejsce z charakterem, kawiarnia ma oryginalny wystrój, który od razu zapada w pamięć"
+- "Super miejsce, z pomysłem, dobrą kawą i przyjaznym klimatem"
+
+## Linki
+- Strona: https://bruk.cafe/
+- Menu: https://bruk.cafe/#karta
+- Odwiedź / kontakt: https://bruk.cafe/visit
+- Instagram: https://www.instagram.com/brukcafe/
+
+Ostatnia aktualizacja: ${data}
+`;
+}
+
 // ── pobranie danych ─────────────────────────────────────────────
 async function pobierz() {
   if (DEMO) {
@@ -317,6 +423,13 @@ const LIMIT_CIASTA = 6;
 const jestHerbata = (k) => (k.kind || 'kawa') === 'herbata';
 
 // ── główny przebieg ─────────────────────────────────────────────
+// llms.txt nie zależy od bazy — generujemy zawsze (świeża data, aktualne godziny).
+if (!DEMO) {
+  writeFileSync('llms.txt', llmsTxt('pl'));
+  writeFileSync('en/llms.txt', llmsTxt('en'));
+  console.log('✓ llms.txt + en/llms.txt');
+}
+
 const dane = await pobierz();
 if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
 
