@@ -258,8 +258,8 @@ async function mapaTlumaczen(dane) {
 // sezonowej NIE wpisujemy na sztywno (gnije w cache) — kierujemy do menu na
 // stronie. Godziny ze stałej (MUSZĄ być zgodne z index.html), data z buildu.
 const GODZINY_LLM = {
-  pl: ['Poniedziałek-piątek 8:00-17:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 9:00-13:00'],
-  en: ['Monday-Friday 8:00-17:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 9:00-13:00'],
+  pl: ['Poniedziałek-piątek 8:00-17:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 8:00-13:00'],
+  en: ['Monday-Friday 8:00-17:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 8:00-13:00'],
 };
 function llmsTxt(lang) {
   const data = new Date().toISOString().slice(0, 10);
@@ -284,7 +284,7 @@ An interior with character: a ceiling fully lined with mirrors, rugs and a minim
 
 ## Offer
 - Specialty coffee, ground on site
-- Breakfast daily 9:00-13:00
+- Breakfast daily 8:00-13:00
 - Homemade cakes and tea
 - Shop: coffee beans to buy on site
 - Seasonal specials change through the year, see the menu on the site
@@ -330,7 +330,7 @@ Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimali
 
 ## Oferta
 - Kawa specialty, młynek na miejscu
-- Śniadania codziennie 9:00-13:00
+- Śniadania codziennie 8:00-13:00
 - Domowe ciasta i herbaty
 - Sklep: kawa ziarnista do kupienia na miejscu
 - Oferta sezonowa rotuje w ciągu roku, aktualne pozycje w menu na stronie
