@@ -258,8 +258,8 @@ async function mapaTlumaczen(dane) {
 // sezonowej NIE wpisujemy na sztywno (gnije w cache) — kierujemy do menu na
 // stronie. Godziny ze stałej (MUSZĄ być zgodne z index.html), data z buildu.
 const GODZINY_LLM = {
-  pl: ['Poniedziałek-piątek 8:00-17:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 8:00-13:00'],
-  en: ['Monday-Friday 8:00-17:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 8:00-13:00'],
+  pl: ['Poniedziałek-piątek 8:00-18:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 8:00-13:00'],
+  en: ['Monday-Friday 8:00-18:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 8:00-13:00'],
 };
 function llmsTxt(lang) {
   const data = new Date().toISOString().slice(0, 10);
