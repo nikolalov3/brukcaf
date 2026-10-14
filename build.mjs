@@ -383,40 +383,42 @@ function czyscTresc(html) {
 }
 const absURL = (u) => !u ? '' : (u.startsWith('http') ? u : `https://bruk.cafe${u.startsWith('/') ? '' : '/'}${u}`);
 
+// Blog dziedziczy wygląd ze strony głównej: /style.css daje tokeny (--tlo,
+// --atrament, --linia…), fonty i reset. Tu tylko brutalistyczna warstwa bloga:
+// jasno, ostre krawędzie (zero border-radius), czarne hairline'y, mono wersaliki.
+// BEZ dark mode — strona główna jest wyłącznie jasna.
 const BLOG_CSS = `
-:root{--tlo:#e7e5e1;--beton:#d2cfc9;--atrament:#131313;--cichy:#6f6b64;--wlos:rgba(19,19,19,.14);--mono:"JetBrains Mono",ui-monospace,monospace;--grotesk:"Archivo","Helvetica Neue",Inter,system-ui,sans-serif;--bok:clamp(20px,5vw,64px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--tlo);color:var(--atrament);font-family:var(--grotesk);line-height:1.55;-webkit-font-smoothing:antialiased}
-img{max-width:100%;height:auto;display:block}
-a{color:inherit}
-.blog-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px var(--bok);border-bottom:1px solid var(--wlos);position:sticky;top:0;background:rgba(231,229,225,.9);backdrop-filter:blur(6px);z-index:10}
-.blog-top img{height:32px;width:auto}
-.blog-top .powrot{font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;text-decoration:none;border:1px solid var(--atrament);padding:9px 14px;border-radius:999px}
-.blog-wrap{max-width:760px;margin:0 auto;padding:clamp(32px,6vw,72px) var(--bok)}
-.blog-kicker{font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--cichy)}
-.blog-wrap>h1{font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.08;letter-spacing:-.01em;margin:.5rem 0 1rem}
-article h1{font-size:clamp(1.8rem,4.2vw,2.7rem);line-height:1.1;letter-spacing:-.01em;margin:.4rem 0 .2rem}
-time{display:block;font:500 .8rem/1 var(--mono);color:var(--cichy);margin:.6rem 0 .4rem}
-.blog-cover{width:100%;border-radius:14px;margin:1.4rem 0 2rem;border:1px solid var(--wlos)}
-.blog-tresc{font-size:1.06rem}
-.blog-tresc h1,.blog-tresc h2,.blog-tresc h3{line-height:1.2;margin:2rem 0 .6rem}
-.blog-tresc h1{font-size:1.55rem}.blog-tresc h2{font-size:1.3rem}.blog-tresc h3{font-size:1.12rem}
-.blog-tresc p{margin:0 0 1.1rem}
-.blog-tresc img{border-radius:12px;margin:1.4rem 0;border:1px solid var(--wlos)}
-.blog-autor{font:500 .85rem/1 var(--mono);color:var(--cichy);margin-top:2rem}
-.blog-powrot-dol{display:inline-block;margin-top:1.2rem;font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--atrament);text-decoration:none;padding-bottom:3px}
-.blog-lista{list-style:none;padding:0;margin:2rem 0 0;display:grid;gap:clamp(20px,4vw,40px)}
-.blog-karta{border:1px solid var(--wlos);border-radius:16px;overflow:hidden;background:var(--beton);transition:transform .2s}
-.blog-karta a{text-decoration:none;display:block}
-.blog-karta:hover{transform:translateY(-2px)}
-.blog-karta .foto{display:block;aspect-ratio:16/9;background:#cfccc6;background-size:cover;background-position:center}
-.blog-karta .tresc{display:block;padding:18px 20px 22px}
-.blog-karta h2{font-size:1.3rem;line-height:1.15;margin:.3rem 0 .5rem}
-.blog-karta p{margin:0;color:var(--cichy);font-size:.98rem}
-.blog-foot{border-top:1px solid var(--wlos);padding:32px var(--bok);font:500 .82rem/1.7 var(--mono);color:var(--cichy);text-align:center}
+.blog-top{display:flex;align-items:center;justify-content:space-between;gap:18px;height:clamp(56px,7vw,68px);max-width:var(--max);margin-inline:auto;padding-inline:var(--bok);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:50;background:var(--tlo)}
+.blog-top img{height:clamp(26px,3.2vw,31px);width:auto}
+.blog-top .powrot{color:var(--tlo)!important;background:var(--atrament);border:1px solid var(--atrament);padding:8px 15px;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;text-decoration:none}
+.blog-top .powrot:hover{opacity:.82}
+.blog-wrap{max-width:780px;margin:0 auto;padding:clamp(40px,7vw,88px) var(--bok)}
+.blog-kicker{font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cichy)}
+.blog-kicker a{text-decoration:none}
+.blog-wrap>h1{font:600 clamp(2rem,5vw,3.2rem)/1.05 var(--grotesk);letter-spacing:-.015em;margin:.6rem 0 1.4rem}
+article h1{font:600 clamp(1.9rem,4.6vw,2.9rem)/1.07 var(--grotesk);letter-spacing:-.015em;margin:.5rem 0 .3rem}
+time{display:block;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy);margin:.7rem 0}
+.blog-cover{width:100%;margin:1.8rem 0 2.4rem;border:1px solid var(--linia)}
+.blog-tresc{font-size:1.06rem;line-height:1.62}
+.blog-tresc h2{font:600 1.4rem/1.2 var(--grotesk);margin:2.4rem 0 .6rem}
+.blog-tresc h3{font:600 1.14rem/1.2 var(--grotesk);margin:1.9rem 0 .5rem}
+.blog-tresc p{margin:0 0 1.2rem}
+.blog-tresc img{margin:1.8rem 0;border:1px solid var(--linia)}
+.blog-tresc a{text-underline-offset:2px}
+.blog-autor{font:500 .78rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy);margin-top:2.4rem}
+.blog-powrot-dol{display:inline-block;margin-top:1.6rem;color:var(--tlo)!important;background:var(--atrament);border:1px solid var(--atrament);padding:10px 16px;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;text-decoration:none}
+.blog-powrot-dol:hover{opacity:.82}
+.blog-lista{list-style:none;margin:2.2rem 0 0;border-top:1px solid var(--linia)}
+.blog-karta{border-bottom:1px solid var(--linia)}
+.blog-karta a{text-decoration:none;display:block;padding:0 0 32px}
+.blog-karta .foto{display:block;aspect-ratio:16/9;background:var(--beton) center/cover no-repeat;border:1px solid var(--linia);margin-top:32px}
+.blog-karta .tresc{display:block;padding-top:22px}
+.blog-karta h2{font:600 clamp(1.5rem,3vw,1.95rem)/1.12 var(--grotesk);letter-spacing:-.01em;margin:.5rem 0 .55rem}
+.blog-karta p{margin:0;color:var(--cichy)}
+.blog-karta:hover h2{text-decoration:underline;text-underline-offset:3px}
+.blog-foot{border-top:1px solid var(--linia);max-width:var(--max);margin-inline:auto;padding:34px var(--bok);font:500 clamp(10px,1.1vw,11.5px)/1.9 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cichy)}
 .blog-foot a{color:var(--atrament)}
-.blog-pusto{color:var(--cichy);font-family:var(--mono)}
-@media (prefers-color-scheme:dark){:root{--tlo:#141414;--beton:#1e1e1e;--atrament:#ececec;--cichy:#9a968e;--wlos:rgba(236,236,236,.16)}.blog-top{background:rgba(20,20,20,.9)}.blog-karta .foto{background:#2a2a2a}}
+.blog-pusto{color:var(--cichy);font-family:var(--mono);padding:2rem 0}
 `;
 
 function szkieletBlog({ lang, title, desc, canonical, ogImage, jsonLd, body }) {
@@ -440,6 +442,7 @@ ${og}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
 ${jsonLd}
 <style>${BLOG_CSS}</style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
