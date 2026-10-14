@@ -388,10 +388,6 @@ const absURL = (u) => !u ? '' : (u.startsWith('http') ? u : `https://bruk.cafe${
 // jasno, ostre krawędzie (zero border-radius), czarne hairline'y, mono wersaliki.
 // BEZ dark mode — strona główna jest wyłącznie jasna.
 const BLOG_CSS = `
-.blog-top{display:flex;align-items:center;justify-content:space-between;gap:18px;height:clamp(56px,7vw,68px);max-width:var(--max);margin-inline:auto;padding-inline:var(--bok);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:50;background:var(--tlo)}
-.blog-top img{height:clamp(26px,3.2vw,31px);width:auto}
-.blog-top .powrot{color:var(--tlo)!important;background:var(--atrament);border:1px solid var(--atrament);padding:8px 15px;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;text-decoration:none}
-.blog-top .powrot:hover{opacity:.82}
 .blog-wrap{max-width:780px;margin:0 auto;padding:clamp(40px,7vw,88px) var(--bok)}
 .blog-kicker{font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cichy)}
 .blog-kicker a{text-decoration:none}
@@ -446,17 +442,43 @@ ${og}
 ${jsonLd}
 <style>${BLOG_CSS}</style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
-<header class="blog-top">
-  <a href="/" aria-label="Bruk Cafe, strona główna"><img src="/img/logo.png" alt="Bruk Cafe"></a>
-  <a class="powrot" href="/">${lang === 'en' ? 'Home' : 'Strona główna'}</a>
-</header>
+<nav class="nawigacja">
+  <div class="ramka rzad">
+    <div class="zmiennik">
+      <a class="przycisk etykieta" href="/#karta">Menu</a>
+      <a class="marka" href="/" aria-label="Bruk Cafe, strona główna"><img src="/img/logo.png" alt="Bruk Cafe"></a>
+    </div>
+    <div class="linki etykieta">
+      <a class="chowaj" href="/#lokal">Wnętrze</a>
+      <a class="chowaj" href="/blog/">Blog</a>
+      <a class="chowaj" href="/#kontakt">Kontakt</a>
+      <div class="wifi">
+        <button class="wifi-ikona" type="button" aria-expanded="false" aria-controls="wifi-panel" aria-label="Hasło do Wi-Fi">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="5" r="1.4"/><path d="M12 6.6V20"/><path d="M7.4 20l4.6-9 4.6 9"/><path d="M8.7 20h6.6"/><path d="M8.1 6.2a5.6 5.6 0 0 0 0 7.4"/><path d="M15.9 6.2a5.6 5.6 0 0 1 0 7.4"/><path d="M5.4 3.6a9.2 9.2 0 0 0 0 12.6"/><path d="M18.6 3.6a9.2 9.2 0 0 1 0 12.6"/></svg>
+        </button>
+        <div class="wifi-panel" id="wifi-panel" hidden
+             data-haslo="SvZ$rkhcBAE3" data-kopiuj="Copy password" data-skopiowano="Copied">
+          <dl class="wifi-dane">
+            <dt class="etykieta">Network</dt><dd data-siec>PLAY_Swiatlowod_7CB0</dd>
+            <dt class="etykieta">Password</dt><dd class="wifi-haslo">SvZ$rkhcBAE3</dd>
+          </dl>
+          <button class="wifi-kopiuj etykieta" type="button">Copy password</button>
+          <button class="wifi-zamknij" type="button" aria-label="Close">&times;</button>
+        </div>
+      </div>
+      <a class="jezyk" href="/en/" hreflang="en">EN</a>
+    </div>
+  </div>
+</nav>
 ${body}
 <footer class="blog-foot">
   Bruk Cafe · ul. Krótka 1, 31-149 Kraków (Kleparz)<br>
   <a href="/">bruk.cafe</a> · <a href="https://www.instagram.com/brukcafe/" target="_blank" rel="noopener">Instagram</a>
 </footer>
+<script src="/skrypt.js" defer></script>
 </body>
 </html>`;
 }
