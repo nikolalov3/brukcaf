@@ -98,6 +98,15 @@ html:not(.js) .zmiennik .marka{display:none}
   display:inline-grid;place-items:center;width:46px;height:44px;padding:0}
 .jezyk::after{display:none}
 
+/* ikona bloga w pasku — na desktopie jest tekstowy link „Blog", więc ikona
+   pojawia się tylko na mobile, gdzie linki tekstowe (.chowaj) się chowają */
+.blog-ikona{display:none;color:var(--cichy);border:1px solid var(--wlos);
+  place-items:center;width:46px;height:44px;transition:color .25s ease,border-color .25s ease}
+.blog-ikona::after{display:none}
+.blog-ikona svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round}
+.blog-ikona:hover{color:var(--atrament);border-color:var(--atrament)}
+
 /* przycisk do karty — najważniejsza akcja, widoczna na każdej szerokości */
 .przycisk{
   color:var(--tlo)!important;background:var(--atrament);border:1px solid var(--atrament);
@@ -107,6 +116,18 @@ html:not(.js) .zmiennik .marka{display:none}
 .przycisk:hover{opacity:.82}
 @media(max-width:640px){
   .linki .chowaj{display:none}
+  .blog-ikona{display:inline-grid}
+}
+
+/* mobilny odnośnik do najnowszego wpisu na stronie głównej, tuż przed stopką.
+   Na desktopie niepotrzebny (jest link „Blog" w pasku), więc tylko na mobile. */
+.blog-mobi{display:none}
+@media(max-width:640px){
+  .blog-mobi{display:block;text-decoration:none;color:var(--atrament);
+    padding:26px 0;border-top:1px solid var(--linia)}
+  .blog-mobi .nadpis{display:block;color:var(--cichy);margin-bottom:10px}
+  .blog-mobi .tytul{font:600 1.25rem/1.25 var(--grotesk);letter-spacing:-.01em}
+  .blog-mobi .strzalka{font-family:var(--mono);margin-left:4px}
 }
 
 /* ── hero ──────────────────────────────────────────────── */

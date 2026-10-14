@@ -463,6 +463,9 @@ ${jsonLd}
       <a class="chowaj" href="/#lokal">Wnętrze</a>
       <a class="chowaj" href="/blog/">Blog</a>
       <a class="chowaj" href="/#kontakt">Kontakt</a>
+      <a class="blog-ikona" href="/blog/" aria-label="Blog">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></svg>
+      </a>
       <div class="wifi">
         <button class="wifi-ikona" type="button" aria-expanded="false" aria-controls="wifi-panel" aria-label="Hasło do Wi-Fi">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="5" r="1.4"/><path d="M12 6.6V20"/><path d="M7.4 20l4.6-9 4.6 9"/><path d="M8.7 20h6.6"/><path d="M8.1 6.2a5.6 5.6 0 0 0 0 7.4"/><path d="M15.9 6.2a5.6 5.6 0 0 1 0 7.4"/><path d="M5.4 3.6a9.2 9.2 0 0 0 0 12.6"/><path d="M18.6 3.6a9.2 9.2 0 0 1 0 12.6"/></svg>
@@ -580,6 +583,22 @@ ${u('https://bruk.cafe/visit/', '0.5', dzis)}
 ${u('https://bruk.cafe/blog/', '0.5', blogLast)}${wpisy.length ? '\n' + wpisy.join('\n') : ''}
 </urlset>
 `;
+}
+
+// Mobilny odnośnik do najnowszego wpisu, wstawiany na stronie głównej przed
+// stopką (na desktopie jest link „Blog" w pasku, więc tylko na mobile — CSS).
+function blogMobi(posts) {
+  const p = (posts || []).find((x) => x.status === 'published' && x.slug && x.title_pl);
+  if (!p) return '';
+  return `<div class="ramka"><a class="blog-mobi" href="/blog/${esc(p.slug)}/">
+    <span class="nadpis etykieta">Najnowsze na blogu</span>
+    <span class="tytul">${esc(p.title_pl)} <span class="strzalka">&rarr;</span></span>
+  </a></div>`;
+}
+function podmienBlogMobi(html, inner) {
+  const re = /<!-- BLOG-MOBI -->[\s\S]*?<!-- \/BLOG-MOBI -->/;
+  if (!re.test(html)) return html;
+  return html.replace(re, `<!-- BLOG-MOBI -->\n${inner}\n<!-- /BLOG-MOBI -->`);
 }
 
 // ── pobranie danych ─────────────────────────────────────────────
@@ -762,6 +781,8 @@ for (const [lang, t] of Object.entries(L)) {
   if (sklepDoWstawienia && sklepDoWstawienia.length) {
     html = podmienSklep(html, renderSklep(sklepDoWstawienia, t));
   }
+  // mobilny odnośnik do najnowszego wpisu przed stopką (tylko PL — tam jest blog)
+  if (lang === 'pl') html = podmienBlogMobi(html, blogMobi(dane.posts));
   writeFileSync(t.file, html);
   const info = menu && menu.length ? `, ${menu.length} poz. menu` : '';
   const tl = (lang === 'en' && dl.tlumaczone) ? ' + EN tłumaczone' : '';
