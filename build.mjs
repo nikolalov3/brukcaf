@@ -391,13 +391,13 @@ const BLOG_CSS = `
 .blog-wrap{max-width:780px;margin:0 auto;padding:clamp(40px,7vw,88px) var(--bok)}
 .blog-kicker{font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cichy)}
 .blog-kicker a{text-decoration:none}
-.blog-wrap>h1{font:600 clamp(2rem,5vw,3.2rem)/1.05 var(--grotesk);letter-spacing:-.015em;margin:.6rem 0 1.4rem}
-article h1{font:600 clamp(1.9rem,4.6vw,2.9rem)/1.07 var(--grotesk);letter-spacing:-.015em;margin:.5rem 0 .3rem}
+.blog-wrap>h1{font:600 clamp(2rem,5vw,3.2rem)/1.12 var(--grotesk);letter-spacing:-.015em;margin:.6rem 0 1.4rem}
+article h1{font:600 clamp(1.8rem,4.2vw,2.7rem)/1.18 var(--grotesk);letter-spacing:-.01em;margin:.5rem 0 .4rem}
 time{display:block;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy);margin:.7rem 0}
 .blog-cover{width:100%;margin:1.8rem 0 2.4rem;border:1px solid var(--linia)}
 .blog-tresc{font-size:1.06rem;line-height:1.62}
-.blog-tresc h2{font:600 1.4rem/1.2 var(--grotesk);margin:2.4rem 0 .6rem}
-.blog-tresc h3{font:600 1.14rem/1.2 var(--grotesk);margin:1.9rem 0 .5rem}
+.blog-tresc h2{font:600 1.4rem/1.3 var(--grotesk);margin:2.4rem 0 .7rem}
+.blog-tresc h3{font:600 1.14rem/1.32 var(--grotesk);margin:1.9rem 0 .5rem}
 .blog-tresc p{margin:0 0 1.2rem}
 .blog-tresc img{margin:1.8rem 0;border:1px solid var(--linia)}
 .blog-tresc a{text-underline-offset:2px}
@@ -409,7 +409,7 @@ time{display:block;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacin
 .blog-karta a{text-decoration:none;display:block;padding:0 0 32px}
 .blog-karta .foto{display:block;aspect-ratio:16/9;background:var(--beton) center/cover no-repeat;border:1px solid var(--linia);margin-top:32px}
 .blog-karta .tresc{display:block;padding-top:22px}
-.blog-karta h2{font:600 clamp(1.5rem,3vw,1.95rem)/1.12 var(--grotesk);letter-spacing:-.01em;margin:.5rem 0 .55rem}
+.blog-karta h2{font:600 clamp(1.5rem,3vw,1.95rem)/1.18 var(--grotesk);letter-spacing:-.01em;margin:.5rem 0 .55rem}
 .blog-karta p{margin:0;color:var(--cichy)}
 .blog-karta:hover h2{text-decoration:underline;text-underline-offset:3px}
 .blog-foot{border-top:1px solid var(--linia);max-width:var(--max);margin-inline:auto;padding:34px var(--bok);font:500 clamp(10px,1.1vw,11.5px)/1.9 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cichy)}
@@ -445,12 +445,20 @@ ${jsonLd}
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
+<div class="tasma etykieta" aria-hidden="true">
+  <div class="tor">
+    <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 8–13</span><span>·</span>
+    <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 8–13</span><span>·</span>
+  </div>
+  <template data-pula>
+    <span>Espresso</span><span>Doppio</span><span>Americano</span><span>Flat white</span><span>Cappuccino</span><span>Latte</span><span>Drip V60</span><span>Matcha</span><span>Matcha latte</span><span>Cold brew</span><span data-rola="zawsze">Breakfast 8–13</span><span data-rola="czasem">Wi-Fi</span>
+  </template>
+</div>
 <nav class="nawigacja">
   <div class="ramka rzad">
-    <div class="zmiennik">
-      <a class="przycisk etykieta" href="/#karta">Menu</a>
-      <a class="marka" href="/" aria-label="Bruk Cafe, strona główna"><img src="/img/logo.png" alt="Bruk Cafe"></a>
-    </div>
+    <a class="marka" href="/" aria-label="Bruk Cafe, strona główna"><img src="/img/logo.png" alt="Bruk Cafe"></a>
     <div class="linki etykieta">
       <a class="chowaj" href="/#lokal">Wnętrze</a>
       <a class="chowaj" href="/blog/">Blog</a>

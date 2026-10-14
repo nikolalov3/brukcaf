@@ -68,10 +68,7 @@
 (function () {
   var nawigacja = document.querySelector('.nawigacja');
   var znak = document.querySelector('.hero .znak');
-  if (!nawigacja) return;
-  // Podstrony (np. blog) nie mają wielkiego logo w hero — tam znak marki w
-  // pasku ma wjechać zaraz po starcie przewijania, więc próg jest stały.
-  var BEZ_HERO = !znak;
+  if (!nawigacja || !znak) return;
 
   var LUZ = 90;      // szerokość strefy martwej w pikselach
   var prog = 0;
@@ -79,7 +76,6 @@
   var czeka = false;
 
   function przelicz() {
-    if (BEZ_HERO) { prog = 24; return; }
     var r = znak.getBoundingClientRect();
     prog = r.bottom + window.pageYOffset - nawigacja.offsetHeight;
   }
@@ -107,7 +103,7 @@
   window.addEventListener('scroll', przyPrzewijaniu, { passive: true });
   window.addEventListener('resize', function () { przelicz(); sprawdz(); });
   // logo to obrazek — po jego wczytaniu wysokość hero może się zmienić
-  if (znak && !znak.complete) znak.addEventListener('load', function () { przelicz(); sprawdz(); });
+  if (!znak.complete) znak.addEventListener('load', function () { przelicz(); sprawdz(); });
 })();
 
 /* 3. Przewijanie do kotwic: dłuższe i łagodniejsze niż systemowe.
