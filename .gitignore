@@ -4,3 +4,6 @@ DSC*.jpg
 ZADANIA.md
 node_modules/
 img/db/
+
+# Blog generowany z bazy przy buildzie
+blog/

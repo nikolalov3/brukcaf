@@ -358,6 +358,197 @@ Ostatnia aktualizacja: ${data}
 `;
 }
 
+// ── BLOG: publiczne strony z tabeli `posts` (status=published) ──────
+// Panel /admin/ zapisuje wpisy do bazy; tu budujemy statyczny /blog/ i
+// /blog/<slug>/ w szacie Bruka, z danymi strukturalnymi BlogPosting.
+// Zasada: blog WSPIERA stronę główną, nie konkuruje — niższy priorytet w
+// sitemapie, osobne tematy (newsy/kawy), linki prowadzą z powrotem na główną.
+const MIESIACE_PL = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+function dataPl(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return `${d.getUTCDate()} ${MIESIACE_PL[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+// Treść z edytora (ProseMirror) niesie śmieciowe style inline i data-*; czyścimy,
+// żeby wpis wyglądał spójnie ze stroną. Zostają tagi i atrybuty src/href/alt.
+function czyscTresc(html) {
+  return String(html || '')
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+    .replace(/<\/?(meta|link|html|head|body)\b[^>]*>/gi, '')
+    .replace(/\sdata-[\w-]+="[^"]*"/g, '')
+    .replace(/\sstyle="[^"]*"/g, '')
+    .replace(/\sclass="[^"]*"/g, '')
+    // na stronie jedyny H1 to tytuł wpisu — nagłówki z treści schodzą o poziom
+    .replace(/<h1(\b[^>]*)?>/gi, '<h2>').replace(/<\/h1>/gi, '</h2>');
+}
+const absURL = (u) => !u ? '' : (u.startsWith('http') ? u : `https://bruk.cafe${u.startsWith('/') ? '' : '/'}${u}`);
+
+const BLOG_CSS = `
+:root{--tlo:#e7e5e1;--beton:#d2cfc9;--atrament:#131313;--cichy:#6f6b64;--wlos:rgba(19,19,19,.14);--mono:"JetBrains Mono",ui-monospace,monospace;--grotesk:"Archivo","Helvetica Neue",Inter,system-ui,sans-serif;--bok:clamp(20px,5vw,64px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--tlo);color:var(--atrament);font-family:var(--grotesk);line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.blog-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px var(--bok);border-bottom:1px solid var(--wlos);position:sticky;top:0;background:rgba(231,229,225,.9);backdrop-filter:blur(6px);z-index:10}
+.blog-top img{height:32px;width:auto}
+.blog-top .powrot{font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;text-decoration:none;border:1px solid var(--atrament);padding:9px 14px;border-radius:999px}
+.blog-wrap{max-width:760px;margin:0 auto;padding:clamp(32px,6vw,72px) var(--bok)}
+.blog-kicker{font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--cichy)}
+.blog-wrap>h1{font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.08;letter-spacing:-.01em;margin:.5rem 0 1rem}
+article h1{font-size:clamp(1.8rem,4.2vw,2.7rem);line-height:1.1;letter-spacing:-.01em;margin:.4rem 0 .2rem}
+time{display:block;font:500 .8rem/1 var(--mono);color:var(--cichy);margin:.6rem 0 .4rem}
+.blog-cover{width:100%;border-radius:14px;margin:1.4rem 0 2rem;border:1px solid var(--wlos)}
+.blog-tresc{font-size:1.06rem}
+.blog-tresc h1,.blog-tresc h2,.blog-tresc h3{line-height:1.2;margin:2rem 0 .6rem}
+.blog-tresc h1{font-size:1.55rem}.blog-tresc h2{font-size:1.3rem}.blog-tresc h3{font-size:1.12rem}
+.blog-tresc p{margin:0 0 1.1rem}
+.blog-tresc img{border-radius:12px;margin:1.4rem 0;border:1px solid var(--wlos)}
+.blog-autor{font:500 .85rem/1 var(--mono);color:var(--cichy);margin-top:2rem}
+.blog-powrot-dol{display:inline-block;margin-top:1.2rem;font:500 .78rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--atrament);text-decoration:none;padding-bottom:3px}
+.blog-lista{list-style:none;padding:0;margin:2rem 0 0;display:grid;gap:clamp(20px,4vw,40px)}
+.blog-karta{border:1px solid var(--wlos);border-radius:16px;overflow:hidden;background:var(--beton);transition:transform .2s}
+.blog-karta a{text-decoration:none;display:block}
+.blog-karta:hover{transform:translateY(-2px)}
+.blog-karta .foto{display:block;aspect-ratio:16/9;background:#cfccc6;background-size:cover;background-position:center}
+.blog-karta .tresc{display:block;padding:18px 20px 22px}
+.blog-karta h2{font-size:1.3rem;line-height:1.15;margin:.3rem 0 .5rem}
+.blog-karta p{margin:0;color:var(--cichy);font-size:.98rem}
+.blog-foot{border-top:1px solid var(--wlos);padding:32px var(--bok);font:500 .82rem/1.7 var(--mono);color:var(--cichy);text-align:center}
+.blog-foot a{color:var(--atrament)}
+.blog-pusto{color:var(--cichy);font-family:var(--mono)}
+@media (prefers-color-scheme:dark){:root{--tlo:#141414;--beton:#1e1e1e;--atrament:#ececec;--cichy:#9a968e;--wlos:rgba(236,236,236,.16)}.blog-top{background:rgba(20,20,20,.9)}.blog-karta .foto{background:#2a2a2a}}
+`;
+
+function szkieletBlog({ lang, title, desc, canonical, ogImage, jsonLd, body }) {
+  const og = ogImage ? `<meta property="og:image" content="${esc(ogImage)}">\n<meta name="twitter:image" content="${esc(ogImage)}">` : '';
+  return `<!doctype html>
+<html lang="${lang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${esc(canonical)}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Bruk Cafe">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${esc(canonical)}">
+${og}
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+${jsonLd}
+<style>${BLOG_CSS}</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
+</head>
+<body>
+<header class="blog-top">
+  <a href="/" aria-label="Bruk Cafe, strona główna"><img src="/img/logo.png" alt="Bruk Cafe"></a>
+  <a class="powrot" href="/">${lang === 'en' ? 'Home' : 'Strona główna'}</a>
+</header>
+${body}
+<footer class="blog-foot">
+  Bruk Cafe · ul. Krótka 1, 31-149 Kraków (Kleparz)<br>
+  <a href="/">bruk.cafe</a> · <a href="https://www.instagram.com/brukcafe/" target="_blank" rel="noopener">Instagram</a>
+</footer>
+</body>
+</html>`;
+}
+
+function stronaListaBloga(posts) {
+  const canonical = 'https://bruk.cafe/blog/';
+  const karty = posts.length ? posts.map((p) => {
+    const foto = p.cover_url ? ` style="background-image:url('${esc(p.cover_url)}')"` : '';
+    return `    <li class="blog-karta"><a href="/blog/${esc(p.slug)}/">
+      <span class="foto"${foto}></span>
+      <span class="tresc">
+        <time>${dataPl(p.published_at || p.created_at)}</time>
+        <h2>${esc(p.title_pl)}</h2>
+        ${p.excerpt_pl ? `<p>${esc(p.excerpt_pl)}</p>` : ''}
+      </span>
+    </a></li>`;
+  }).join('\n') : '    <li class="blog-pusto">Nie ma jeszcze wpisów.</li>';
+  const jsonLd = `<script type="application/ld+json">\n${JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Blog', '@id': canonical,
+    name: 'Blog Bruk Cafe', inLanguage: 'pl-PL',
+    publisher: { '@type': 'Organization', name: 'Bruk Cafe', logo: { '@type': 'ImageObject', url: 'https://bruk.cafe/img/logo.png' } },
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title_pl, url: `https://bruk.cafe/blog/${p.slug}/`, datePublished: p.published_at || p.created_at })),
+  }, null, 2).replaceAll('</', '<\\/')}\n</script>`;
+  const body = `<main class="blog-wrap">
+  <span class="blog-kicker">Bruk Cafe</span>
+  <h1>Blog</h1>
+  <ul class="blog-lista">
+${karty}
+  </ul>
+</main>`;
+  return szkieletBlog({ lang: 'pl', title: 'Blog — Bruk Cafe', desc: 'Nowości, kawy i wydarzenia z Bruk Cafe na Kleparzu w Krakowie.', canonical, ogImage: 'https://bruk.cafe/img/og-cover.jpg', jsonLd, body });
+}
+
+function stronaWpisu(p) {
+  const canonical = `https://bruk.cafe/blog/${p.slug}/`;
+  const cover = absURL(p.cover_url);
+  const desc = (p.excerpt_pl || p.title_pl || '').slice(0, 200);
+  const ld = (o) => `<script type="application/ld+json">\n${JSON.stringify(o, null, 2).replaceAll('</', '<\\/')}\n</script>`;
+  const jsonLd = ld({
+    '@context': 'https://schema.org', '@type': 'BlogPosting',
+    headline: p.title_pl,
+    ...(p.excerpt_pl ? { description: p.excerpt_pl } : {}),
+    ...(cover ? { image: cover } : {}),
+    datePublished: p.published_at || p.created_at,
+    dateModified: p.updated_at || p.published_at || p.created_at,
+    author: { '@type': 'Organization', name: p.author || 'Bruk Cafe' },
+    publisher: { '@type': 'Organization', name: 'Bruk Cafe', logo: { '@type': 'ImageObject', url: 'https://bruk.cafe/img/logo.png' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+    inLanguage: 'pl-PL',
+  }) + '\n' + ld({
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Bruk Cafe', item: 'https://bruk.cafe/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://bruk.cafe/blog/' },
+      { '@type': 'ListItem', position: 3, name: p.title_pl, item: canonical },
+    ],
+  });
+  const coverHtml = cover ? `    <img class="blog-cover" src="${esc(p.cover_url)}" alt="${esc(p.title_pl)}">\n` : '';
+  const body = `<main class="blog-wrap">
+  <article>
+    <span class="blog-kicker"><a href="/blog/" style="color:inherit;text-decoration:none">Blog</a></span>
+    <h1>${esc(p.title_pl)}</h1>
+    <time>${dataPl(p.published_at || p.created_at)}</time>
+${coverHtml}    <div class="blog-tresc">${czyscTresc(p.body_pl)}</div>
+    <p class="blog-autor">${esc(p.author || 'Bruk Cafe')}</p>
+    <a class="blog-powrot-dol" href="/">Wróć na stronę Bruka</a>
+  </article>
+</main>`;
+  return szkieletBlog({ lang: 'pl', title: `${p.title_pl} — Bruk Cafe`, desc, canonical, ogImage: cover || 'https://bruk.cafe/img/og-cover.jpg', jsonLd, body });
+}
+
+// sitemap z priorytetami: strona główna najmocniejsza (1.0), blog wspiera (0.5), wpisy niżej (0.4)
+function generujSitemap(posts) {
+  const dzis = new Date().toISOString().slice(0, 10);
+  const alt = `
+    <xhtml:link rel="alternate" hreflang="pl" href="https://bruk.cafe/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bruk.cafe/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bruk.cafe/"/>`;
+  const u = (loc, prio, lastmod, alternaty) => `  <url>
+    <loc>${loc}</loc>${alternaty || ''}${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}
+    <priority>${prio}</priority>
+  </url>`;
+  const wpisy = (posts || []).map((p) => u(`https://bruk.cafe/blog/${esc(p.slug)}/`, '0.4', (p.updated_at || p.published_at || p.created_at || '').slice(0, 10)));
+  const blogLast = (posts && posts[0]) ? (posts[0].updated_at || posts[0].published_at || dzis).slice(0, 10) : dzis;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${u('https://bruk.cafe/', '1.0', dzis, alt)}
+${u('https://bruk.cafe/en/', '0.8', dzis, alt)}
+${u('https://bruk.cafe/visit/', '0.5', dzis)}
+${u('https://bruk.cafe/blog/', '0.5', blogLast)}${wpisy.length ? '\n' + wpisy.join('\n') : ''}
+</urlset>
+`;
+}
+
 // ── pobranie danych ─────────────────────────────────────────────
 async function pobierz() {
   if (DEMO) {
@@ -385,6 +576,7 @@ async function pobierz() {
         { name: 'Kawa ziarnista 250 g', price: '54 zł', opis: 'Świeżo wypalona specialty do zaparzenia w domu.', available: true, photo_url: '/img/ciastka.jpg' },
         { name: 'Kubek Bruk', price: '49 zł', opis: 'Ceramiczny, robiony ręcznie.', available: false, photo_url: '/img/ciasto.jpg' },
       ],
+      posts: [],
     };
   }
   const URL = process.env.SUPABASE_URL;
@@ -412,7 +604,13 @@ async function pobierz() {
   if (!sr.error) sklep = sr.data || [];
   else console.log('shop_items niedostępne — zostaje statyczny sklep (' + sr.error.message + ')');
 
-  return { kawy: kawy || [], ciasta: ciasta || [], menu, sklep };
+  // Blog osobno: brak tabeli posts NIE może wywalić buildu (zostaje bez bloga).
+  let posts = null;
+  const pr = await sb.from('posts').select('*').eq('status', 'published').order('published_at', { ascending: false });
+  if (!pr.error) posts = pr.data || [];
+  else console.log('posts niedostępne — blog pominięty (' + pr.error.message + ')');
+
+  return { kawy: kawy || [], ciasta: ciasta || [], menu, sklep, posts };
 }
 
 // Na stronie pokazujemy tylko czoło listy — reszta czeka w panelu (wyszarzona).
@@ -469,6 +667,14 @@ async function lokalizujZdjecia(d) {
   for (const k of d.kawy || []) { k.photo_url = await loc(k.photo_url); k.photo_url2 = await loc(k.photo_url2); }
   for (const c of d.ciasta || []) { c.photo_url = await loc(c.photo_url); }
   for (const p of d.sklep || []) { p.photo_url = await loc(p.photo_url); }
+  // blog: okładka + zdjęcia osadzone w treści wpisu (też z Supabase Storage)
+  const locImgsWTresci = async (html) => {
+    const urls = [...String(html || '').matchAll(/src="([^"]+\.supabase\.co\/storage\/[^"]+)"/g)].map((m) => m[1]);
+    let out = html;
+    for (const url of urls) { const n = await loc(url); if (n !== url) out = out.split(url).join(n); }
+    return out;
+  };
+  for (const p of d.posts || []) { p.cover_url = await loc(p.cover_url); if (p.body_pl) p.body_pl = await locImgsWTresci(p.body_pl); }
   const mb = (b) => (b / 1048576).toFixed(1);
   console.log(`Zdjęcia zlokalizowane do /img/db/: ${pobrane}${bajtyOut ? ` (${mb(bajtyIn)} MB → ${mb(bajtyOut)} MB WebP)` : ''}`);
 }
@@ -530,6 +736,19 @@ for (const [lang, t] of Object.entries(L)) {
   console.log(`✓ ${t.file}: ${kawy.length} kaw${hinfo}, ${ciasta.length}/${dane.ciasta.length} ciast${info}${tl}${DEMO ? ' (demo)' : ''}`);
 }
 
+// ── BLOG: publiczne strony z wpisów (PL; EN dołoży się, gdy pojawią się tłumaczenia) ──
+const posts = (dane.posts || []).filter((p) => p.status === 'published' && p.slug && p.title_pl);
+if (!DEMO) {
+  mkdirSync('blog', { recursive: true });
+  writeFileSync('blog/index.html', stronaListaBloga(posts));
+  for (const p of posts) {
+    mkdirSync('blog/' + p.slug, { recursive: true });
+    writeFileSync(`blog/${p.slug}/index.html`, stronaWpisu(p));
+  }
+  writeFileSync('sitemap.xml', generujSitemap(posts));
+  console.log(`✓ /blog/: ${posts.length} wpis(ów) + sitemap.xml`);
+}
+
 // Czy treść ważna dla GEO (KAWY lub MENU) zmieniła się względem żywej strony?
 // Jeśli zmieniły się tylko ciasta, nie ma sensu pingować wyszukiwarek.
 async function trescBezZmian(nowyKInner, nowyHInner, noweMenu) {
@@ -556,10 +775,25 @@ async function trescBezZmian(nowyKInner, nowyHInner, noweMenu) {
 // ── IndexNow — powiadom Bing/Yandex (pośrednio ChatGPT), TYLKO gdy zmieniły się kawy lub menu ──
 // Klucz jest jawny z założenia (hostowany w publicznym pliku KLUCZ.txt).
 const INDEXNOW_KEY = 'dcdea3335dc57ab36cf2c27e6166e0e7';
+// Czy wszystkie opublikowane wpisy są już na żywej liście /blog/? Jeśli nie
+// (nowy wpis albo pierwszy deploy bloga), to zmiana — trzeba pingować.
+async function blogBezZmian(ps) {
+  try {
+    const r = await fetch('https://bruk.cafe/blog/');
+    if (!r.ok) return false;
+    const h = await r.text();
+    for (const p of ps) { if (!h.includes(`/blog/${p.slug}/`)) return false; }
+    return true;
+  } catch { return false; }
+}
 if (!DEMO) {
-  if (await trescBezZmian(plKawyHtml, plHerbatyHtml, plMenuHtml)) {
-    console.log('IndexNow: kawy, herbaty i menu bez zmian (zmiana tylko ciast?) — pomijam ping');
+  const bezZmianTresc = await trescBezZmian(plKawyHtml, plHerbatyHtml, plMenuHtml);
+  const bezZmianBloga = await blogBezZmian(posts);
+  if (bezZmianTresc && bezZmianBloga) {
+    console.log('IndexNow: kawy, herbaty, menu i blog bez zmian — pomijam ping');
   } else try {
+    const urlList = ['https://bruk.cafe/', 'https://bruk.cafe/en/', 'https://bruk.cafe/blog/',
+      ...posts.map((p) => `https://bruk.cafe/blog/${p.slug}/`)].slice(0, 100);
     const r = await fetch('https://api.indexnow.org/indexnow', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -567,10 +801,10 @@ if (!DEMO) {
         host: 'bruk.cafe',
         key: INDEXNOW_KEY,
         keyLocation: `https://bruk.cafe/${INDEXNOW_KEY}.txt`,
-        urlList: ['https://bruk.cafe/', 'https://bruk.cafe/en/'],
+        urlList,
       }),
     });
-    console.log('IndexNow:', r.status);
+    console.log('IndexNow:', r.status, `(${urlList.length} URL)`);
   } catch (e) {
     console.log('IndexNow pominięty:', e.message);
   }
