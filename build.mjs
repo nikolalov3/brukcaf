@@ -396,8 +396,8 @@ article h1{font:600 clamp(1.8rem,4.2vw,2.7rem)/1.18 var(--grotesk);letter-spacin
 time{display:block;font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cichy);margin:.7rem 0}
 .blog-cover{width:100%;margin:1.8rem 0 2.4rem;border:1px solid var(--linia)}
 .blog-tresc{font-size:1.06rem;line-height:1.62}
-.blog-tresc h2{font:600 1.4rem/1.3 var(--grotesk);margin:2.4rem 0 .7rem}
-.blog-tresc h3{font:600 1.14rem/1.32 var(--grotesk);margin:1.9rem 0 .5rem}
+.blog-tresc h2{font:600 1.4rem/1.45 var(--grotesk);margin:2.4rem 0 .7rem}
+.blog-tresc h3{font:600 1.14rem/1.45 var(--grotesk);margin:1.9rem 0 .5rem}
 .blog-tresc p{margin:0 0 1.2rem}
 .blog-tresc img{margin:1.8rem 0;border:1px solid var(--linia)}
 .blog-tresc a{text-underline-offset:2px}
