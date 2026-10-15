@@ -389,6 +389,8 @@ const absURL = (u) => !u ? '' : (u.startsWith('http') ? u : `https://bruk.cafe${
 // BEZ dark mode — strona główna jest wyłącznie jasna.
 const BLOG_CSS = `
 .blog-wrap{max-width:780px;margin:0 auto;padding:clamp(40px,7vw,88px) var(--bok)}
+/* strona główna zwęża nagłówki (h2{max-width:17ch}) — na blogu mają iść na pełną szerokość kolumny */
+.blog-wrap h1,.blog-wrap h2,.blog-wrap h3{max-width:none}
 .blog-kicker{font:500 clamp(10px,1.1vw,11.5px)/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cichy)}
 .blog-kicker a{text-decoration:none}
 .blog-wrap>h1{font:600 clamp(2rem,5vw,3.2rem)/1.12 var(--grotesk);letter-spacing:-.015em;margin:.6rem 0 1.4rem}
