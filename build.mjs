@@ -303,10 +303,11 @@ ul. Krótka 1, 31-149 Kraków (Kleparz, Old Town)
 - "Great spot, with ideas, good coffee and a friendly vibe"
 
 ## Links
-- Site: https://bruk.cafe/
-- Menu: https://bruk.cafe/#karta
-- Visit / contact: https://bruk.cafe/visit
-- Instagram: https://www.instagram.com/brukcafe/
+- [Home](https://bruk.cafe/)
+- [Menu](https://bruk.cafe/#karta)
+- [Blog](https://bruk.cafe/blog/)
+- [Visit / contact](https://bruk.cafe/visit)
+- [Instagram](https://www.instagram.com/brukcafe/)
 
 Last updated: ${data}
 `;
@@ -349,10 +350,11 @@ ul. Krótka 1, 31-149 Kraków (Kleparz, Stare Miasto)
 - "Super miejsce, z pomysłem, dobrą kawą i przyjaznym klimatem"
 
 ## Linki
-- Strona: https://bruk.cafe/
-- Menu: https://bruk.cafe/#karta
-- Odwiedź / kontakt: https://bruk.cafe/visit
-- Instagram: https://www.instagram.com/brukcafe/
+- [Strona główna](https://bruk.cafe/)
+- [Menu](https://bruk.cafe/#karta)
+- [Blog](https://bruk.cafe/blog/)
+- [Odwiedź / kontakt](https://bruk.cafe/visit)
+- [Instagram](https://www.instagram.com/brukcafe/)
 
 Ostatnia aktualizacja: ${data}
 `;
