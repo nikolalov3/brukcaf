@@ -551,7 +551,8 @@ function stronaWpisu(p) {
       { '@type': 'ListItem', position: 3, name: p.title_pl, item: canonical },
     ],
   });
-  const coverHtml = cover ? `    <img class="blog-cover" src="${esc(p.cover_url)}" alt="${esc(p.title_pl)}">\n` : '';
+  const coverWymiary = (p.cover_w && p.cover_h) ? ` width="${p.cover_w}" height="${p.cover_h}"` : '';
+  const coverHtml = cover ? `    <img class="blog-cover" src="${esc(p.cover_url)}"${coverWymiary} alt="${esc(p.title_pl)}" decoding="async">\n` : '';
   const body = `<main class="blog-wrap">
   <article>
     <span class="blog-kicker"><a href="/blog/" style="color:inherit;text-decoration:none">Blog</a></span>
@@ -708,8 +709,10 @@ async function lokalizujZdjecia(d) {
       mkdirSync('img/db', { recursive: true });
       let plik, out;
       if (sharp) {
-        // szerokość do 1000 px (bez powiększania), WebP q80, alfa zachowana
-        out = await sharp(buf).resize({ width: 1000, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();
+        // szerokość do 720 px (bez powiększania), WebP q80, alfa zachowana.
+        // 720 px pokrywa karty (~300-400 px na retinie) i okładkę bloga (780 px),
+        // a waży ~połowę tego co 1000 px — mniej transferu i szybsze ładowanie.
+        out = await sharp(buf).resize({ width: 720, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();
         plik = baza + '.webp';
       } else {
         out = buf; plik = url.split('/').pop().split('?')[0];
@@ -730,7 +733,14 @@ async function lokalizujZdjecia(d) {
     for (const url of urls) { const n = await loc(url); if (n !== url) out = out.split(url).join(n); }
     return out;
   };
-  for (const p of d.posts || []) { p.cover_url = await loc(p.cover_url); if (p.body_pl) p.body_pl = await locImgsWTresci(p.body_pl); }
+  for (const p of d.posts || []) {
+    p.cover_url = await loc(p.cover_url);
+    if (p.body_pl) p.body_pl = await locImgsWTresci(p.body_pl);
+    // wymiary okładki (po resize) na atrybuty width/height — mniej przeskoków układu (CLS)
+    if (sharp && p.cover_url && p.cover_url.startsWith('/img/db/')) {
+      try { const m = await sharp('.' + p.cover_url).metadata(); p.cover_w = m.width; p.cover_h = m.height; } catch {}
+    }
+  }
   const mb = (b) => (b / 1048576).toFixed(1);
   console.log(`Zdjęcia zlokalizowane do /img/db/: ${pobrane}${bajtyOut ? ` (${mb(bajtyIn)} MB → ${mb(bajtyOut)} MB WebP)` : ''}`);
 }
