@@ -184,7 +184,11 @@
   .halloween .hw-badge{display:inline-flex;align-items:center;gap:7px;
     color:#e0611c;font:600 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase}
   @media(prefers-reduced-motion:reduce){.hw-spider{animation:none}}
+  /* po 3 listopada skrypt w <head> dodaje .po-halloween na <html> i skorka gasnie sama */
+  html.po-halloween .hw,html.po-halloween .hw-badge{display:none!important}
+  html.po-halloween .halloween{--bordo-2:#6b2233}
 </style>
+<script>if(new Date()>=new Date(2026,10,3))document.documentElement.classList.add("po-halloween")</script>
 <!-- Umami — prywatny licznik wejść (bez ciasteczek), statystyki per adres w jednym panelu -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
 </head>
