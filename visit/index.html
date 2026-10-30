@@ -164,15 +164,60 @@
   .msg-send:active{opacity:.85}
   .msg-send[disabled]{opacity:.5;cursor:default}
   .msg-ok{margin-top:14px;text-align:center;color:#34e0a1;font:500 13px/1.5 var(--mono)}
+
+  /* ── Halloween (sezonowo) — usuń class="halloween" z <body>, by wyłączyć ── */
+  .halloween{--bordo-2:#e0611c}                 /* akcent: dynia zamiast bordo (CTA + stan wysłano) */
+  .hw{display:none}
+  .halloween .hw{display:block}
+  .hw-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(42% 30% at 50% -6%, rgba(224,97,28,.22), transparent 70%),
+      radial-gradient(30% 24% at 93% 6%, rgba(224,97,28,.13), transparent 72%),
+      radial-gradient(30% 24% at 7% 6%, rgba(224,97,28,.10), transparent 72%)}
+  .hw-web{position:fixed;top:0;z-index:1;width:clamp(72px,22vw,108px);height:auto;opacity:.26;pointer-events:none}
+  .hw-web-l{left:0}
+  .hw-web-r{right:0;transform:scaleX(-1)}
+  .hw-spider{position:fixed;top:0;left:20%;z-index:2;width:28px;height:auto;pointer-events:none;
+    transform-origin:top center;animation:hw-sway 4.8s ease-in-out infinite}
+  @keyframes hw-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+  .hw-badge{display:none}
+  .halloween .hw-badge{display:inline-flex;align-items:center;gap:7px;
+    color:#e0611c;font:600 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase}
+  @media(prefers-reduced-motion:reduce){.hw-spider{animation:none}}
 </style>
 <!-- Umami — prywatny licznik wejść (bez ciasteczek), statystyki per adres w jednym panelu -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
 </head>
-<body>
+<body class="halloween">
+  <div class="hw" aria-hidden="true">
+    <span class="hw-glow"></span>
+    <svg class="hw-web hw-web-l" viewBox="0 0 120 120">
+      <g fill="none" stroke="#ece9e3" stroke-width="1">
+        <path d="M0 0H120M0 0V120M0 0L104 46M0 0L74 74M0 0L46 104"/>
+        <path d="M34 0A34 34 0 0 1 0 34"/><path d="M70 0A70 70 0 0 1 0 70"/><path d="M106 0A106 106 0 0 1 0 106"/>
+      </g>
+    </svg>
+    <svg class="hw-web hw-web-r" viewBox="0 0 120 120">
+      <g fill="none" stroke="#ece9e3" stroke-width="1">
+        <path d="M0 0H120M0 0V120M0 0L104 46M0 0L74 74M0 0L46 104"/>
+        <path d="M34 0A34 34 0 0 1 0 34"/><path d="M70 0A70 70 0 0 1 0 70"/><path d="M106 0A106 106 0 0 1 0 106"/>
+      </g>
+    </svg>
+    <svg class="hw-spider" viewBox="0 0 40 66">
+      <line x1="20" y1="0" x2="20" y2="30" stroke="#ece9e3" stroke-width="0.8" opacity=".5"/>
+      <g stroke="#ece9e3" stroke-width="1.1" fill="none" stroke-linecap="round">
+        <path d="M20 46C12 42 9 46 3 40M20 46C12 45 8 51 2 51M20 46C28 42 31 46 37 40M20 46C28 45 32 51 38 51"/>
+      </g>
+      <ellipse cx="20" cy="47" rx="6.5" ry="7.5" fill="#ece9e3"/>
+      <circle cx="20" cy="38" r="3.4" fill="#ece9e3"/>
+      <circle cx="18.3" cy="37.6" r=".8" fill="#e0611c"/><circle cx="21.7" cy="37.6" r=".8" fill="#e0611c"/>
+    </svg>
+  </div>
   <main class="wrap">
     <header class="top">
       <img class="logo" src="../img/logo.png" alt="BRUK CAFE">
       <span class="tag">Specialty coffee · Kleparz, Kraków</span>
+      <span class="hw-badge">🎃 Spooky season at BRUK</span>
     </header>
 
     <nav class="stos">
