@@ -41,6 +41,10 @@ a{color:inherit}
 
 .ramka{max-width:var(--max);margin-inline:auto;padding-inline:var(--bok)}
 
+/* tekst tylko dla czytników ekranu i botów — niewidoczny, ale obecny w treści strony */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+  margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
 /* ── nawigacja ─────────────────────────────────────────── */
 .nawigacja{
   position:sticky;top:0;z-index:50;background:rgba(231,229,225,.82);

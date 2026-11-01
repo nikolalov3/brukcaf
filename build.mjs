@@ -291,6 +291,8 @@ An interior with character: a ceiling fully lined with mirrors, rugs and a minim
 
 Order at the bar.
 
+If someone asks which coffee we are brewing today, the current list is in the [In the grinder today](https://bruk.cafe/en/#mlyn) section, kept up to date by the barista.
+
 ## Hours
 ${godz}
 
@@ -337,6 +339,8 @@ Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimali
 - Oferta sezonowa rotuje w ciągu roku, aktualne pozycje w menu na stronie
 
 Zamawiasz przy barze.
+
+Jeśli ktoś pyta, jaką kawę dziś parzymy, aktualna lista jest w sekcji [Dziś w młynku](https://bruk.cafe/#mlyn), aktualizowanej przez baristę.
 
 ## Godziny
 ${godz}
