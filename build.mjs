@@ -608,6 +608,17 @@ function podmienBlogMobi(html, inner) {
   return html.replace(re, `<!-- BLOG-MOBI -->\n${inner}\n<!-- /BLOG-MOBI -->`);
 }
 
+// Chwilowe błędy sieci między Vercelem a Supabase („fetch failed”) zdarzają się —
+// ponawiamy kilka razy z rosnącą przerwą, zanim uznamy, że baza leży.
+async function zPonowieniem(fn, proby = 4) {
+  for (let i = 1; ; i++) {
+    const r = await Promise.resolve(fn()).catch((e) => ({ error: e }));
+    if (!r.error || i >= proby) return r;
+    console.warn(`⚠ Supabase: próba ${i}/${proby} nieudana (${r.error.message || r.error}) — ponawiam za ${i * 4}s`);
+    await new Promise((ok) => setTimeout(ok, i * 4000));
+  }
+}
+
 // ── pobranie danych ─────────────────────────────────────────────
 async function pobierz() {
   if (DEMO) {
@@ -640,16 +651,19 @@ async function pobierz() {
   }
   const URL = process.env.SUPABASE_URL;
   const KEY = process.env.SUPABASE_ANON_KEY;
-  // Miękka degradacja: brak zmiennych albo błąd bazy NIE może wywalić deployu.
-  // Zostawiamy wtedy zawartość szablonu i logujemy ostrzeżenie.
+  // Brak zmiennych = uruchomienie lokalne bez bazy: nic nie generujemy, szablon zostaje.
   if (!URL || !KEY) { console.warn('⚠ Brak SUPABASE_URL / SUPABASE_ANON_KEY — pomijam generowanie, zostaje szablon.'); return null; }
   const sb = createClient(URL, KEY, { auth: { persistSession: false } });
 
   const [{ data: kawy, error: e1 }, { data: ciasta, error: e2 }] = await Promise.all([
-    sb.from('coffees').select('*').eq('available', true).order('sort').order('created_at'),
-    sb.from('stock_items').select('*').order('sort').order('created_at'),
+    zPonowieniem(() => sb.from('coffees').select('*').eq('available', true).order('sort').order('created_at')),
+    zPonowieniem(() => sb.from('stock_items').select('*').order('sort').order('created_at')),
   ]);
-  if (e1 || e2) { console.warn('⚠ Błąd odczytu z Supabase — pomijam generowanie, zostaje szablon.', (e1 || e2).message); return null; }
+  // Baza nie odpowiada mimo ponowień: przerywamy build z błędem. Vercel zostawia wtedy
+  // POPRZEDNIE dobre wdrożenie. Wcześniej leciał szablon źródłowy ze zdjęciami prosto
+  // z Supabase Storage (PNG) i nieaktualnym młynkiem — tak padło 01.11 przez chwilowe
+  // „fetch failed”. Lepiej nie wdrożyć nic niż wdrożyć cofniętą stronę.
+  if (e1 || e2) { console.error('✗ Supabase nie odpowiada po ponowieniach — przerywam build, zostaje poprzednie wdrożenie.', (e1 || e2).message); process.exit(1); }
 
   // Menu osobno: brak tabeli menu_items NIE może wywalić buildu (zostaje statyczne menu).
   let menu = null;
@@ -704,8 +718,14 @@ async function lokalizujZdjecia(d) {
     if (!url || !url.includes('.supabase.co/storage/')) return url;
     if (cache.has(url)) return cache.get(url);
     try {
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('http ' + r.status);
+      // do 3 prób — chwilowy błąd sieci nie może zostawić zdjęcia na Supabase Storage
+      let r;
+      for (let i = 1; i <= 3; i++) {
+        r = await fetch(url).catch(() => null);
+        if (r && r.ok) break;
+        if (i < 3) await new Promise((ok) => setTimeout(ok, i * 2000));
+      }
+      if (!r || !r.ok) throw new Error('http ' + (r ? r.status : 'fetch failed'));
       const buf = Buffer.from(await r.arrayBuffer());
       const baza = url.split('/').pop().split('?')[0].replace(/\.[^.]+$/, '');
       mkdirSync('img/db', { recursive: true });
