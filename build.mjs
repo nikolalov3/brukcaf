@@ -446,6 +446,8 @@ ${og}
 ${jsonLd}
 <style>${BLOG_CSS}</style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
+<!-- Microsoft Clarity — nagrania sesji i mapy ciepła (panel Filipa) -->
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","z6uh8rwop6");</script>
 <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
