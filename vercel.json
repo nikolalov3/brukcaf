@@ -4,14 +4,67 @@
   "outputDirectory": ".",
   "framework": null,
   "crons": [
-    { "path": "/api/keepalive", "schedule": "0 6 */5 * *" }
+    {
+      "path": "/api/keepalive",
+      "schedule": "0 6 */5 * *"
+    }
   ],
   "headers": [
     {
       "source": "/img/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/en/index.html",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/visit",
+      "destination": "/visit/",
+      "permanent": true
+    },
+    {
+      "source": "/visit/index.html",
+      "destination": "/visit/",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/index.html",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug([^/.]+)",
+      "destination": "/blog/:slug/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug([^/.]+)/index.html",
+      "destination": "/blog/:slug/",
+      "permanent": true
     }
   ]
 }

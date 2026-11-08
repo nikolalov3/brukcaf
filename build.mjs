@@ -330,7 +330,7 @@ ul. Krótka 1, 31-149 Kraków (Kleparz, Old Town)
 - [Home](https://bruk.cafe/)
 - [Menu](https://bruk.cafe/#karta)
 - [Blog](https://bruk.cafe/blog/)
-- [Visit / contact](https://bruk.cafe/visit)
+- [Visit / contact](https://bruk.cafe/visit/)
 - [Instagram](https://www.instagram.com/brukcafe/)
 
 Last updated: ${data}
@@ -384,7 +384,7 @@ ul. Krótka 1, 31-149 Kraków (Kleparz, Stare Miasto)
 - [Strona główna](https://bruk.cafe/)
 - [Menu](https://bruk.cafe/#karta)
 - [Blog](https://bruk.cafe/blog/)
-- [Odwiedź / kontakt](https://bruk.cafe/visit)
+- [Odwiedź / kontakt](https://bruk.cafe/visit/)
 - [Instagram](https://www.instagram.com/brukcafe/)
 
 Ostatnia aktualizacja: ${data}
@@ -606,16 +606,20 @@ function generujSitemap(posts) {
     <xhtml:link rel="alternate" hreflang="pl" href="https://bruk.cafe/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://bruk.cafe/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://bruk.cafe/"/>`;
-  const u = (loc, prio, lastmod, alternaty) => `  <url>
-    <loc>${loc}</loc>${alternaty || ''}${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}
+  // zdjęcia lokalu (też te dwa, które kolaż dokłada dopiero skryptem) — dla Google Grafiki
+  const ZDJECIA = ['bar', 'fotele', 'ekspres', 'espresso', 'ciasto', 'marzocco', 'gosc', 'ciastka', 'sloje']
+    .map((z) => `\n    <image:image><image:loc>https://bruk.cafe/img/${z}.jpg</image:loc></image:image>`).join('');
+  const u = (loc, prio, lastmod, alternaty, zdjecia) => `  <url>
+    <loc>${loc}</loc>${alternaty || ''}${zdjecia || ''}${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}
     <priority>${prio}</priority>
   </url>`;
   const wpisy = (posts || []).map((p) => u(`https://bruk.cafe/blog/${esc(p.slug)}/`, '0.4', (p.updated_at || p.published_at || p.created_at || '').slice(0, 10)));
   const blogLast = (posts && posts[0]) ? (posts[0].updated_at || posts[0].published_at || dzis).slice(0, 10) : dzis;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${u('https://bruk.cafe/', '1.0', dzis, alt)}
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${u('https://bruk.cafe/', '1.0', dzis, alt, ZDJECIA)}
 ${u('https://bruk.cafe/en/', '0.8', dzis, alt)}
 ${u('https://bruk.cafe/visit/', '0.5', dzis)}
 ${u('https://bruk.cafe/blog/', '0.5', blogLast)}${wpisy.length ? '\n' + wpisy.join('\n') : ''}
