@@ -335,6 +335,13 @@ h2{
 .sklep-stopka{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:13px 16px}
 .sklep-nazwa{font-weight:600;letter-spacing:-.01em;line-height:1.2}
 .sklep-cena{font:600 13px/1 var(--mono);white-space:nowrap;color:var(--cichy)}
+/* opis półki pod siatką: palarnie, rodzaje kaw, jak kupić (czytają go też Google i modele AI) */
+.sklep-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px clamp(24px,4vw,56px);margin-top:24px;
+  font-size:14.5px;line-height:1.6;color:var(--cichy)}
+.sklep-info p{max-width:58ch}
+.sklep-info b{color:var(--atrament);font-weight:600}
+.sklep-info a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:620px){.sklep-info{grid-template-columns:1fr}}
 
 /* ── stopka ────────────────────────────────────────────── */
 .stopka{padding-block:clamp(40px,6vw,72px) clamp(48px,7vw,84px)}

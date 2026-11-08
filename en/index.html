@@ -39,12 +39,12 @@
   "@id": "https://bruk.cafe/#lokal",
   "name": "Bruk Cafe",
   "alternateName": ["Cafe Bruk", "Bruk"],
-  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania podawane codziennie od 8:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane.",
+  "description": "Specialty coffee shop in Kleparz, Kraków, a five-minute walk from Kraków Main Station, just past the Barbican. For espresso we grind HAYB Yellow, a dark blend of one hundred percent arabica from Brazil and Guatemala, and the rest of the menu is V60 pour-over. Matcha in several versions, cold brew and breakfast served daily from 8:00 to 13:00: toast, tomato carpaccio, pearl barley with hummus, vegetarian and vegan options. Oat, almond, coconut and lactose-free milk. Raw concrete interior, Wi-Fi and power sockets at the tables, good for laptop work, meetings and video calls. Dogs welcome. Specialty coffee beans to take home are sold on site, including coffee from HAYB and LaCava.",
   "url": "https://bruk.cafe/",
   "email": "lfckontakt@gmail.com",
   "priceRange": "$$",
   "currenciesAccepted": "PLN",
-  "paymentAccepted": "Gotówka, karta płatnicza, BLIK",
+  "paymentAccepted": "Cash, card, BLIK",
   "image": [
     "https://bruk.cafe/img/bar.jpg",
     "https://bruk.cafe/img/fotele.jpg",
@@ -79,7 +79,7 @@
     { "@type": "Place", "name": "Stary Kleparz market" },
     { "@type": "City", "name": "Kraków" }
   ],
-  "servesCuisine": ["Specialty coffee", "Matcha", "Śniadania", "Opcje wegetariańskie", "Opcje wegańskie"],
+  "servesCuisine": ["Specialty coffee", "Matcha", "Breakfast", "Vegetarian options", "Vegan options"],
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
@@ -101,14 +101,15 @@
     }
   ],
   "amenityFeature": [
-    { "@type": "LocationFeatureSpecification", "name": "Bezpłatne Wi-Fi", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Gniazdka elektryczne przy stolikach", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Miejsce do pracy z laptopem", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Psy mile widziane", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Mleko roślinne: owsiane, migdałowe, kokosowe", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Mleko bez laktozy", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Ogródek", "value": false }
+    { "@type": "LocationFeatureSpecification", "name": "Free Wi-Fi", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Power sockets at the tables", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Laptop-friendly workspace", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Breakfast", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Coffee beans to take home (incl. HAYB and LaCava)", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Dogs welcome", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Plant milk: oat, almond, coconut", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Lactose-free milk", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Outdoor seating", "value": false }
   ],
   "publicAccess": true,
   "petsAllowed": true,
@@ -162,6 +163,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "For espresso we grind HAYB Yellow, a dark blend of one hundred percent arabica from Brazil and Guatemala. The rest of the menu is V60, and we keep more beans around, so just ask the staff."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I buy coffee beans to take home?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can buy specialty coffee beans at the bar, including coffee from the HAYB and LaCava roasteries. The shelf has espresso blends, single origin filter coffees and a decaf, mostly in 250 g bags. The current selection with prices is in the Shop section."
       }
     },
     {
@@ -695,11 +704,16 @@
 
 <section class="sekcja ramka" id="sklep">
   <div class="naglowek etykieta"><span class="nr">05</span><span>Shop</span></div>
+  <h2 class="sr-only">Coffee beans to take home at Bruk Cafe: HAYB, LaCava and other specialty roasteries</h2>
   <p class="sklep-nota etykieta">Buy specialty coffee beans, ceremonial matcha and accessories in-store at Bruk Cafe, Krótka 1, Kleparz.</p>
   <ul class="sklep-siatka" data-sklep>
   <!-- SKLEP -->
   <!-- /SKLEP -->
   </ul>
+  <div class="sklep-info">
+    <p>You can buy specialty coffee beans at Bruk, right at the bar. The shelf holds beans from specialty roasteries, including <b>HAYB</b> and <b>LaCava</b>: espresso blends, single origin coffees for filter and a decaf, mostly in 250 g bags.</p>
+    <p>Not sure which one to pick? Ask the barista for a bean that suits your brewing method. Some of them are also on our grinder (see <a href="#mlyn">In the grinder today</a>), so you can taste one in a cup first.</p>
+  </div>
 </section>
 
 <section class="sekcja ramka" id="pytania">
@@ -720,6 +734,10 @@
       <div class="pytanie zjawia">
         <h3>What coffee do you brew?</h3>
         <p>For espresso we grind HAYB Yellow, a dark blend of one hundred percent arabica from Brazil and Guatemala. The rest of the menu is V60, and we keep more beans around, so just ask the staff.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Can I buy coffee beans to take home?</h3>
+        <p>Yes. You can buy specialty coffee beans at the bar, including coffee from the HAYB and LaCava roasteries. The shelf has espresso blends, single origin filter coffees and a decaf, mostly in 250 g bags. The current selection with prices is in the <a href="#sklep">Shop</a> section.</p>
       </div>
       <div class="pytanie zjawia">
         <h3>What milk options do you have?</h3>

@@ -39,7 +39,7 @@
   "@id": "https://bruk.cafe/#lokal",
   "name": "Bruk Cafe",
   "alternateName": ["Cafe Bruk", "Bruk"],
-  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania podawane codziennie od 8:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane.",
+  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania podawane codziennie od 8:00 do 13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane. Na miejscu można kupić kawę ziarnistą specialty na wynos, między innymi z palarni HAYB i LaCava.",
   "url": "https://bruk.cafe/",
   "email": "lfckontakt@gmail.com",
   "priceRange": "$$",
@@ -105,6 +105,7 @@
     { "@type": "LocationFeatureSpecification", "name": "Gniazdka elektryczne przy stolikach", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Miejsce do pracy z laptopem", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Kawa ziarnista na wynos (m.in. HAYB i LaCava)", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Psy mile widziane", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Mleko roślinne: owsiane, migdałowe, kokosowe", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Mleko bez laktozy", "value": true },
@@ -162,6 +163,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali. Reszta karty to V60, a ziaren mamy więcej i obsługa chętnie o nich opowie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Można u was kupić kawę ziarnistą do domu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tak. Kawę ziarnistą specialty kupisz na miejscu przy barze, między innymi z palarni HAYB i LaCava. Na półce są espresso blendy, kawy z jednego pochodzenia do przelewu i kawa bezkofeinowa, najczęściej w paczkach 250 g. Aktualny wybór z cenami jest w sekcji Sklep."
       }
     },
     {
@@ -1027,6 +1036,7 @@
 
 <section class="sekcja ramka" id="sklep">
   <div class="naglowek etykieta"><span class="nr">05</span><span>Sklep</span></div>
+  <h2 class="sr-only">Kawa ziarnista na wynos w Bruk Cafe: HAYB, LaCava i inne palarnie specialty</h2>
   <p class="sklep-nota etykieta">Kawę ziarnistą specialty, matchę ceremonialną i akcesoria kupisz na miejscu w Bruk Cafe, Krótka 1, na Kleparzu.</p>
   <ul class="sklep-siatka" data-sklep>
   <!-- SKLEP -->
@@ -1067,6 +1077,10 @@ KWIAT POMARAŃCZY, MIÓD, OWOCE TROPIKALNE</span></span></span>
     </li>
   <!-- /SKLEP -->
   </ul>
+  <div class="sklep-info">
+    <p>Kawę ziarnistą specialty kupisz w Bruku na miejscu, przy barze. Na półce stoją ziarna z palarni specialty, między innymi <b>HAYB</b> i <b>LaCava</b>: espresso blendy, kawy z jednego pochodzenia do przelewu i kawa bezkofeinowa, najczęściej w paczkach 250 g.</p>
+    <p>Nie wiesz, którą wybrać? Zapytaj baristę, podpowie ziarno pod Twoją metodę parzenia. Część tych kaw parzymy też na miejscu (zajrzyj do sekcji <a href="#mlyn">Dziś w młynku</a>), więc możesz najpierw spróbować w filiżance.</p>
+  </div>
 </section>
 
 <section class="sekcja ramka" id="pytania">
@@ -1087,6 +1101,10 @@ KWIAT POMARAŃCZY, MIÓD, OWOCE TROPIKALNE</span></span></span>
       <div class="pytanie zjawia">
         <h3>Jaką kawę parzycie?</h3>
         <p>Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali. Reszta karty to V60, a ziaren mamy więcej i obsługa chętnie o nich opowie.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Można u was kupić kawę ziarnistą do domu?</h3>
+        <p>Tak. Kawę ziarnistą specialty kupisz na miejscu przy barze, między innymi z palarni HAYB i LaCava. Na półce są espresso blendy, kawy z jednego pochodzenia do przelewu i kawa bezkofeinowa, najczęściej w paczkach 250 g. Aktualny wybór z cenami jest w sekcji <a href="#sklep">Sklep</a>.</p>
       </div>
       <div class="pytanie zjawia">
         <h3>Jakie mleka macie do wyboru?</h3>

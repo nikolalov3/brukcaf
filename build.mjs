@@ -261,16 +261,33 @@ const GODZINY_LLM = {
   pl: ['Poniedziałek-piątek 8:00-18:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 8:00-13:00'],
   en: ['Monday-Friday 8:00-18:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 8:00-13:00'],
 };
-function llmsTxt(lang) {
+// Kawy z półki (tabela shop_items) do llms.txt: nazwa + obróbka i nuty z opisu.
+// Lista odświeża się z każdym buildem, tak jak widoczna sekcja Sklep.
+function polkaLlm(sklep, zOpisem) {
+  const dost = (sklep || []).filter((p) => p.available !== false && p.name);
+  if (!dost.length) return { lista: '', zakres: '' };
+  const lista = dost.map((p) => {
+    // „WASHED\nCZARNA PORZECZKA, …” → „washed, czarna porzeczka, …” (obróbka bywa też bez nowej linii)
+    const opis = zOpisem && p.opis ? String(p.opis).split(/\n+/).map((x) => x.trim()).filter(Boolean).join(', ').toLowerCase()
+      .replace(/\s+/g, ' ').replace(/^((?:anaerobic |black |red |yellow )?(?:washed|natural|honey)|co-ferment|espresso blend|decaf(?: sugar cane)?)(?!,) /, '$1, ') : '';
+    return `- ${p.name.trim()}${opis ? ': ' + opis : ''}`;
+  }).join('\n');
+  const ceny = dost.map((p) => parseFloat(String(p.price || '').replace(',', '.').replace(/[^\d.]/g, ''))).filter((x) => x > 0);
+  const zakres = ceny.length > 1 ? `${Math.min(...ceny)}-${Math.max(...ceny)} zł` : '';
+  return { lista, zakres };
+}
+
+function llmsTxt(lang, sklep = null, zOpisem = true) {
   const data = new Date().toISOString().slice(0, 10);
   const godz = GODZINY_LLM[lang].map((g) => '- ' + g).join('\n');
+  const { lista, zakres } = polkaLlm(sklep, zOpisem);
   if (lang === 'en') {
     return `# Bruk Cafe
 
 > Specialty coffee shop in Kleparz, central Kraków. Coffee ground to order, breakfast, homemade cakes and a distinctive interior with a mirrored ceiling.
 
 ## About
-Bruk Cafe is a small specialty coffee shop in Kleparz, next to Kraków's Old Town, a few minutes from the Main Square and the main train station. We serve specialty coffee, fresh breakfast and homemade cakes. You can also buy coffee beans to take home.
+Bruk Cafe is a small specialty coffee shop in Kleparz, next to Kraków's Old Town, a few minutes from the Main Square and the main train station. We serve specialty coffee, fresh breakfast and homemade cakes. You can also buy specialty coffee beans to take home, including coffee from the HAYB and LaCava roasteries.
 
 ## Interior and atmosphere
 An interior with character: a ceiling fully lined with mirrors, rugs and a minimalist look. A calm, atmospheric spot for coffee, laptop work and photos.
@@ -286,12 +303,17 @@ An interior with character: a ceiling fully lined with mirrors, rugs and a minim
 - Specialty coffee, ground on site
 - Breakfast daily 8:00-13:00
 - Homemade cakes and tea
-- Shop: coffee beans to buy on site
+- Coffee beans to take home (HAYB, LaCava and other roasteries), see below
 - Seasonal specials change through the year, see the menu on the site
 
 Order at the bar.
 
 If someone asks which coffee we are brewing today, the current list is in the [In the grinder today](https://bruk.cafe/en/#mlyn) section, kept up to date by the barista.
+
+## Coffee beans to take home
+You can buy specialty coffee beans at Bruk Cafe, on site at the bar. The shelf holds beans from specialty roasteries, including HAYB and LaCava: espresso blends, single origin coffees for filter and a decaf, mostly in 250 g bags${zakres ? ` (${zakres.replace('zł', 'PLN')})` : ''}. Ask the barista which beans suit your brewing method.
+${lista ? `\nCurrently on the shelf:\n${lista}\n` : ''}
+Current selection with prices: [Shop](https://bruk.cafe/en/#sklep)
 
 ## Hours
 ${godz}
@@ -319,7 +341,7 @@ Last updated: ${data}
 > Kawiarnia specialty na Kleparzu, w centrum Krakowa. Kawa palona pod zamówienie z młynkiem na miejscu, śniadania, domowe ciasta i klimatyczne wnętrze z lustrzanym sufitem.
 
 ## O miejscu
-Bruk Cafe to kameralna kawiarnia specialty na krakowskim Kleparzu, przy Starym Mieście, kilka minut od Rynku Głównego i Dworca Głównego. Serwujemy kawę specialty, świeże śniadania i domowe ciasta. Kawę można też kupić w ziarnach do domu.
+Bruk Cafe to kameralna kawiarnia specialty na krakowskim Kleparzu, przy Starym Mieście, kilka minut od Rynku Głównego i Dworca Głównego. Serwujemy kawę specialty, świeże śniadania i domowe ciasta. Na miejscu można też kupić kawę ziarnistą specialty do domu, między innymi z palarni HAYB i LaCava.
 
 ## Wnętrze i atmosfera
 Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimalistyczny wystrój. Spokojne, klimatyczne miejsce na kawę, pracę z laptopem i dobre zdjęcia.
@@ -335,12 +357,17 @@ Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimali
 - Kawa specialty, młynek na miejscu
 - Śniadania codziennie 8:00-13:00
 - Domowe ciasta i herbaty
-- Sklep: kawa ziarnista do kupienia na miejscu
+- Kawa ziarnista na wynos (HAYB, LaCava i inne palarnie), szczegóły niżej
 - Oferta sezonowa rotuje w ciągu roku, aktualne pozycje w menu na stronie
 
 Zamawiasz przy barze.
 
 Jeśli ktoś pyta, jaką kawę dziś parzymy, aktualna lista jest w sekcji [Dziś w młynku](https://bruk.cafe/#mlyn), aktualizowanej przez baristę.
+
+## Kawa ziarnista na wynos
+W Bruk Cafe można kupić kawę ziarnistą specialty do domu, na miejscu przy barze. Na półce są ziarna z palarni specialty, między innymi HAYB i LaCava: espresso blendy, kawy z jednego pochodzenia do przelewu i kawa bezkofeinowa, najczęściej w paczkach 250 g${zakres ? ` (${zakres})` : ''}. Barista podpowie, które ziarno pasuje do Twojej metody parzenia.
+${lista ? `\nObecnie na półce:\n${lista}\n` : ''}
+Aktualny wybór z cenami: [Sklep](https://bruk.cafe/#sklep)
 
 ## Godziny
 ${godz}
@@ -698,15 +725,17 @@ const LIMIT_CIASTA = 6;
 const jestHerbata = (k) => (k.kind || 'kawa') === 'herbata';
 
 // ── główny przebieg ─────────────────────────────────────────────
-// llms.txt nie zależy od bazy — generujemy zawsze (świeża data, aktualne godziny).
-if (!DEMO) {
-  writeFileSync('llms.txt', llmsTxt('pl'));
-  writeFileSync('en/llms.txt', llmsTxt('en'));
-  console.log('✓ llms.txt + en/llms.txt');
+// llms.txt generujemy zawsze (świeża data, aktualne godziny); lista kaw z półki
+// dochodzi, gdy baza odpowiedziała. EN dostaje nuty smakowe tylko po tłumaczeniu.
+function zapiszLlms(sklepPl, sklepEn, enZOpisem) {
+  if (DEMO) return;
+  writeFileSync('llms.txt', llmsTxt('pl', sklepPl));
+  writeFileSync('en/llms.txt', llmsTxt('en', sklepEn, enZOpisem));
+  console.log(`✓ llms.txt + en/llms.txt${sklepPl?.length ? ` (${sklepPl.length} poz. z półki)` : ''}`);
 }
 
 const dane = await pobierz();
-if (!dane) process.exit(0); // nic nie zmieniamy, deploy leci dalej z szablonem
+if (!dane) { zapiszLlms(null, null, false); process.exit(0); } // nic więcej nie zmieniamy, deploy leci z szablonem
 
 // ── Lokalizacja zdjęć: pobierz z Supabase Storage RAZ przy buildzie i serwuj
 // z Vercela (/img/db/). Odwiedzający nie uderzają w Storage → transfer Supabase
@@ -793,6 +822,8 @@ function daneDlaJezyka(lang) {
     tlumaczone: true,
   };
 }
+
+{ const en = daneDlaJezyka('en'); zapiszLlms(sklep, en.sklep, en.tlumaczone); }
 
 let plKawyHtml = '', plHerbatyHtml = '', plMenuHtml = null;  // kawy/herbaty/menu z PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {
