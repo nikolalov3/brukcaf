@@ -258,8 +258,8 @@ async function mapaTlumaczen(dane) {
 // sezonowej NIE wpisujemy na sztywno (gnije w cache) — kierujemy do menu na
 // stronie. Godziny ze stałej (MUSZĄ być zgodne z index.html), data z buildu.
 const GODZINY_LLM = {
-  pl: ['Poniedziałek-piątek 8:00-18:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania 8:00-13:00'],
-  en: ['Monday-Friday 8:00-18:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast 8:00-13:00'],
+  pl: ['Poniedziałek-piątek 8:00-18:00', 'Sobota 9:00-17:00', 'Niedziela 9:00-14:00', 'Śniadania poniedziałek-piątek 8:00-13:00', 'Śniadania sobota-niedziela 9:00-13:00'],
+  en: ['Monday-Friday 8:00-18:00', 'Saturday 9:00-17:00', 'Sunday 9:00-14:00', 'Breakfast Monday-Friday 8:00-13:00', 'Breakfast Saturday-Sunday 9:00-13:00'],
 };
 // Kawy z półki (tabela shop_items) do llms.txt: nazwa + obróbka i nuty z opisu.
 // Lista odświeża się z każdym buildem, tak jak widoczna sekcja Sklep.
@@ -301,7 +301,7 @@ An interior with character: a ceiling fully lined with mirrors, rugs and a minim
 
 ## Offer
 - Specialty coffee, ground on site
-- Breakfast daily 8:00-13:00
+- Breakfast until 13:00 (Monday-Friday from 8:00, Saturday-Sunday from 9:00)
 - Homemade cakes and tea
 - Coffee beans to take home (HAYB, LaCava and other roasteries), see below
 - Seasonal specials change through the year, see the menu on the site
@@ -355,7 +355,7 @@ Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimali
 
 ## Oferta
 - Kawa specialty, młynek na miejscu
-- Śniadania codziennie 8:00-13:00
+- Śniadania do 13:00 (poniedziałek-piątek od 8:00, sobota-niedziela od 9:00)
 - Domowe ciasta i herbaty
 - Kawa ziarnista na wynos (HAYB, LaCava i inne palarnie), szczegóły niżej
 - Oferta sezonowa rotuje w ciągu roku, aktualne pozycje w menu na stronie
@@ -485,12 +485,12 @@ ${jsonLd}
 <div class="tasma etykieta" aria-hidden="true">
   <div class="tor">
     <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
-    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 8–13</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast until 13:00</span><span>·</span>
     <span>Espresso</span><span>·</span><span>Flat white</span><span>·</span><span>Drip V60</span><span>·</span>
-    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast 8–13</span><span>·</span>
+    <span>Matcha</span><span>·</span><span>Cold brew</span><span>·</span><span>Breakfast until 13:00</span><span>·</span>
   </div>
   <template data-pula>
-    <span>Espresso</span><span>Doppio</span><span>Americano</span><span>Flat white</span><span>Cappuccino</span><span>Latte</span><span>Drip V60</span><span>Matcha</span><span>Matcha latte</span><span>Cold brew</span><span data-rola="zawsze">Breakfast 8–13</span><span data-rola="czasem">Wi-Fi</span>
+    <span>Espresso</span><span>Doppio</span><span>Americano</span><span>Flat white</span><span>Cappuccino</span><span>Latte</span><span>Drip V60</span><span>Matcha</span><span>Matcha latte</span><span>Cold brew</span><span data-rola="zawsze">Breakfast until 13:00</span><span data-rola="czasem">Wi-Fi</span>
   </template>
 </div>
 <nav class="nawigacja">
