@@ -834,7 +834,9 @@ function renderMenu() {
   for (const sek of sekcje) {
     const naglowek = document.createElement('div');
     naglowek.className = 'menu-sekcja etykieta';
-    naglowek.textContent = sek;
+    naglowek.innerHTML = '<span class="menu-sekcja-nazwa"></span><button class="btn pusty mały" data-zmien-sekcje>Zmień nazwę</button>';
+    naglowek.querySelector('.menu-sekcja-nazwa').textContent = sek;
+    naglowek.querySelector('[data-zmien-sekcje]').addEventListener('click', () => zmienNazweSekcji(sek));
     box.appendChild(naglowek);
     const poz = mapa.get(sek);
     poz.forEach((it, i) => {
@@ -862,6 +864,23 @@ function renderMenu() {
       box.appendChild(el);
     });
   }
+}
+
+// Nazwa sekcji siedzi w każdej pozycji, więc zmieniamy ją wszystkim naraz.
+// Kolejność sekcji (sekcja_sort) i pozycji (sort) zostaje bez zmian.
+async function zmienNazweSekcji(stara) {
+  const nowa = (prompt('Nowa nazwa sekcji (zmieni się we wszystkich jej pozycjach):', stara) || '').trim();
+  if (!nowa || nowa === stara) return;
+  const rekord = { sekcja: nowa };
+  const istniejaca = menu.find((m) => m.sekcja === nowa);
+  if (istniejaca) {
+    if (!confirm(`Sekcja „${nowa}” już istnieje. Połączyć z nią pozycje z „${stara}”?`)) return;
+    rekord.sekcja_sort = istniejaca.sekcja_sort;
+  }
+  const { error } = await sb.from('menu_items').update(rekord).eq('sekcja', stara);
+  if (error) { pokazInfo($('menu-info'), 'Nie udało się zmienić nazwy sekcji.', 'zle'); return; }
+  await wczytajMenu();
+  pokazInfo($('menu-info'), 'Zmieniono nazwę sekcji. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
 }
 
 // zamiana miejscami w obrębie sekcji + przenumerowanie sort (10,20,30…)

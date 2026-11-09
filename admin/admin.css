@@ -187,7 +187,8 @@ a{color:inherit}
 .filtr-tab.aktywny{background:var(--atrament);color:var(--tlo)}
 
 /* ── lista menu w panelu ─────────────────────────── */
-.menu-sekcja{margin:24px 0 4px;color:var(--cichy)}
+.menu-sekcja{margin:24px 0 4px;color:var(--cichy);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.menu-sekcja .btn{flex:none}
 .menu-sekcja:first-child{margin-top:2px}
 .menu-cena{font:600 13px/1 var(--mono);color:var(--atrament)}
 
