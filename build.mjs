@@ -277,10 +277,24 @@ function polkaLlm(sklep, zOpisem) {
   return { lista, zakres };
 }
 
-function llmsTxt(lang, sklep = null, zOpisem = true) {
+// Śniadania z karty w bazie (sekcja „Śniadania…”/„Breakfast…”): nazwa, skład, cena, dieta.
+// Odświeża się z każdym buildem, więc asystenci dostają aktualną kartę, nie zapisaną na sztywno.
+function sniadaniaLlm(menu) {
+  const poz = (menu || []).filter((m) => /śniadani|sniadani|breakfast/i.test(m.sekcja || '') && m.nazwa);
+  return poz.map((m) => {
+    const nazwa = String(m.nazwa).trim().toLowerCase().replace(/^./, (z) => z.toUpperCase());
+    const sklad = m.sklad ? ': ' + String(m.sklad).replace(/\s*\/\s*/g, ', ').replace(/\s+/g, ' ').trim().toLowerCase() : '';
+    const dieta = m.dieta ? ` (${m.dieta})` : '';
+    const cena = m.cena ? ` · ${String(m.cena).replace(/\s*zł/i, '')} zł` : '';
+    return `- ${nazwa}${dieta}${sklad}${cena}`;
+  }).join('\n');
+}
+
+function llmsTxt(lang, sklep = null, zOpisem = true, menu = null) {
   const data = new Date().toISOString().slice(0, 10);
   const godz = GODZINY_LLM[lang].map((g) => '- ' + g).join('\n');
   const { lista, zakres } = polkaLlm(sklep, zOpisem);
+  const sniadania = sniadaniaLlm(menu);
   if (lang === 'en') {
     return `# Bruk Cafe
 
@@ -311,7 +325,11 @@ Order at the bar.
 
 If someone asks which coffee we are brewing today, the current list is in the [In the grinder today](https://bruk.cafe/en/#mlyn) section, kept up to date by the barista.
 
-## Coffee beans to take home
+${sniadania ? `## Breakfast menu (current)
+Served Monday-Friday 8:00-13:00 and Saturday-Sunday 9:00-13:00, order at the bar. Photos of the seasonal breakfasts: [visitor guide](https://bruk.cafe/visit/).
+${sniadania}
+
+` : ''}## Coffee beans to take home
 You can buy specialty coffee beans at Bruk Cafe, on site at the bar. The shelf holds beans from specialty roasteries, including HAYB and LaCava: espresso blends, single origin coffees for filter and a decaf, mostly in 250 g bags${zakres ? ` (${zakres.replace('zł', 'PLN')})` : ''}. Ask the barista which beans suit your brewing method.
 ${lista ? `\nCurrently on the shelf:\n${lista}\n` : ''}
 Current selection with prices: [Shop](https://bruk.cafe/en/#sklep)
@@ -384,7 +402,11 @@ Zamawiasz przy barze.
 
 Jeśli ktoś pyta, jaką kawę dziś parzymy, aktualna lista jest w sekcji [Dziś w młynku](https://bruk.cafe/#mlyn), aktualizowanej przez baristę.
 
-## Kawa ziarnista na wynos
+${sniadania ? `## Śniadania (aktualna karta)
+Podajemy od poniedziałku do piątku 8:00-13:00, w sobotę i niedzielę 9:00-13:00, zamawiasz przy barze. Zdjęcia sezonowych śniadań: [przewodnik dla gości](https://bruk.cafe/visit/).
+${sniadania}
+
+` : ''}## Kawa ziarnista na wynos
 W Bruk Cafe można kupić kawę ziarnistą specialty do domu, na miejscu przy barze. Na półce są ziarna z palarni specialty, między innymi HAYB i LaCava: espresso blendy, kawy z jednego pochodzenia do przelewu i kawa bezkofeinowa, najczęściej w paczkach 250 g${zakres ? ` (${zakres})` : ''}. Barista podpowie, które ziarno pasuje do Twojej metody parzenia.
 ${lista ? `\nObecnie na półce:\n${lista}\n` : ''}
 Aktualny wybór z cenami: [Sklep](https://bruk.cafe/#sklep)
@@ -647,6 +669,9 @@ function generujSitemap(posts) {
   // zdjęcia lokalu (też te dwa, które kolaż dokłada dopiero skryptem) — dla Google Grafiki
   const ZDJECIA = ['bar', 'fotele', 'ekspres', 'espresso', 'ciasto', 'marzocco', 'gosc', 'ciastka', 'sloje']
     .map((z) => `\n    <image:image><image:loc>https://bruk.cafe/img/${z}.jpg</image:loc></image:image>`).join('');
+  // zdjęcia sezonowych śniadań z karuzeli na /visit/ (pliki w img/sezon/)
+  const SEZON = ['ciecierzyca', 'shokupan-jajecznica-chorizo', 'kanapka-frankfurterki', 'awokado-tost', 'tost-z-szynka']
+    .map((z) => `\n    <image:image><image:loc>https://bruk.cafe/img/sezon/${z}.webp</image:loc></image:image>`).join('');
   const u = (loc, prio, lastmod, alternaty, zdjecia) => `  <url>
     <loc>${loc}</loc>${alternaty || ''}${zdjecia || ''}${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}
     <priority>${prio}</priority>
@@ -659,7 +684,7 @@ function generujSitemap(posts) {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${u('https://bruk.cafe/', '1.0', dzis, alt, ZDJECIA)}
 ${u('https://bruk.cafe/en/', '0.8', dzis, alt)}
-${u('https://bruk.cafe/visit/', '0.5', dzis)}
+${u('https://bruk.cafe/visit/', '0.5', dzis, '', SEZON)}
 ${u('https://bruk.cafe/blog/', '0.5', blogLast)}${wpisy.length ? '\n' + wpisy.join('\n') : ''}
 </urlset>
 `;
@@ -769,10 +794,10 @@ const jestHerbata = (k) => (k.kind || 'kawa') === 'herbata';
 // ── główny przebieg ─────────────────────────────────────────────
 // llms.txt generujemy zawsze (świeża data, aktualne godziny); lista kaw z półki
 // dochodzi, gdy baza odpowiedziała. EN dostaje nuty smakowe tylko po tłumaczeniu.
-function zapiszLlms(sklepPl, sklepEn, enZOpisem) {
+function zapiszLlms(sklepPl, sklepEn, enZOpisem, menuPl = null, menuEn = null) {
   if (DEMO) return;
-  writeFileSync('llms.txt', llmsTxt('pl', sklepPl));
-  writeFileSync('en/llms.txt', llmsTxt('en', sklepEn, enZOpisem));
+  writeFileSync('llms.txt', llmsTxt('pl', sklepPl, true, menuPl));
+  writeFileSync('en/llms.txt', llmsTxt('en', sklepEn, enZOpisem, menuEn));
   console.log(`✓ llms.txt + en/llms.txt${sklepPl?.length ? ` (${sklepPl.length} poz. z półki)` : ''}`);
 }
 
@@ -865,7 +890,7 @@ function daneDlaJezyka(lang) {
   };
 }
 
-{ const en = daneDlaJezyka('en'); zapiszLlms(sklep, en.sklep, en.tlumaczone); }
+{ const en = daneDlaJezyka('en'); zapiszLlms(sklep, en.sklep, en.tlumaczone, menu, en.tlumaczone ? en.menu : menu); }
 
 let plKawyHtml = '', plHerbatyHtml = '', plMenuHtml = null;  // kawy/herbaty/menu z PL — do porównania z żywą stroną
 for (const [lang, t] of Object.entries(L)) {

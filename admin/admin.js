@@ -1072,7 +1072,9 @@ async function otworzProdukt(id) {
     $('prod-tytul').textContent = 'Nowy produkt';
     ['prod-nazwa', 'prod-cena', 'prod-opis'].forEach((f) => $(f).value = '');
     $('prod-dostepny').checked = true; ustawProdFoto('');
+    $('prod-do-mlyna').checked = true; $('prod-do-mlyna-pole').hidden = false;
   } else {
+    $('prod-do-mlyna-pole').hidden = true;   // tylko przy dodawaniu nowego produktu
     const { data, error } = await sb.from('shop_items').select('*').eq('id', id).single();
     if (error || !data) { pokazInfo($('prod-info'), 'Nie udało się wczytać produktu.', 'zle'); return; }
     $('prod-tytul').textContent = 'Edycja produktu';
@@ -1102,10 +1104,41 @@ $('btn-prod-zapisz').addEventListener('click', async () => {
     : await sb.from('shop_items').insert(rekord);
   btn.disabled = false; btn.textContent = 'Zapisz';
   if (odp.error) { pokazInfo($('prod-info'), 'Nie udało się zapisać.', 'zle'); return; }
+  // nowy produkt → ta sama kawa na liście „Dziś w młynku”, żeby nie wpisywać jej dwa razy
+  const doMlyna = !edytowanyProd && $('prod-do-mlyna').checked ? await dodajDoMlyna(rekord) : null;
   await wczytajSklep();
   $('widok-sklep-edytor').hidden = true; $('widok-sklep').hidden = false;
-  pokazInfo($('sklep-info'), 'Zapisano. Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', 'ok');
+  const dopisek = doMlyna === 'dodano' ? ' Dodano też do listy „Dziś w młynku” jako niedostępną.'
+    : doMlyna === 'jest' ? ' Ta kawa jest już na liście „Dziś w młynku”, nie dublujemy.'
+    : doMlyna === 'blad' ? ' Nie udało się dodać do „Dziś w młynku”, dodaj ją tam ręcznie.' : '';
+  pokazInfo($('sklep-info'), 'Zapisano.' + dopisek + ' Aby pokazać zmiany na stronie, kliknij „Aktualizuj stronę”.', doMlyna === 'blad' ? 'zle' : 'ok');
 });
+
+// Produkt ze sklepu jako pozycja w „Dziś w młynku”: bez gramatury w nazwie („Kenya Kii 250G” → „Kenya Kii”),
+// pierwsza linia opisu to obróbka (WASHED, NATURAL…), reszta to nuty smakowe. Wpada na koniec listy kaw
+// jako niedostępna, więc nie pokazuje się na stronie, dopóki Filip jej nie wystawi.
+// Jeśli kawa o tej samej nazwie już jest na liście, nic nie dodajemy (zero duplikatów).
+const nazwaBezWagi = (n) => String(n || '').replace(/\s*\d+\s*g\.?\s*$/i, '').trim();
+const kluczNazwy = (n) => nazwaBezWagi(n).toLowerCase().replace(/\s+/g, ' ');
+async function dodajDoMlyna(prod) {
+  const { data: obecne, error } = await sb.from('coffees').select('name, kind, sort');
+  if (error) return 'blad';
+  const nazwa = nazwaBezWagi(prod.name);
+  if ((obecne || []).some((k) => kluczNazwy(k.name) === kluczNazwy(nazwa))) return 'jest';
+  const linie = String(prod.opis || '').split(/\n+/).map((x) => x.trim()).filter(Boolean);
+  const obrobka = linie.length > 1 ? linie[0] : null;
+  const kawyTeraz = (obecne || []).filter((k) => k.kind !== 'herbata');
+  const { error: e2 } = await sb.from('coffees').insert({
+    name: nazwa, kind: 'kawa', available: false,
+    obrobka: obrobka ? obrobka.toLowerCase() : null,
+    note: (obrobka ? linie.slice(1) : linie).join(', ') || null,
+    photo_url: prod.photo_url || null,
+    sort: kawyTeraz.length ? Math.max(...kawyTeraz.map((k) => k.sort ?? 0)) + 1 : 0,
+  });
+  if (e2) return 'blad';
+  kawyZaladowane = false;   // lista kaw wczyta się na nowo przy wejściu w zakładkę
+  return 'dodano';
+}
 
 $('btn-prod-usun').addEventListener('click', async () => {
   if (!edytowanyProd) return;
