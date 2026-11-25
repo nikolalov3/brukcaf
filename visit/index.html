@@ -375,65 +375,62 @@
   .msg-send[disabled]{opacity:.5;cursor:default}
   .msg-ok{margin-top:14px;text-align:center;color:#34e0a1;font:500 13px/1.5 var(--mono)}
 
-  /* ── Halloween (sezonowo) — usuń class="halloween" z <body>, by wyłączyć ── */
-  .halloween{--bordo-2:#e0611c}                 /* akcent: dynia zamiast bordo (CTA + stan wysłano) */
-  .hw{display:none}
-  .halloween .hw{display:block}
-  .hw-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(42% 30% at 50% -6%, rgba(224,97,28,.22), transparent 70%),
-      radial-gradient(30% 24% at 93% 6%, rgba(224,97,28,.13), transparent 72%),
-      radial-gradient(30% 24% at 7% 6%, rgba(224,97,28,.10), transparent 72%)}
-  .hw-web{position:fixed;top:0;z-index:1;width:clamp(72px,22vw,108px);height:auto;opacity:.26;pointer-events:none}
-  .hw-web-l{left:0}
-  .hw-web-r{right:0;transform:scaleX(-1)}
-  .hw-spider{position:fixed;top:0;left:20%;z-index:2;width:28px;height:auto;pointer-events:none;
-    transform-origin:top center;animation:hw-sway 4.8s ease-in-out infinite}
-  @keyframes hw-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
-  .hw-badge{display:none}
-  .halloween .hw-badge{display:inline-flex;align-items:center;gap:7px;
-    color:#e0611c;font:600 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase}
-  @media(prefers-reduced-motion:reduce){.hw-spider{animation:none}}
-  /* po 3 listopada skrypt w <head> dodaje .po-halloween na <html> i skorka gasnie sama */
-  html.po-halloween .hw,html.po-halloween .hw-badge{display:none!important}
-  html.po-halloween .halloween{--bordo-2:#6b2233}
+  /* ── Święta (sezonowo) — usuń class="swieta" z <body>, by wyłączyć; 7.01.2027 gaśnie sama ──
+     Biała ściana z kostką brukową zamiast czerni: zmienne kolorów odwrócone, kafelki robią się ciemne.
+     Dekoracje: czapka Mikołaja na logo, napis pod hasłem, śnieg na kafelku Wi-Fi.
+     Wszystko poniżej działa tylko bez .po-swietach na <html>. */
+  .sw{display:none}
+  html:not(.po-swietach) .swieta .sw{display:block}
+  html:not(.po-swietach) .swieta{
+    --czern:#f6f4ef;--czern-2:#fff;--biel:#151515;--biel-cichy:#6c675f;--wlos:rgba(21,21,21,.14);--bordo-2:#c1272d;
+    background-color:#f6f4ef}
+  /* ta sama kostka brukowa co na czarnym, tylko ciemne kontury na białej ścianie */
+  html:not(.po-swietach) .swieta::before{opacity:.1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='84'%3E%3Cg fill='none' stroke='%23151515' stroke-width='1.1' opacity='0.6'%3E%3Crect x='1' y='1' width='62' height='40' rx='3'/%3E%3Crect x='65' y='1' width='62' height='40' rx='3'/%3E%3Crect x='-31' y='43' width='62' height='40' rx='3'/%3E%3Crect x='33' y='43' width='62' height='40' rx='3'/%3E%3Crect x='97' y='43' width='62' height='40' rx='3'/%3E%3C/g%3E%3C/svg%3E")}
+  html:not(.po-swietach) .swieta .logo{filter:none}
+  html:not(.po-swietach) .swieta .tresc-geo .wstep{color:#3b3833}
+  html:not(.po-swietach) .swieta .blok p{color:#47433d}
+  html:not(.po-swietach) .swieta .lnk:not(.tripadvisor) .sub,
+  html:not(.po-swietach) .swieta .lnk:not(.tripadvisor) .glif{color:rgba(246,244,239,.66)}
+  html:not(.po-swietach) .swieta .lnk.akcent,html:not(.po-swietach) .swieta .lnk.ok,
+  html:not(.po-swietach) .swieta .lnk.akcent .co,html:not(.po-swietach) .swieta .lnk.ok .co,
+  html:not(.po-swietach) .swieta .lnk.ok .glif{color:#fff}
+  html:not(.po-swietach) .swieta .lnk{box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 22px rgba(0,0,0,.07)}
+
+  /* śnieg leżący na pierwszym kafelku (Wi-Fi) */
+  html:not(.po-swietach) .swieta .stos .lnk:first-child{position:relative}
+  html:not(.po-swietach) .swieta .stos .lnk:first-child::before{
+    content:"";position:absolute;left:-5px;right:-5px;top:-15px;height:31px;pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 31' preserveAspectRatio='none'%3E%3Cpath d='M0 17C14 8 30 6 44 12 58 3 82 2 98 11 114 5 132 6 146 13 166 3 192 2 210 12 226 5 248 6 262 12 282 2 306 3 322 12 338 6 356 7 370 13 382 8 394 9 400 14V22C392 24 386 23 380 22 377 29 371 30 368 23 350 25 330 23 312 22 309 28 303 29 300 22 270 25 240 22 214 24 211 30 204 30 202 23 170 25 140 22 112 24 109 28 103 28 101 23 70 25 40 23 22 24 19 29 13 29 12 23 6 23 0 22Z' fill='%23fff'/%3E%3Cpath d='M0 20C40 23 80 21 120 22S220 24 260 21 340 23 400 20V22C392 24 386 23 380 22 377 29 371 30 368 23 350 25 330 23 312 22 309 28 303 29 300 22 270 25 240 22 214 24 211 30 204 30 202 23 170 25 140 22 112 24 109 28 103 28 101 23 70 25 40 23 22 24 19 29 13 29 12 23 6 23 0 22Z' fill='%23dfe8f1'/%3E%3C/svg%3E") no-repeat 0 0/100% 100%;
+    filter:drop-shadow(0 -1px 0 rgba(0,0,0,.06)) drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+
+  /* czapka Mikołaja na logo */
+  .logo-box{position:relative;display:inline-block;line-height:0}
+  .sw-czapka{position:absolute;left:-13px;top:-17px;width:31px;height:auto;transform:rotate(-20deg)}
+  html:not(.po-swietach) .swieta .sw-czapka{display:block}
+  .sw-badge{display:none}
+  html:not(.po-swietach) .swieta .sw-badge{display:inline-flex;align-items:center;gap:7px;
+    color:#c1272d;font:600 10.5px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase}
 </style>
-<script>if(new Date()>=new Date(2026,10,3))document.documentElement.classList.add("po-halloween")</script>
+<script>if(new Date()>=new Date(2027,0,7))document.documentElement.classList.add("po-swietach")</script>
 <!-- Umami — prywatny licznik wejść (bez ciasteczek), statystyki per adres w jednym panelu -->
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5def49a7-c32f-49a2-ba0a-937ac12a760c"></script>
 <!-- Microsoft Clarity — nagrania sesji i mapy ciepła (panel Filipa) -->
 <script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","z6uh8rwop6");</script>
 </head>
-<body class="halloween">
-  <div class="hw" aria-hidden="true">
-    <span class="hw-glow"></span>
-    <svg class="hw-web hw-web-l" viewBox="0 0 120 120">
-      <g fill="none" stroke="#ece9e3" stroke-width="1">
-        <path d="M0 0H120M0 0V120M0 0L104 46M0 0L74 74M0 0L46 104"/>
-        <path d="M34 0A34 34 0 0 1 0 34"/><path d="M70 0A70 70 0 0 1 0 70"/><path d="M106 0A106 106 0 0 1 0 106"/>
-      </g>
-    </svg>
-    <svg class="hw-web hw-web-r" viewBox="0 0 120 120">
-      <g fill="none" stroke="#ece9e3" stroke-width="1">
-        <path d="M0 0H120M0 0V120M0 0L104 46M0 0L74 74M0 0L46 104"/>
-        <path d="M34 0A34 34 0 0 1 0 34"/><path d="M70 0A70 70 0 0 1 0 70"/><path d="M106 0A106 106 0 0 1 0 106"/>
-      </g>
-    </svg>
-    <svg class="hw-spider" viewBox="0 0 40 66">
-      <line x1="20" y1="0" x2="20" y2="30" stroke="#ece9e3" stroke-width="0.8" opacity=".5"/>
-      <g stroke="#ece9e3" stroke-width="1.1" fill="none" stroke-linecap="round">
-        <path d="M20 46C12 42 9 46 3 40M20 46C12 45 8 51 2 51M20 46C28 42 31 46 37 40M20 46C28 45 32 51 38 51"/>
-      </g>
-      <ellipse cx="20" cy="47" rx="6.5" ry="7.5" fill="#ece9e3"/>
-      <circle cx="20" cy="38" r="3.4" fill="#ece9e3"/>
-      <circle cx="18.3" cy="37.6" r=".8" fill="#e0611c"/><circle cx="21.7" cy="37.6" r=".8" fill="#e0611c"/>
-    </svg>
-  </div>
+<body class="swieta">
   <main class="wrap">
     <header class="top">
-      <img class="logo" src="../img/logo.png" alt="BRUK CAFE">
+      <span class="logo-box">
+        <img class="logo" src="../img/logo.png" alt="BRUK CAFE">
+        <svg class="sw sw-czapka" viewBox="0 0 40 34" aria-hidden="true">
+          <path d="M6 26C9 12 20 2 32 5c-4 3-5 8-4 13L30 26z" fill="#c1272d"/>
+          <path d="M3 24c10-3 21-3 31 0 1 3 0 6-1 7-10-3-20-3-30 0-1-2-1-5 0-7z" fill="#fff" stroke="#e5e5e5" stroke-width=".8"/>
+          <circle cx="33" cy="6" r="4.4" fill="#fff" stroke="#e5e5e5" stroke-width=".8"/>
+        </svg>
+      </span>
       <span class="tag">Specialty coffee · Kleparz, Kraków</span>
-      <span class="hw-badge">🎃 Spooky season at BRUK</span>
+      <span class="sw-badge">🎅 Merry Christmas from BRUK</span>
     </header>
 
     <nav class="stos">
@@ -570,7 +567,7 @@
     <div class="msg-okno">
       <button class="msg-x" id="msg-x" type="button" aria-label="Close">&times;</button>
       <h2>Anonymous message</h2>
-      <p class="msg-opis">Say anything — feedback, an idea, or a thank you. We won't know who sent it.</p>
+      <p class="msg-opis">Say anything: feedback, an idea or a thank you. We won't know who sent it.</p>
       <textarea id="msg-text" rows="5" maxlength="2000" placeholder="Write your message…"></textarea>
       <button class="msg-send" id="msg-send" type="button">Send</button>
       <div class="msg-ok" id="msg-ok" hidden>Thank you. Your message has been sent.</div>
