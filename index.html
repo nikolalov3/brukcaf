@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bruk Cafe. Kawiarnia specialty na Kleparzu w Krakowie</title>
-<meta name="description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, pięć minut pieszo z Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
+<title>Bruk Cafe. Kawa specialty i śniadania na Kleparzu w Krakowie</title>
+<meta name="description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, kilka minut pieszo od Rynku i Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
 <link rel="canonical" href="https://bruk.cafe/">
 <link rel="alternate" hreflang="pl" href="https://bruk.cafe/">
 <link rel="alternate" hreflang="en" href="https://bruk.cafe/en/">
@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Bruk Cafe">
 <meta property="og:locale" content="pl_PL">
 <meta property="og:locale:alternate" content="en_GB">
-<meta property="og:title" content="Bruk Cafe. Kawiarnia specialty na Kleparzu w Krakowie">
-<meta property="og:description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, pięć minut pieszo z Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
+<meta property="og:title" content="Bruk Cafe. Kawa specialty i śniadania na Kleparzu w Krakowie">
+<meta property="og:description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, kilka minut pieszo od Rynku i Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
 <meta property="og:url" content="https://bruk.cafe/">
 <meta property="og:image" content="https://bruk.cafe/img/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Bruk Cafe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bruk Cafe. Kawiarnia specialty na Kleparzu w Krakowie">
-<meta name="twitter:description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, pięć minut pieszo z Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
+<meta name="twitter:title" content="Bruk Cafe. Kawa specialty i śniadania na Kleparzu w Krakowie">
+<meta name="twitter:description" content="Bruk Cafe. Kawiarnia specialty na Kleparzu, kilka minut pieszo od Rynku i Dworca Głównego. Kawa, matcha, śniadania do 13:00 (pn–pt od 8, weekend od 9), wifi i gniazdka. ul. Krótka 1, Kraków.">
 <meta name="twitter:image" content="https://bruk.cafe/img/og-cover.jpg">
 <link rel="icon" href="img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
   "@id": "https://bruk.cafe/#lokal",
   "name": "Bruk Cafe",
   "alternateName": ["Cafe Bruk", "Bruk"],
-  "description": "Kawiarnia specialty na Kleparzu w Krakowie, pięć minut pieszo z Dworca Głównego i tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania od poniedziałku do piątku 8:00–13:00, w sobotę i niedzielę 9:00–13:00: tosty, carpaccio z pomidorów, pęczak z hummusem, opcje wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane. Na miejscu można kupić kawę ziarnistą specialty na wynos, między innymi z palarni HAYB i LaCava.",
+  "description": "Kawiarnia specialty na Kleparzu w Krakowie, ok. 5–7 minut pieszo z Dworca Głównego, tuż za Barbakanem. Na espresso mielimy HAYB Yellow, ciemny blend stu procent arabiki z Brazylii i Gwatemali, reszta karty to przelewy V60. Do tego matcha w kilku wariantach, cold brew i śniadania od poniedziałku do piątku 8:00–13:00, w sobotę i niedzielę 9:00–13:00: tosty i ciepłe śniadania, także wegetariańskie i wegańskie. Mleko owsiane, migdałowe, kokosowe i bez laktozy. Surowe, betonowe wnętrze, Wi-Fi i gniazdka przy stolikach, miejsce do pracy z laptopem, na spotkanie i na rozmowę wideo. Psy mile widziane. Na miejscu można kupić kawę ziarnistą specialty na wynos, między innymi z palarni HAYB i LaCava.",
   "url": "https://bruk.cafe/",
   "email": "lfckontakt@gmail.com",
   "priceRange": "$$",
@@ -108,7 +108,11 @@
     { "@type": "LocationFeatureSpecification", "name": "Bezpłatne Wi-Fi", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Gniazdka elektryczne przy stolikach", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Miejsce do pracy z laptopem", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Śniadania", "value": true,
+      "hoursAvailable": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "13:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday", "Sunday"], "opens": "09:00", "closes": "13:00" }
+      ] },
     { "@type": "LocationFeatureSpecification", "name": "Kawa ziarnista na wynos (m.in. HAYB i LaCava)", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Psy mile widziane", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Mleko roślinne: owsiane, migdałowe, kokosowe", "value": true },
@@ -128,6 +132,53 @@
     "https://www.corner.inc/place/pmiDJpTMo6Ku"
   ],
   "hasMenu": { "@type": "Menu", "@id": "https://bruk.cafe/#menu" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://bruk.cafe/#witryna",
+      "url": "https://bruk.cafe/",
+      "name": "Bruk Cafe",
+      "alternateName": [
+        "Bruk",
+        "Cafe Bruk",
+        "bruk.cafe"
+      ],
+      "inLanguage": [
+        "pl-PL",
+        "en"
+      ],
+      "publisher": {
+        "@id": "https://bruk.cafe/#lokal"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://bruk.cafe/#strona",
+      "url": "https://bruk.cafe/",
+      "name": "Bruk Cafe. Kawa specialty i śniadania na Kleparzu w Krakowie",
+      "inLanguage": "pl-PL",
+      "isPartOf": {
+        "@id": "https://bruk.cafe/#witryna"
+      },
+      "about": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "mainEntity": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://bruk.cafe/img/og-cover.jpg",
+        "width": 1200,
+        "height": 630
+      }
+    }
+  ]
 }
 </script>
 <script>document.documentElement.classList.add("js")</script>
@@ -206,7 +257,55 @@
       "name": "Jak do was trafić z Dworca Głównego?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ul. Krótka 1 na Kleparzu, pięć do ośmiu minut pieszo z Dworca Głównego i Galerii Krakowskiej, tuż za Barbakanem i Bramą Floriańską. Leżymy dokładnie po drodze z dworca na Rynek: mijasz plac Matejki, Teatr Słowackiego i ulicę Długą, a my jesteśmy kilka kroków z głównej trasy, jeszcze przed Starym Miastem."
+        "text": "ul. Krótka 1 na Kleparzu: ok. 5–7 minut pieszo z Dworca Głównego, 5 minut od Galerii Krakowskiej i Barbakanu. Leżymy kilka kroków od trasy z dworca na Rynek, jeszcze przed Starym Miastem: mijasz plac Matejki, a Brama Floriańska jest stąd ok. 5 minut."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Gdzie zjeść śniadanie blisko Dworca Głównego?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "W Bruk Cafe przy ul. Krótkiej 1 na Kleparzu, ok. 5–7 minut pieszo od Dworca Głównego i 5 minut od Galerii Krakowskiej. Śniadania podajemy od poniedziałku do piątku 8:00–13:00, w sobotę i niedzielę 9:00–13:00, także w wersji wegetariańskiej i wegańskiej."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Gdzie na kawę między Rynkiem a dworcem?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bruk jest kilka kroków od trasy z Dworca Głównego na Rynek przez Barbakan i Bramę Floriańską: ok. 5 minut od Barbakanu, 8–10 minut od Rynku Głównego i 5–7 minut od dworca. To dobry przystanek na kawę specialty przed wejściem na Stare Miasto albo w drodze na pociąg."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Zdążę na kawę przed pociągiem?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Jeśli masz 20 minut zapasu, spokojnie. Z Bruka na Dworzec Główny idzie się ok. 5–7 minut, do Galerii Krakowskiej ok. 5."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Macie matchę?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tak: matchę, matcha latte i sezonowe warianty, np. z bananem albo pomarańczą. Aktualną kartę z cenami znajdziesz w sekcji Menu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy to dobre miejsce na spotkanie albo randkę?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tak. Bruk to kameralne wnętrze z sufitem w całości z luster, dywanami i surowym betonem. Goście wybierają je na spotkania, randki i zdjęcia, a w tygodniu wiele osób pracuje tu z laptopem."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak można zapłacić?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kartą, BLIK-iem albo gotówką."
       }
     },
     {
@@ -214,7 +313,7 @@
       "name": "Skąd wiem, jaką kawę macie dziś?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sprawdź sekcję Dziś w młynku na bruk.cafe. Barista aktualizuje ją na bieżąco: są tam kawy i herbaty, które dziś parzymy, z pochodzeniem, metodą parzenia i nutami smakowymi."
+        "text": "Sprawdź sekcję Dziś w młynku. Barista aktualizuje ją na bieżąco: są tam kawy i herbaty, które dziś parzymy, z pochodzeniem, metodą parzenia i nutami smakowymi."
       }
     }
   ]
@@ -748,7 +847,7 @@
     <article>
       <span class="etykieta">Dojście</span>
       <b class="duza">5 min</b>
-      <p>Pieszo z Dworca Głównego i Galerii Krakowskiej, tuż za Barbakanem.</p>
+      <p>Pieszo z Galerii Krakowskiej i do Barbakanu. Z Dworca Głównego 5–7 minut.</p>
     </article>
   </div>
 </section>
@@ -771,9 +870,8 @@
       <h3 class="podtytul-tresc">Śniadanie w centrum Krakowa, codziennie do 13:00</h3>
       <p class="wiodacy">
         Śniadania podajemy codziennie do 13:00: od poniedziałku do piątku od 8:00, w soboty i niedziele od 9:00.
-        W karcie są tosty na cieście z szynką, tosty z pomidorem,
-        carpaccio z pomidorów, pęczak z hummusem i kanapka z twarożkiem, z opcjami
-        wegetariańskimi i wegańskimi. Jeśli szukasz pysznego śniadania w centrum
+        W karcie są tosty i ciepłe śniadania, także wegetariańskie
+        i wegańskie (oznaczone w karcie), a aktualne pozycje zmieniają się z sezonem. Jeśli szukasz pysznego śniadania w centrum
         Krakowa, na Kleparzu przy Starym Mieście, u nas zjesz spokojnie, poza
         tłokiem Rynku.
       </p>
@@ -1124,7 +1222,31 @@ KWIAT POMARAŃCZY, MIÓD, OWOCE TROPIKALNE</span></span></span>
       </div>
       <div class="pytanie zjawia">
         <h3>Jak do was trafić z Dworca Głównego?</h3>
-        <p>Pięć minut pieszo, tuż za Barbakanem. ul. Krótka 1 na Kleparzu.</p>
+        <p>ul. Krótka 1 na Kleparzu: ok. 5–7 minut pieszo z Dworca Głównego, 5 minut od Galerii Krakowskiej i Barbakanu. Leżymy kilka kroków od trasy z dworca na Rynek, jeszcze przed Starym Miastem: mijasz plac Matejki, a Brama Floriańska jest stąd ok. 5 minut.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Gdzie zjeść śniadanie blisko Dworca Głównego?</h3>
+        <p>W Bruk Cafe przy ul. Krótkiej 1 na Kleparzu, ok. 5–7 minut pieszo od Dworca Głównego i 5 minut od Galerii Krakowskiej. Śniadania podajemy od poniedziałku do piątku 8:00–13:00, w sobotę i niedzielę 9:00–13:00, także w wersji wegetariańskiej i wegańskiej.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Gdzie na kawę między Rynkiem a dworcem?</h3>
+        <p>Bruk jest kilka kroków od trasy z Dworca Głównego na Rynek przez Barbakan i Bramę Floriańską: ok. 5 minut od Barbakanu, 8–10 minut od Rynku Głównego i 5–7 minut od dworca. To dobry przystanek na kawę specialty przed wejściem na Stare Miasto albo w drodze na pociąg.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Zdążę na kawę przed pociągiem?</h3>
+        <p>Jeśli masz 20 minut zapasu, spokojnie. Z Bruka na Dworzec Główny idzie się ok. 5–7 minut, do Galerii Krakowskiej ok. 5.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Macie matchę?</h3>
+        <p>Tak: matchę, matcha latte i sezonowe warianty, np. z bananem albo pomarańczą. Aktualną kartę z cenami znajdziesz w sekcji Menu.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Czy to dobre miejsce na spotkanie albo randkę?</h3>
+        <p>Tak. Bruk to kameralne wnętrze z sufitem w całości z luster, dywanami i surowym betonem. Goście wybierają je na spotkania, randki i zdjęcia, a w tygodniu wiele osób pracuje tu z laptopem.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Jak można zapłacić?</h3>
+        <p>Kartą, BLIK-iem albo gotówką.</p>
       </div>
       <div class="pytanie zjawia">
         <h3>Skąd wiem, jaką kawę macie dziś?</h3>

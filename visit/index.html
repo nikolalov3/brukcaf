@@ -13,50 +13,258 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CafeOrCoffeeShop",
-  "@id": "https://bruk.cafe/#lokal",
-  "name": "BRUK CAFE",
-  "url": "https://bruk.cafe/",
-  "image": "https://bruk.cafe/img/og-cover.jpg",
-  "logo": "https://bruk.cafe/img/logo.png",
-  "priceRange": "$$",
-  "currenciesAccepted": "PLN",
-  "paymentAccepted": "Cash, card, BLIK",
-  "description": "BRUK CAFE is a specialty coffee shop in Kleparz, Kraków, at Krótka 1, a few minutes' walk from Kraków Main Station, Galeria Krakowska and the Old Town. We serve specialty coffee, espresso and filter methods such as V60, matcha, breakfast and light food. We have Wi-Fi and power outlets at the tables.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Krótka 1",
-    "addressLocality": "Kraków",
-    "addressRegion": "małopolskie",
-    "postalCode": "31-149",
-    "addressCountry": "PL"
-  },
-  "geo": { "@type": "GeoCoordinates", "latitude": 50.0679221, "longitude": 19.9398697 },
-  "hasMap": "https://maps.google.com/?cid=11920639657712110502",
-  "areaServed": [
-    { "@type": "Place", "name": "Kleparz, Kraków" },
-    { "@type": "Place", "name": "Kraków Główny main train station" },
-    { "@type": "Place", "name": "Galeria Krakowska" },
-    { "@type": "Place", "name": "Kraków Barbican and Floriańska Gate" },
-    { "@type": "Place", "name": "Old Town, Kraków" },
-    { "@type": "City", "name": "Kraków" }
-  ],
-  "servesCuisine": ["Specialty coffee", "Espresso", "Filter coffee", "Matcha", "Breakfast"],
-  "openingHoursSpecification": [
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "08:00", "closes": "18:00" },
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "17:00" },
-    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "09:00", "closes": "14:00" }
-  ],
-  "amenityFeature": [
-    { "@type": "LocationFeatureSpecification", "name": "Free Wi-Fi", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Power outlets at tables", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Laptop-friendly", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Breakfast", "value": true }
-  ],
-  "sameAs": [
-    "https://www.instagram.com/brukcafe/",
-    "https://www.facebook.com/p/BRUK-CAFE-61583492194061/",
-    "https://maps.google.com/?cid=11920639657712110502"
+  "@graph": [
+    {
+      "@type": "CafeOrCoffeeShop",
+      "@id": "https://bruk.cafe/#lokal",
+      "name": "Bruk Cafe",
+      "alternateName": [
+        "BRUK CAFE",
+        "Cafe Bruk"
+      ],
+      "url": "https://bruk.cafe/",
+      "image": "https://bruk.cafe/img/og-cover.jpg",
+      "logo": "https://bruk.cafe/img/logo.png",
+      "priceRange": "$$",
+      "currenciesAccepted": "PLN",
+      "paymentAccepted": "Cash, card, BLIK",
+      "description": "Bruk Cafe is a specialty coffee shop in Kleparz, Kraków, at Krótka 1, a 5–7 minute walk from Kraków Main Station and 5 minutes from the Barbican and the Old Town. Specialty coffee (espresso, V60), matcha, breakfast Monday to Friday 8:00–13:00 and at weekends 9:00–13:00, Wi-Fi and power outlets at the tables. Specialty coffee beans to take home, including HAYB and LaCava.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Krótka 1",
+        "addressLocality": "Kraków",
+        "addressRegion": "małopolskie",
+        "postalCode": "31-149",
+        "addressCountry": "PL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 50.0679221,
+        "longitude": 19.9398697
+      },
+      "hasMap": "https://maps.google.com/?cid=11920639657712110502",
+      "areaServed": [
+        {
+          "@type": "Place",
+          "name": "Kleparz, Kraków"
+        },
+        {
+          "@type": "Place",
+          "name": "Kraków Główny main train station"
+        },
+        {
+          "@type": "Place",
+          "name": "Galeria Krakowska"
+        },
+        {
+          "@type": "Place",
+          "name": "Kraków Barbican and Floriańska Gate"
+        },
+        {
+          "@type": "Place",
+          "name": "Old Town, Kraków"
+        },
+        {
+          "@type": "City",
+          "name": "Kraków"
+        }
+      ],
+      "servesCuisine": [
+        "Specialty coffee",
+        "Espresso",
+        "Filter coffee",
+        "Matcha",
+        "Breakfast"
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+          ],
+          "opens": "08:00",
+          "closes": "18:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "09:00",
+          "closes": "17:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "09:00",
+          "closes": "14:00"
+        }
+      ],
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Free Wi-Fi",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Power outlets at tables",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Laptop-friendly",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Breakfast",
+          "value": true,
+          "hoursAvailable": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+              ],
+              "opens": "08:00",
+              "closes": "13:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Saturday",
+                "Sunday"
+              ],
+              "opens": "09:00",
+              "closes": "13:00"
+            }
+          ]
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Coffee beans to take home (incl. HAYB and LaCava)",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Dogs welcome",
+          "value": true
+        }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/brukcafe/",
+        "https://www.facebook.com/p/BRUK-CAFE-61583492194061/",
+        "https://maps.google.com/?cid=11920639657712110502",
+        "https://www.tripadvisor.com/Restaurant_Review-g274772-d34602934-Reviews-Bruk_Cafe-Krakow_Lesser_Poland_Province_Southern_Poland.html"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://bruk.cafe/visit/#strona",
+      "url": "https://bruk.cafe/visit/",
+      "name": "Bruk Cafe. Specialty coffee in Kleparz, near Kraków Main Station",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://bruk.cafe/#witryna"
+      },
+      "about": {
+        "@id": "https://bruk.cafe/#lokal"
+      }
+    },
+    {
+      "@type": "TouristTrip",
+      "@id": "https://bruk.cafe/visit/#trasa",
+      "name": "From Kraków Główny to the Main Square, with a coffee and breakfast stop at Bruk Cafe",
+      "description": "A short walk from Kraków Main Station through Kleparz to the Old Town: breakfast or specialty coffee at Bruk Cafe, Stary Kleparz market, the Barbican, Floriańska Gate and the Main Market Square. About 15–20 minutes of walking in total.",
+      "touristType": [
+        "Train travellers",
+        "Day visitors",
+        "Digital nomads"
+      ],
+      "itinerary": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Place",
+              "name": "Kraków Główny main train station",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 50.0676,
+                "longitude": 19.9473
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://bruk.cafe/#lokal"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "Place",
+              "name": "Stary Kleparz market",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 50.0688,
+                "longitude": 19.9386
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": "Place",
+              "name": "Kraków Barbican",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 50.0656,
+                "longitude": 19.9416
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "item": {
+              "@type": "Place",
+              "name": "Floriańska Gate",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 50.0649,
+                "longitude": 19.9413
+              }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "item": {
+              "@type": "Place",
+              "name": "Main Market Square (Rynek Główny)",
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 50.0617,
+                "longitude": 19.9373
+              }
+            }
+          }
+        ]
+      }
+    }
   ]
 }
 </script>
@@ -127,6 +335,8 @@
   .tresc-geo .wstep{color:#c9c5bd;font-size:14.5px;line-height:1.6}
   .blok h2{font:600 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--biel-cichy);margin-bottom:9px}
   .blok p{color:#c2beb6;font-size:14px;line-height:1.6}
+  .blok p + p{margin-top:10px}
+  .blok p b{color:var(--biel);font-weight:600}
 
   /* at a glance */
   .glance{border:1px solid var(--wlos);padding:18px}
@@ -310,6 +520,27 @@
         <p>BRUK has Wi-Fi and power outlets at the tables, so it's also a good spot for working with a laptop over coffee.</p>
       </div>
 
+      <div class="blok">
+        <h2>A day in Kraków: where BRUK fits</h2>
+        <p><b>Just off the train.</b> From Kraków Główny it is a 5–7 minute walk to BRUK. Breakfast from 8:00 on weekdays and from 9:00 at weekends, then 5 minutes on foot to the Barbican and the Old Town.</p>
+        <p><b>Before your train home.</b> From the Main Square it is 8–10 minutes to BRUK and another 5–7 to the station. With 20 minutes to spare there is time for a coffee.</p>
+        <p><b>A slow morning in Kleparz.</b> Stary Kleparz market is 2 minutes away and Matejko Square 3. Come back for a V60 pour-over, a matcha or coffee beans to take home.</p>
+      </div>
+
+      <div class="glance">
+        <div class="cap">Walking times from BRUK</div>
+        <dl>
+          <dt>2 min</dt><dd>Stary Kleparz market</dd>
+          <dt>3 min</dt><dd>Matejko Square (Grunwald Monument)</dd>
+          <dt>5 min</dt><dd>Barbican, Floriańska Gate, Galeria Krakowska</dd>
+          <dt>5–7 min</dt><dd>Kraków Główny main station</dd>
+          <dt>6 min</dt><dd>Słowacki Theatre</dd>
+          <dt>8–10 min</dt><dd>Main Market Square and the Cloth Hall</dd>
+          <dt>20 min</dt><dd>Wawel Castle</dd>
+          <dt>25 min</dt><dd>Kazimierz (Plac Nowy)</dd>
+        </dl>
+      </div>
+
       <div class="glance">
         <div class="cap">BRUK CAFE at a glance</div>
         <dl>
@@ -317,8 +548,11 @@
           <dt>Address</dt><dd>Krótka 1, 31-149 Kraków</dd>
           <dt>Near</dt><dd>Kraków Main Station, Galeria Krakowska, Barbican, Old Town</dd>
           <dt>Coffee</dt><dd>Specialty coffee, espresso, filter (V60)</dd>
-          <dt>Food</dt><dd>Breakfast and light food</dd>
-          <dt>Also</dt><dd>Matcha, Wi-Fi, power outlets</dd>
+          <dt>Food</dt><dd>Breakfast and light food, vegetarian and vegan options</dd>
+          <dt>Breakfast</dt><dd>Mon–Fri 8:00–13:00 · Sat–Sun 9:00–13:00</dd>
+          <dt>Also</dt><dd>Matcha, Wi-Fi, power outlets, dogs welcome</dd>
+          <dt>Beans</dt><dd>Specialty coffee to take home (HAYB, LaCava)</dd>
+          <dt>Pay</dt><dd>Card, BLIK, cash</dd>
           <dt>Hours</dt><dd>Mon–Fri 8:00–18:00 · Sat 9:00–17:00 · Sun 9:00–14:00</dd>
         </dl>
       </div>

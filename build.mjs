@@ -298,6 +298,7 @@ An interior with character: a ceiling fully lined with mirrors, rugs and a minim
 - Breakfast in the centre
 - Meeting up or a date
 - Photos (mirrored ceiling)
+- A stop between Kraków Główny and the Old Town
 
 ## Offer
 - Specialty coffee, ground on site
@@ -321,6 +322,24 @@ ${godz}
 ## Address
 ul. Krótka 1, 31-149 Kraków (Kleparz, Old Town)
 
+## Getting here on foot
+- Kraków Główny main station: 5-7 min
+- Galeria Krakowska, the Barbican, Floriańska Gate: 5 min
+- Stary Kleparz market: 2 min, Matejko Square: 3 min
+- Main Market Square: 8-10 min
+- Wawel Castle: about 20 min, Kazimierz: about 25 min
+
+A natural stop between the station and the Old Town: breakfast or coffee after arriving by train, or a coffee before the train home. More in the [visitor guide](https://bruk.cafe/visit/).
+
+## Common questions
+- Breakfast near Kraków Main Station: yes, 5-7 min away, Monday-Friday 8:00-13:00, weekends 9:00-13:00, vegetarian and vegan options.
+- Laptop work: Wi-Fi and power sockets at the tables.
+- Dogs: welcome.
+- Outdoor seating: no, everything is inside.
+- Matcha: yes, matcha, matcha latte and seasonal versions.
+- Milk: cow's, oat, almond, coconut, lactose-free.
+- Payment: card, BLIK, cash.
+
 ## Guest reviews
 - "Great atmosphere, the ceiling is all mirrors, so you can take nice photos for Instagram"
 - "A wonderful place with character, an original decor that sticks in your memory"
@@ -338,7 +357,7 @@ Last updated: ${data}
   }
   return `# Bruk Cafe
 
-> Kawiarnia specialty na Kleparzu, w centrum Krakowa. Kawa palona pod zamówienie z młynkiem na miejscu, śniadania, domowe ciasta i klimatyczne wnętrze z lustrzanym sufitem.
+> Kawiarnia specialty na Kleparzu, w centrum Krakowa. Kawa specialty mielona na miejscu, śniadania, domowe ciasta i klimatyczne wnętrze z lustrzanym sufitem.
 
 ## O miejscu
 Bruk Cafe to kameralna kawiarnia specialty na krakowskim Kleparzu, przy Starym Mieście, kilka minut od Rynku Głównego i Dworca Głównego. Serwujemy kawę specialty, świeże śniadania i domowe ciasta. Na miejscu można też kupić kawę ziarnistą specialty do domu, między innymi z palarni HAYB i LaCava.
@@ -352,6 +371,7 @@ Wnętrze z charakterem: sufit w całości wyłożony lustrami, dywany i minimali
 - Śniadanie w centrum
 - Spotkanie lub randkę
 - Zdjęcia (lustrzany sufit)
+- Przystanek między Dworcem Głównym a Starym Miastem
 
 ## Oferta
 - Kawa specialty, młynek na miejscu
@@ -374,6 +394,24 @@ ${godz}
 
 ## Adres
 ul. Krótka 1, 31-149 Kraków (Kleparz, Stare Miasto)
+
+## Dojście pieszo
+- Dworzec Główny: 5-7 min
+- Galeria Krakowska, Barbakan, Brama Floriańska: 5 min
+- Stary Kleparz: 2 min, plac Matejki: 3 min
+- Rynek Główny: 8-10 min
+- Wawel: ok. 20 min, Kazimierz: ok. 25 min
+
+Naturalny przystanek między dworcem a Starym Miastem: śniadanie lub kawa po przyjeździe pociągiem albo kawa przed powrotem. Więcej w [przewodniku dla gości](https://bruk.cafe/visit/) (po angielsku).
+
+## Częste pytania
+- Śniadanie blisko Dworca Głównego: tak, 5-7 min pieszo, poniedziałek-piątek 8:00-13:00, weekend 9:00-13:00, opcje wegetariańskie i wegańskie.
+- Praca z laptopem: Wi-Fi i gniazdka przy stolikach.
+- Psy: mile widziane.
+- Ogródek: nie, wszystko jest w środku.
+- Matcha: tak, matcha, matcha latte i warianty sezonowe.
+- Mleko: krowie, owsiane, migdałowe, kokosowe, bez laktozy.
+- Płatność: karta, BLIK, gotówka.
 
 ## Opinie gości
 - "To miejsce ma świetny klimat, sufit jest cały w lustrach, więc można zrobić fajne zdjęcia na Instagram"

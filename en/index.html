@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bruk Cafe. Specialty coffee in Kleparz, Kraków</title>
-<meta name="description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a five-minute walk from Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
+<title>Bruk Cafe. Specialty coffee and breakfast in Kleparz, Kraków</title>
+<meta name="description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a few minutes' walk from the Main Square and Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
 <link rel="canonical" href="https://bruk.cafe/en/">
 <link rel="alternate" hreflang="pl" href="https://bruk.cafe/">
 <link rel="alternate" hreflang="en" href="https://bruk.cafe/en/">
@@ -13,16 +13,16 @@
 <meta property="og:site_name" content="Bruk Cafe">
 <meta property="og:locale" content="en_GB">
 <meta property="og:locale:alternate" content="pl_PL">
-<meta property="og:title" content="Bruk Cafe. Specialty coffee in Kleparz, Kraków">
-<meta property="og:description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a five-minute walk from Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
+<meta property="og:title" content="Bruk Cafe. Specialty coffee and breakfast in Kleparz, Kraków">
+<meta property="og:description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a few minutes' walk from the Main Square and Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
 <meta property="og:url" content="https://bruk.cafe/en/">
 <meta property="og:image" content="https://bruk.cafe/img/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Bruk Cafe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bruk Cafe. Specialty coffee in Kleparz, Kraków">
-<meta name="twitter:description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a five-minute walk from Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
+<meta name="twitter:title" content="Bruk Cafe. Specialty coffee and breakfast in Kleparz, Kraków">
+<meta name="twitter:description" content="Bruk Cafe. Specialty coffee shop in Kleparz, a few minutes' walk from the Main Square and Kraków Main Station. Coffee, matcha, breakfast until 13:00 (Mon–Fri from 8, weekends from 9), wifi and power sockets. Krótka 1, Kraków.">
 <meta name="twitter:image" content="https://bruk.cafe/img/og-cover.jpg">
 <link rel="icon" href="../img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
   "@id": "https://bruk.cafe/#lokal",
   "name": "Bruk Cafe",
   "alternateName": ["Cafe Bruk", "Bruk"],
-  "description": "Specialty coffee shop in Kleparz, Kraków, a five-minute walk from Kraków Main Station, just past the Barbican. For espresso we grind HAYB Yellow, a dark blend of one hundred percent arabica from Brazil and Guatemala, and the rest of the menu is V60 pour-over. Matcha in several versions, cold brew and breakfast Monday to Friday 8:00–13:00, Saturday and Sunday 9:00–13:00: toast, tomato carpaccio, pearl barley with hummus, vegetarian and vegan options. Oat, almond, coconut and lactose-free milk. Raw concrete interior, Wi-Fi and power sockets at the tables, good for laptop work, meetings and video calls. Dogs welcome. Specialty coffee beans to take home are sold on site, including coffee from HAYB and LaCava.",
+  "description": "Specialty coffee shop in Kleparz, Kraków, about a 5–7 minute walk from Kraków Main Station, just behind the Barbican. For espresso we grind HAYB Yellow, a dark blend of one hundred percent arabica from Brazil and Guatemala, and the rest of the menu is V60 pour-over. Matcha in several versions, cold brew and breakfast Monday to Friday 8:00–13:00, Saturday and Sunday 9:00–13:00: toasts and warm breakfasts, including vegetarian and vegan options. Oat, almond, coconut and lactose-free milk. Raw concrete interior, Wi-Fi and power sockets at the tables, good for laptop work, meetings and video calls. Dogs welcome. Specialty coffee beans to take home are sold on site, including coffee from HAYB and LaCava.",
   "url": "https://bruk.cafe/",
   "email": "lfckontakt@gmail.com",
   "priceRange": "$$",
@@ -108,7 +108,11 @@
     { "@type": "LocationFeatureSpecification", "name": "Free Wi-Fi", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Power sockets at the tables", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Laptop-friendly workspace", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Breakfast", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Breakfast", "value": true,
+      "hoursAvailable": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "13:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday", "Sunday"], "opens": "09:00", "closes": "13:00" }
+      ] },
     { "@type": "LocationFeatureSpecification", "name": "Coffee beans to take home (incl. HAYB and LaCava)", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Dogs welcome", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Plant milk: oat, almond, coconut", "value": true },
@@ -128,6 +132,53 @@
     "https://www.corner.inc/place/pmiDJpTMo6Ku"
   ],
   "hasMenu": { "@type": "Menu", "@id": "https://bruk.cafe/#menu" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://bruk.cafe/#witryna",
+      "url": "https://bruk.cafe/",
+      "name": "Bruk Cafe",
+      "alternateName": [
+        "Bruk",
+        "Cafe Bruk",
+        "bruk.cafe"
+      ],
+      "inLanguage": [
+        "pl-PL",
+        "en"
+      ],
+      "publisher": {
+        "@id": "https://bruk.cafe/#lokal"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://bruk.cafe/en/#strona",
+      "url": "https://bruk.cafe/en/",
+      "name": "Bruk Cafe. Specialty coffee and breakfast in Kleparz, Kraków",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://bruk.cafe/#witryna"
+      },
+      "about": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "mainEntity": {
+        "@id": "https://bruk.cafe/#lokal"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://bruk.cafe/img/og-cover.jpg",
+        "width": 1200,
+        "height": 630
+      }
+    }
+  ]
 }
 </script>
 <script>document.documentElement.classList.add("js")</script>
@@ -206,7 +257,55 @@
       "name": "How do I get there from Kraków Main Station?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Krótka 1 in Kleparz, about a five to eight minute walk from Kraków Główny main station and Galeria Krakowska, just behind the Barbican and Floriańska Gate. We are right on the way from the station to the Main Square: you pass plac Matejki, the Słowacki Theatre and Długa street, and we are a few steps off the main route, just before the Old Town."
+        "text": "Krótka 1 in Kleparz: about a 5–7 minute walk from Kraków Główny main station and 5 minutes from Galeria Krakowska and the Barbican. We are a few steps off the route from the station to the Main Square, just before the Old Town: you pass plac Matejki, and Floriańska Gate is about 5 minutes away."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I have breakfast near Kraków Main Station?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At Bruk Cafe, Krótka 1 in Kleparz, about a 5–7 minute walk from Kraków Główny main station and 5 minutes from Galeria Krakowska. We serve breakfast Monday to Friday 8:00–13:00 and Saturday and Sunday 9:00–13:00, with vegetarian and vegan options."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I get coffee between the Main Square and the station?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bruk is a few steps off the route from Kraków Główny to the Main Square via the Barbican and Floriańska Gate: about 5 minutes from the Barbican, 8–10 minutes from the Main Square and 5–7 minutes from the station. A good stop for specialty coffee before the Old Town or on the way to your train."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have time for a coffee before my train?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you have 20 minutes to spare, yes. From Bruk it is about a 5–7 minute walk to Kraków Główny and about 5 minutes to Galeria Krakowska."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you serve matcha?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes: matcha, matcha latte and seasonal versions, for example with banana or orange. The current menu with prices is in the Menu section."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it a good place for a meeting or a date?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Bruk is an intimate space with a ceiling covered in mirrors, rugs and raw concrete. Guests come here for meetings, dates and photos, and on weekdays many people work here with a laptop."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I pay?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By card, BLIK or cash."
       }
     },
     {
@@ -214,7 +313,7 @@
       "name": "How do I know which coffee you have today?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Check the In the grinder today section on bruk.cafe. The barista keeps it up to date: it lists the coffees and teas we are brewing today, with origin, brewing method and tasting notes."
+        "text": "Check the In the grinder today section. The barista keeps it up to date: it lists the coffees and teas we are brewing today, with origin, brewing method and tasting notes."
       }
     }
   ]
@@ -415,7 +514,7 @@
     <article>
       <span class="etykieta">Getting here</span>
       <b class="duza">5 min</b>
-      <p>On foot from Kraków Main Station and Galeria Krakowska, right behind the Barbican.</p>
+      <p>On foot from Galeria Krakowska and to the Barbican. Kraków Główny station 5–7 minutes.</p>
     </article>
   </div>
 </section>
@@ -438,8 +537,8 @@
       <h3 class="podtytul-tresc">Breakfast in central Kraków, daily until 13:00</h3>
       <p class="wiodacy">
         We serve breakfast every day until 13:00: from 8:00 Monday to Friday, from 9:00 on Saturdays and Sundays. The menu has
-        toasties with ham, tomato toasties, tomato carpaccio, pearl barley with hummus and
-        a cottage cheese sandwich, with vegetarian and vegan options. If you are looking for
+        toasts and warm breakfasts, including vegetarian and vegan options (marked on the menu),
+        and the dishes change with the season. If you are looking for
         a good breakfast in central Kraków, in Kleparz next to the Old Town, this is a calm
         spot away from the crowds around the Main Square.
       </p>
@@ -757,7 +856,31 @@
       </div>
       <div class="pytanie zjawia">
         <h3>How do I get there from Kraków Main Station?</h3>
-        <p>A five minute walk, right behind the Barbican. Krótka 1 in Kleparz.</p>
+        <p>Krótka 1 in Kleparz: about a 5–7 minute walk from Kraków Główny main station and 5 minutes from Galeria Krakowska and the Barbican. We are a few steps off the route from the station to the Main Square, just before the Old Town: you pass plac Matejki, and Floriańska Gate is about 5 minutes away.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Where can I have breakfast near Kraków Main Station?</h3>
+        <p>At Bruk Cafe, Krótka 1 in Kleparz, about a 5–7 minute walk from Kraków Główny main station and 5 minutes from Galeria Krakowska. We serve breakfast Monday to Friday 8:00–13:00 and Saturday and Sunday 9:00–13:00, with vegetarian and vegan options.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Where can I get coffee between the Main Square and the station?</h3>
+        <p>Bruk is a few steps off the route from Kraków Główny to the Main Square via the Barbican and Floriańska Gate: about 5 minutes from the Barbican, 8–10 minutes from the Main Square and 5–7 minutes from the station. A good stop for specialty coffee before the Old Town or on the way to your train.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Do I have time for a coffee before my train?</h3>
+        <p>If you have 20 minutes to spare, yes. From Bruk it is about a 5–7 minute walk to Kraków Główny and about 5 minutes to Galeria Krakowska.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Do you serve matcha?</h3>
+        <p>Yes: matcha, matcha latte and seasonal versions, for example with banana or orange. The current menu with prices is in the Menu section.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>Is it a good place for a meeting or a date?</h3>
+        <p>Yes. Bruk is an intimate space with a ceiling covered in mirrors, rugs and raw concrete. Guests come here for meetings, dates and photos, and on weekdays many people work here with a laptop.</p>
+      </div>
+      <div class="pytanie zjawia">
+        <h3>How can I pay?</h3>
+        <p>By card, BLIK or cash.</p>
       </div>
       <div class="pytanie zjawia">
         <h3>How do I know which coffee you have today?</h3>
